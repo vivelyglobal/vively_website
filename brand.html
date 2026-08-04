@@ -121,23 +121,20 @@
 
     <div class="f-stage">
       <div class="f-track" id="f-track">
-        <button class="f-card active" type="button" data-i="0"
-          data-story="14만 명 이상의 글로벌 커뮤니티를 직접 운영하며, 크리에이터 경제를 누구보다 가까이에서 경험해왔습니다. <br>7년 이상 뷰티 산업에서 활동하며 얻은 경험을 바탕으로, 한국 브랜드와 해외 소비자를 가장 자연스럽게 연결하는 <br>방법을 고민했고, 그 답으로 Vively를 공동창업했습니다.">
-          <img src="assets/team/velycia.jpg" alt="Velycia M" style="object-position:50% 8%;">
-          <span class="nm">Velycia M</span>
-          <span class="rl">CEO | Co-Founder</span>
+        <button class="f-card active" type="button" data-i="0">
+          <img src="assets/team/velycia.jpg" alt="Velycia" style="object-position:50% 8%;">
+          <span class="nm">Velycia</span>
+          <span class="rl">CEO</span>
         </button>
-        <button class="f-card" type="button" data-i="1"
-          data-story="10년 넘게 한국과 동남아를 연결하며 수백 명의 크리에이터와 브랜드를 직접 운영해왔습니다. 단순히 캠페인을 <br>관리하는 것이 아니라, 국가별 문화와 소비자 특성을 이해하는 운영 경험을 바탕으로 Vively의 글로벌 <br>프로젝트를 실행합니다.">
+        <button class="f-card" type="button" data-i="1">
           <img src="assets/team/jane.jpg" alt="Jane" style="object-position:50% 16%;">
           <span class="nm">Jane</span>
-          <span class="rl">COO | Co-Founder</span>
+          <span class="rl">COO</span>
         </button>
-        <button class="f-card" type="button" data-i="2"
-          data-story="인도에서 태어나 한국에서 10년 이상 생활하며, 두 시장을 모두 경험한 전략가입니다. KRAFTON에서는 인도 시장 사업 개발과 정부 협력을, Medicube에서는 K-뷰티 글로벌 성장을 경험했습니다. Vively에서는 이러한 경험을 <br>바탕으로 한국 브랜드가 해외 소비자의 시선으로 시장을 이해하고 성장할 수 있도록 전략을 설계합니다.">
-          <img src="assets/team/namgyal.jpg" alt="Namgyal" style="object-position:50% 13%;">
-          <span class="nm">Namgyal</span>
-          <span class="rl">CSO | Co-Founder</span>
+        <button class="f-card" type="button" data-i="2">
+          <img src="assets/team/namgyal.jpg" alt="Kunzang" style="object-position:50% 13%;">
+          <span class="nm">Kunzang</span>
+          <span class="rl">CSO</span>
         </button>
       </div>
     </div>
@@ -148,8 +145,29 @@
       <button type="button" id="f-next" aria-label="다음 창업자">&#8250;</button>
     </div>
 
-    <!-- first founder's story is pre-filled so the block is never empty if JS fails -->
-    <div class="f-story" id="f-story" aria-live="polite"><p>ScoutLab의 성장 전략과 글로벌 브랜드 파트너십을 총괄합니다. 디지털과 오프라인 캠페인을 하나의 운영 모델로 묶어내는 방향을 설계합니다. 글로벌 콘텐츠 크리에이터로 인스타그램 팔로워 14만 명을 보유하고 있으며, 뷰티 산업에서 7년 이상 실무 경험을 쌓았습니다.</p></div>
+    <!-- The first story is rendered inline so the block is never empty if JS
+         fails; the rest are held in .f-stories below and swapped in on select. -->
+    <div class="f-story" id="f-story" aria-live="polite">
+      <p>14만 명 이상의 글로벌 커뮤니티를 직접 운영하며, 크리에이터 경제를 누구보다 가까이에서 경험해왔습니다.<br>7년 이상 뷰티 산업에서 활동하며 얻은 경험을 바탕으로, 한국 브랜드와 해외 소비자를 가장 자연스럽게 연결하는 방법을 고민했고, 그 답으로 Vively를 공동창업했습니다.</p>
+      <p style="margin-top:20px;font-style:italic;font-size:15.5px;color:#fff;">&ldquo;브랜드는 광고보다 사람을 통해 성장한다고 믿습니다.&rdquo;</p>
+    </div>
+
+    <!-- Story source. Kept as real markup rather than a data- attribute so the
+         line breaks and the italic quote survive as HTML. -->
+    <div class="f-stories" hidden>
+      <div>
+        <p>14만 명 이상의 글로벌 커뮤니티를 직접 운영하며, 크리에이터 경제를 누구보다 가까이에서 경험해왔습니다.<br>7년 이상 뷰티 산업에서 활동하며 얻은 경험을 바탕으로, 한국 브랜드와 해외 소비자를 가장 자연스럽게 연결하는 방법을 고민했고, 그 답으로 Vively를 공동창업했습니다.</p>
+        <p style="margin-top:20px;font-style:italic;font-size:15.5px;color:#fff;">&ldquo;브랜드는 광고보다 사람을 통해 성장한다고 믿습니다.&rdquo;</p>
+      </div>
+      <div>
+        <p>10년 넘게 한국과 동남아를 연결하며 수백 명의 크리에이터와 브랜드를 직접 운영해왔습니다.<br>단순히 캠페인을 관리하는 것이 아니라, 국가별 문화와 소비자 특성을 이해하는 운영 경험을 바탕으로 Vively의 글로벌 프로젝트를 실행합니다.</p>
+        <p style="margin-top:20px;font-style:italic;font-size:15.5px;color:#fff;">&ldquo;좋은 캠페인은 운영이 아니라 디테일에서 만들어집니다.&rdquo;</p>
+      </div>
+      <div>
+        <p>인도에서 태어나 한국에서 10년 이상 생활하며, 두 시장을 모두 경험한 전략가입니다.<br>KRAFTON에서는 인도 시장 사업 개발과 정부 협력을, Medicube에서는 K-뷰티 글로벌 성장을 경험했습니다.<br>Vively에서는 이러한 경험을 바탕으로 한국 브랜드가 현지 소비자의 시선에서 글로벌 시장을 이해하고 성장할 수 있도록 전략을 설계합니다.</p>
+        <p style="margin-top:20px;font-style:italic;font-size:15.5px;color:#fff;">&ldquo;글로벌은 번역이 아니라 현지화를 이해하는 것에서 시작합니다.&rdquo;</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -311,6 +329,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=16"></script>
+<script src="assets/js/main.js?v=19"></script>
 </body>
 </html>
