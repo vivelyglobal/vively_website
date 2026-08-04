@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+<title>Work | Vively</title>
+<meta name="description" content="Vively가 진행한 글로벌 크리에이터 캠페인 리포트." />
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="assets/css/style.v13.css" />
+<link rel="stylesheet" href="assets/css/style.work.css" />
+<link rel="stylesheet" href="assets/css/style.mobile.css" />
+<link rel="stylesheet" href="assets/css/style.proj.css" />
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a href="index.html" class="brand"><img class="brand-mark" src="assets/logo/vively-logo-white.png" alt="Vively"></a>
+    <nav class="nav-links">
+      <a href="index.html#work" class="active">WORK</a>
+      <a href="index.html#services">서비스</a>
+      <a href="brand.html">브랜드 스토리</a>
+      <a href="contact.html">문의하기</a>
+    </nav>
+    <div class="nav-right">
+      <a href="contact.html" class="btn btn-primary btn-sm"><span>시작하기</span></a>
+      <button class="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="mobile-menu">
+  <a href="index.html#work">WORK</a>
+  <a href="index.html#services">서비스</a>
+  <a href="brand.html">브랜드 스토리</a>
+  <a href="contact.html">문의하기</a>
+  <a href="contact.html" class="btn btn-accent">시작하기</a>
+</div>
+
+<section class="proj-hero">
+  <div class="wrap">
+    <a class="proj-back" href="index.html#work">&#8592; WORK</a>
+    <img class="proj-banner" id="proj-banner" src="" alt="">
+    <div class="proj-head">
+      <span class="c" id="proj-cat"></span>
+      <h1 id="proj-title"></h1>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="border-bottom:none;padding-top:0;">
+  <div class="wrap">
+    <div class="proj-body">
+      <div>
+        <div class="proj-block">
+          <h2>캠페인 개요</h2>
+          <p id="proj-overview"></p>
+        </div>
+        <div class="proj-block">
+          <h2>실행 방식</h2>
+          <p id="proj-approach"></p>
+        </div>
+        <div class="proj-block">
+          <h2>성과</h2>
+          <p id="proj-results"></p>
+        </div>
+        <div class="proj-block">
+          <h2>인사이트</h2>
+          <p id="proj-insight"></p>
+        </div>
+      </div>
+
+      <aside class="proj-facts">
+        <dl class="proj-figures">
+          <div><dt>조회수</dt><dd id="f-views"></dd></div>
+          <div><dt>공유</dt><dd id="f-shares"></dd></div>
+        </dl>
+        <dl>
+          <dt>브랜드</dt><dd id="f-brand"></dd>
+          <dt>서비스</dt><dd id="f-service"></dd>
+          <dt>참여 크리에이터</dt><dd id="f-creators"></dd>
+          <dt>도달 국가</dt><dd class="small" id="f-reach"></dd>
+          <dt>진행 지점</dt><dd class="small" id="f-branches"></dd>
+        </dl>
+      </aside>
+    </div>
+
+    <div class="proj-clips">
+      <h2>캠페인 콘텐츠</h2>
+      <div class="clip-grid" id="clip-grid"></div>
+      <p class="case-source" style="margin-top:14px">출처: Vively 성과 리포트 · Instagram Reels 기준 · 2026년 8월 집계</p>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="brand"><img class="brand-mark" src="assets/logo/vively-logo-black.png" alt="Vively" width="1877" height="693"></a>
+        <p>크리에이터와 현지 실행력을 통해 한국 브랜드의 글로벌 성장을 만듭니다.</p>
+      </div>
+      <div class="footer-col">
+        <h5>회사</h5>
+        <a href="brand.html">브랜드 스토리</a>
+        <a href="index.html#services">서비스</a>
+      </div>
+      <div class="footer-col">
+        <h5>둘러보기</h5>
+        <a href="index.html#work">WORK</a>
+        <a href="contact.html">문의하기</a>
+      </div>
+      <div class="footer-col">
+        <h5>문의</h5>
+        <p><a href="mailto:vivelyglobal@gmail.com">vivelyglobal@gmail.com</a></p>
+        <p>서울 성수동</p>
+        <a href="https://www.instagram.com/vively.global/" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <span>상호: Vively</span>
+      <span>사업자등록번호: 486-56-00588</span>
+      <span>주소: 서울 성수동</span>
+      <span>이메일: <a href="mailto:vivelyglobal@gmail.com">vivelyglobal@gmail.com</a></span>
+    </div>
+    <div class="footer-bottom">
+      <p>Copyright <span id="year"></span> Vively. All rights reserved.</p>
+      <p class="footer-tagline">서울에서 시작해 글로벌로.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================================
+   PROJECT DATA — figures taken from the Vively performance report
+   (vivelyglobal.github.io/vively-report-page), captured August 2026.
+
+   These are fixed values, not the report's live-ticking counters: a public
+   page should show the same number to every visitor on the same day.
+   When the report is next updated, refresh `views` and `shares` here.
+
+   Opened as work.html?p=<key>, e.g. work.html?p=juno
+   ========================================================================== */
+var PROJECTS = {
+  juno: {
+    title: "First Project of 2026", brand: "준오헤어", cat: "Hair Salon",
+    banner: "assets/banner/juno.png",
+    service: "인플루언서 KOL 시딩",
+    goal: "브랜드 인지도 제고 및 외국인 방문객 유치",
+    creators: "외국인 인플루언서 14명",
+    reach: "6개국 (인도네시아, 우즈베키스탄, 대만, 콜롬비아, 카자흐스탄, 캐나다)",
+    branches: "준오 서울 한남 · 준오 안녕인사동 · 준오 강서구청 · 준오 VIP 이벤트",
+    views: "355,772", shares: "446",
+    note: "시딩 진행 후 VIVELY 전용 창구를 통해 예약 시 전 시술 20% 할인 프로모션을 연계해 진행했습니다.",
+    clips: ["assets/brand/juno-1.gif.gif","assets/brand/juno-2.gif.gif","assets/brand/juno-3.gif.gif","assets/brand/juno-4.gif.gif"]
+  },
+  labab: {
+    title: "F&B Highlight Project", brand: "라밥", cat: "F&B",
+    banner: "assets/banner/labab.png",
+    service: "인플루언서 KOL 시딩",
+    goal: "방한 외국인 관광객 타깃 맛집 인지도 확보 및 방문 유도",
+    creators: "외국인 크리에이터 73명",
+    reach: "26개국 (동남아, 중동, 아시아, 동유럽, 서유럽, 북미, 남미, 아프리카, 오세아니아)",
+    branches: "서울 전역 20여 개 지점",
+    views: "805,050", shares: "3,018",
+    note: "서울 전역 20여 개 지점 방문 인증을 진행하며, 단일 캠페인 기준 가장 큰 도달을 기록했습니다.",
+    clips: ["assets/brand/labab-1.mp4","assets/brand/labab-2.mp4","assets/brand/labab-3.mp4","assets/brand/labab-4.mp4"]
+  },
+  jaimdang: {
+    title: "Korean Traditional Medicine", brand: "자임당한의원", cat: "Health",
+    banner: "assets/banner/jaimdang.png",
+    service: "인플루언서 KOL 시딩, 공동구매",
+    goal: "글로벌 타깃 브랜드 인지도 형성 및 세일즈 전환 검증",
+    creators: "외국인 크리에이터 30명",
+    reach: "17개국 (동남아, 동아시아, 남아시아, 중동, 동유럽, 중앙아시아, 서유럽, 아프리카, 남미)",
+    branches: "자임당한의원 본점",
+    views: "100,136", shares: "1,063",
+    note: "초기 시딩 성과를 바탕으로 공동구매 전환을 완료했고, 현재 신제품 론칭 프로젝트를 진행 중입니다.",
+    clips: ["assets/brand/jaimdang-1.gif.gif","assets/brand/jaimdang-2.gif.gif","assets/brand/jaimdang-3.gif.gif","assets/brand/jaimdang-4.gif.gif"]
+  },
+  myeondong: {
+    title: "K-food", brand: "명동 K-갈비", cat: "F&B",
+    banner: "assets/banner/mkd.png",
+    service: "인플루언서 KOL 시딩",
+    goal: "방한 외국인 관광객 타깃 맛집 인지도 확보 및 방문 유도",
+    creators: "외국인 크리에이터 45명",
+    reach: "19개국 (동남아, 동아시아, 남아시아, 중동, 동유럽, 중앙아시아, 서유럽, 북미, 남미, 아프리카)",
+    branches: "명동 K-갈비 본점",
+    views: "103,806", shares: "873",
+    note: "명동을 방문하는 관광객을 대상으로 실질적인 방문과 오프라인 동선까지 연계했습니다.",
+    clips: ["assets/brand/myeondong-1.mp4","assets/brand/myeondong-2.mp4","assets/brand/myeondong-3.mp4","assets/brand/myeondong-4.mp4"]
+  },
+  apgujeong: {
+    title: "K-food", brand: "압구정 닭한마리", cat: "F&B",
+    banner: "assets/banner/adm.png",
+    service: "인플루언서 KOL 시딩",
+    goal: "방한 일본 관광객 타깃 맛집 인지도 확보 및 방문 유도",
+    creators: "일본인 크리에이터 45명",
+    reach: "1개국 (일본)",
+    branches: "압구정 본점",
+    views: "30,080", shares: "20",
+    note: "일본 관광객을 타깃으로 한 맞춤형 바이럴로, 현지 선호 타깃을 집중 공략했습니다.",
+    clips: ["assets/brand/apgujeong-1.mp4","assets/brand/apgujeong-2.mp4","assets/brand/apgujeong-3.mp4","assets/brand/apgujeong-4.mp4"]
+  },
+  tonymoly: {
+    title: "K-Beauty", brand: "토니모리", cat: "Beauty",
+    banner: "assets/banner/tonymoly.png",
+    service: "인플루언서 KOL 시딩",
+    goal: "토니모리 20주년 팝업스토어 현장감 전달 및 인지도 확산",
+    creators: "외국인 크리에이터 10명",
+    reach: "7개국 (인도네시아, 이집트, 필리핀, 이라크, 스페인, 페루, 이탈리아)",
+    branches: "글로벌 온라인 & 명동 팝업스토어",
+    views: "47,751", shares: "54",
+    note: "글로벌 팝업스토어 체험형 바이럴 콘텐츠를 생성했습니다.",
+    clips: ["assets/brand/tonymoly-1.mp4","assets/brand/tonymoly-2.mp4","assets/brand/tonymoly-3.mp4","assets/brand/tonymoly-4.mp4"]
+  },
+  parkjun: {
+    title: "Hair Salon", brand: "박준 뷰티랩", cat: "Beauty",
+    banner: "assets/banner/parkjun.png",
+    service: "인플루언서 KOL 시딩",
+    goal: "타깃 시장 검증 및 글로벌 브랜드 인지도 제고",
+    creators: "외국인 크리에이터 9명",
+    reach: "7개국 (인도네시아, 인도, 우크라이나, 벨라루스, 대만, 코스타리카, 호주)",
+    branches: "명동점 · 부산 가야점",
+    views: "78,284", shares: "163",
+    note: "방한 관광객 중심의 뷰티 서비스 체험을 통해 다국적 콘텐츠를 확보했습니다.",
+    clips: ["assets/brand/parkjun-1.mp4","assets/brand/parkjun-2.mp4","assets/brand/parkjun-3.mp4","assets/brand/parkjun-4.mp4"]
+  },
+  verynew: {
+    title: "New K-pharmacy", brand: "베리뉴약국", cat: "Pharmacy",
+    banner: "assets/banner/berry.png",
+    service: "인플루언서 KOL 시딩",
+    goal: "타깃 시장 검증 및 글로벌 브랜드 인지도 제고",
+    creators: "외국인 크리에이터 5명",
+    reach: "4개국 (인도네시아, 페루, 필리핀, 미국)",
+    branches: "성수점 · 홍대점 · 명동점",
+    views: "8,161", shares: "14",
+    note: "K-웰니스와 약국 쇼핑 투어를 기반으로 글로벌 확산을 만들었습니다.",
+    clips: ["assets/brand/verynew-1.mp4","assets/brand/verynew-2.mp4","assets/brand/verynew-3.mp4","assets/brand/verynew-4.mp4"]
+  }
+};
+
+(function () {
+  var key = (location.search.match(/[?&]p=([^&]+)/) || [])[1];
+  key = key ? decodeURIComponent(key) : "";
+  /* A mistyped key used to fall through to Juno, which made a broken link
+     look like a working one. Send unknown keys back to the index instead. */
+  if (key && !PROJECTS[key]) { location.replace("index.html#work"); return; }
+  var p = PROJECTS[key] || PROJECTS.juno;
+  var esc = function (s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  };
+  var set = function (id, value) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = value;
+  };
+
+  document.title = p.brand + " | Vively Work";
+  var banner = document.getElementById("proj-banner");
+  banner.src = p.banner;
+  banner.alt = p.brand + " 캠페인 배너";
+
+  set("proj-cat", p.cat);
+  set("proj-title", p.title + " " + p.brand);
+  set("proj-overview", p.brand + " 캠페인은 " + p.service + " 방식으로 진행했습니다. 목표는 " + p.goal + "이며, " + p.branches + "에서 실행했습니다.");
+  set("proj-approach", p.creators + "이 참여해 각자의 시장을 대상으로 콘텐츠를 제작했고, " + p.reach + "에 도달했습니다.");
+  set("proj-results", "총 조회수 " + p.views + "회, 공유 " + p.shares + "회를 기록했습니다. 조회수의 대부분이 팔로워가 아닌 신규 유입에서 발생해, 기존 팬덤을 넘어선 도달을 확인했습니다.");
+  set("proj-insight", p.note);
+
+  set("f-views", p.views);
+  set("f-shares", p.shares);
+  set("f-brand", p.brand);
+  set("f-service", p.service);
+  set("f-creators", p.creators);
+  set("f-reach", p.reach);
+  set("f-branches", p.branches);
+
+  /* Clips: .mp4 renders as a hover-to-play video, .gif as a looping image.
+     Everything is lazy so a page with four clips isn't a cold-start download. */
+  var grid = document.getElementById("clip-grid");
+  if (grid) {
+    if (!p.clips || !p.clips.length) {
+      grid.innerHTML = '<p class="clip-empty">이 캠페인의 콘텐츠는 준비 중입니다.</p>';
+    } else {
+      grid.innerHTML = p.clips.map(function (src, i) {
+        var label = esc(p.brand + " 캠페인 콘텐츠 " + (i + 1));
+        if (/\.mp4$/i.test(src)) {
+          // data-autoloop: starts playing by itself as the grid comes into
+          // view, rather than waiting for a hover
+          return '<div class="clip video-card" role="listitem" tabindex="0" aria-label="' + label + '">' +
+                 '<video data-src="' + esc(src) + '" muted loop playsinline preload="none" data-autoloop></video></div>';
+        }
+        return '<div class="clip"><img src="' + esc(src) + '" alt="' + label + '" loading="lazy"></div>';
+      }).join("");
+      // This runs during parsing, so the clips are in the DOM before main.js
+      // fires on DOMContentLoaded and wires up lazy-loading and hover-play.
+    }
+  }
+})();
+</script>
+<script src="assets/js/main.js?v=18"></script>
+</body>
+</html>
