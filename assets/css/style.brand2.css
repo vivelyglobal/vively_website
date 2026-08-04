@@ -1,0 +1,63 @@
+/* ==========================================================================
+   Vively — ribbon v2 (three stacked bands).
+
+   Kept in its own new file rather than edited into style.brand.css because
+   browsers here have been serving that stylesheet from cache. Loaded last,
+   so these rules win over the single-band version.
+   ========================================================================== */
+
+.ribbon-stage{
+  --fs:26px;        /* glyph size — radius is derived from this */
+  --r:320px;        /* set by JS from the measured string width */
+  --spin:32s;
+  --tilt:-19deg;
+  position:relative; margin-top:30px; height:340px;
+  perspective:1000px; perspective-origin:50% 50%;
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* One row = one band. The row carries the vertical offset and the staggered
+   start angle; its child carries the spin, because the spin animation writes
+   `transform` and would otherwise overwrite them. */
+.ribbon-row{
+  position:absolute; left:0; top:0; width:0; height:0;
+  transform-style:preserve-3d;
+  transform:translateY(calc(var(--fs) * var(--ym))) rotateY(var(--rot));
+}
+.ribbon{
+  position:absolute; left:0; top:0; width:0; height:0;
+  transform-style:preserve-3d;
+  animation:ribbonSpin var(--spin) linear infinite;
+}
+.ribbon .rc{
+  position:absolute; left:0; top:0;
+  transform:translate(-50%,-50%) rotateY(calc(var(--a) * 1deg)) translateZ(var(--r));
+  font-size:var(--fs); font-weight:800; line-height:1; letter-spacing:0;
+  white-space:pre; color:#fff;
+  animation:rcDepth var(--spin) linear infinite;
+  animation-delay:calc((var(--a) / 360) * var(--spin) - var(--spin));
+}
+@keyframes ribbonSpin{ from{ transform:rotateY(0deg); } to{ transform:rotateY(-360deg); } }
+@keyframes rcDepth{
+  0%   { opacity:1; }
+  50%  { opacity:.26; }
+  100% { opacity:1; }
+}
+
+/* Trailing smear on the middle band only. Blur sits on the glyphs, not the
+   container — a filter on a preserve-3d ancestor flattens the cylinder. */
+.ribbon-row.ghost .ribbon{ animation-delay:-.055s; }
+.ribbon-row.ghost .rc{ filter:blur(5px); opacity:.3; animation:none; }
+@media (max-width:900px){ .ribbon-row.ghost{ display:none; } }
+
+@media (max-width:900px){
+  .ribbon-stage{ --fs:17px; height:250px; perspective:760px; }
+}
+@media (max-width:560px){
+  .ribbon-stage{ --fs:12.5px; height:200px; perspective:560px; }
+}
+@media (prefers-reduced-motion: reduce){
+  .ribbon{ animation:none; }
+  .ribbon .rc{ animation:none; opacity:1; }
+  .ribbon-row.ghost{ display:none; }
+}
