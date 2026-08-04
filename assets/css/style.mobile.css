@@ -69,8 +69,14 @@
   .ticker{ margin-top:44px; padding:14px 0; }
   .ticker-item{ padding:0 15px; font-size:12px; }
 
-  /* ---- services -----------------------------------------------------------*/
-  .service-dark .wrap.section{ padding:64px 0; }
+  /* ---- services -----------------------------------------------------------
+     This section's container is <div class="wrap section">, and .section's
+     `padding:104px 0` shorthand zeroes out the horizontal padding .wrap sets.
+     On desktop that's invisible because .wrap is capped at 1240px and centred,
+     so there's slack either side — but on a phone .wrap fills the screen and
+     the copy ends up flush against both edges. Restore the gutter explicitly. */
+  .wrap.section{ padding-left:var(--pad); padding-right:var(--pad); }
+  .service-dark .wrap.section{ padding:64px var(--pad); }
   .service-row-head h3{ font-size:16px; line-height:1.4; }
   .service-row-body p{ font-size:14px; line-height:1.7; }
 

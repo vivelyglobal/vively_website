@@ -1,4 +1,9 @@
 // Vively — shared front-end behaviour (no build step, vanilla JS)
+//
+// NOTE ON THE FILENAME: this is versioned in the filename, not with a ?v=
+// query string. Chrome ignores query strings when caching file:// URLs, so
+// "main.js?v=19" kept serving a stale main.js. Bump to main.v3.js (and update
+// the four HTML pages) whenever this file changes in a way that must land.
 
 document.addEventListener("DOMContentLoaded", () => {
   /* Mobile nav toggle */
@@ -212,8 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
     /* Catmull-Rom spline through a list of waypoints, emitted as cubic
        beziers. Because every control point is derived from its two
        neighbours, the result is C1-continuous — smooth, hand-drawn-feeling
-       curves rather than stitched-together straight diagonals — and it can
-       pass through a ring of points to form a genuine loop. */
+       curves rather than stitched-together straight diagonals. */
     const splineToPath = (p) => {
       if (p.length < 2) return "";
       const f = (n) => Math.round(n * 100) / 100;
@@ -275,8 +279,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const clampX = (x) => Math.max(L, Math.min(R, x));
         const sideX = (i) => (steps[i].getAttribute("data-side") === "left" ? L : R);
 
-        // The sketch starts level with step 01 (no lead-in above it) and ends
-        // with a short tail curving back toward the centre below step 04.
+        // Starts level with step 01 (no lead-in above it) and ends with a
+        // short tail curving back toward the centre below step 04.
         for (let i = 0; i < n; i++) {
           pts.push({ x: sideX(i), y: ys[i] });
           if (i === n - 1) break;
@@ -372,7 +376,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ctx.font = "800 " + fs + "px " + cs.fontFamily;
 
       const chars = Array.from(text);
-      const widths = chars.map((ch) => ctx.measureText(ch === " " ? " " : ch).width);
+      const widths = chars.map((ch) => ctx.measureText(ch === " " ? " " : ch).width);
       const total = widths.reduce((a, b) => a + b, 0);
       if (!total) return;
 
@@ -427,6 +431,8 @@ document.addEventListener("DOMContentLoaded", () => {
       // centre the active card inside the stage
       const shift = stage.offsetWidth / 2 - (card.offsetLeft + card.offsetWidth / 2);
       fTrack.style.transform = "translate3d(" + shift + "px,0,0)";
+      // never blank the block: if the story markup is missing for any reason,
+      // leave whatever is already rendered in place
       if (story && storySrc[idx]) story.innerHTML = storySrc[idx].innerHTML;
       if (cur) cur.textContent = pad(idx);
     };
