@@ -1,0 +1,274 @@
+/* User Authentication UI Styles */
+
+.auth-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+#user-name {
+  font-size: 13px;
+  color: var(--ink-70);
+  white-space: nowrap;
+}
+
+/* Login Modal */
+.login-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.login-modal-content {
+  background: #fff;
+  border-radius: 8px;
+  padding: clamp(32px, 5vw, 48px);
+  max-width: 420px;
+  width: 100%;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: var(--ink-30);
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.modal-close:hover {
+  color: var(--ink);
+}
+
+.login-form-container,
+.signup-form-container {
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-modal-content h2 {
+  font-size: clamp(24px, 4vw, 28px);
+  margin-bottom: 32px;
+  color: var(--ink);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.auth-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+}
+
+.auth-form label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.auth-form input {
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--ink);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.auth-form input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+
+.auth-form button[type="submit"] {
+  margin-top: 8px;
+  font-weight: 700;
+}
+
+.divider {
+  position: relative;
+  text-align: center;
+  color: var(--ink-50);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 12px 0;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: calc(50% - 20px);
+  height: 1px;
+  background: var(--line);
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
+
+#google-login-btn {
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+#google-login-btn:hover {
+  background: var(--bg);
+}
+
+.form-footer {
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink-50);
+  margin-top: 16px;
+}
+
+.form-footer a {
+  color: var(--accent);
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.form-footer a:hover {
+  color: var(--accent-text);
+}
+
+/* Mobile User Profile */
+.mobile-user-profile {
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+}
+
+#mobile-user-name {
+  font-size: 13px;
+  color: var(--ink-70);
+  margin-bottom: 12px;
+  padding: 0 var(--pad);
+}
+
+#mobile-logout-btn {
+  margin: 0 var(--pad);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .login-modal-content {
+    padding: 24px;
+  }
+
+  .login-modal-content h2 {
+    font-size: 22px;
+    margin-bottom: 24px;
+  }
+
+  .auth-form {
+    gap: 16px;
+  }
+
+  .form-footer {
+    font-size: 12px;
+  }
+
+  #user-name {
+    display: none;
+  }
+
+  .user-profile {
+    gap: 8px;
+  }
+
+  .user-profile .btn {
+    height: 36px;
+    padding: 0 14px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-modal {
+    padding: 12px;
+  }
+
+  .login-modal-content {
+    padding: 20px;
+    border-radius: 6px;
+  }
+
+  .login-modal-content h2 {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+
+  .modal-close {
+    top: 12px;
+    right: 12px;
+    font-size: 24px;
+  }
+
+  .auth-form {
+    gap: 14px;
+  }
+
+  .auth-form .form-group {
+    gap: 6px;
+  }
+
+  .auth-form label {
+    font-size: 12px;
+  }
+
+  .auth-form input {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+}

@@ -1,0 +1,91 @@
+<header class="nav">
+  <div class="wrap">
+    <a href="index.html" class="brand"><img class="brand-mark" src="assets/logo/vively-logo-white.png" alt="Vively"></a>
+    <nav class="nav-links">
+      <a href="index.html#work">WORK</a>
+      <a href="index.html#services">서비스</a>
+      <a href="brand.html">브랜드 스토리</a>
+      <a href="contact.html">문의하기</a>
+      <a href="campaigns.html">Campaigns</a>
+    </nav>
+    <div class="nav-right">
+      <div id="auth-state" class="auth-container">
+        <a href="#" id="login-link" class="btn btn-primary btn-sm"><span>Login</span></a>
+        <div id="user-profile" class="user-profile" style="display:none;">
+          <span id="user-name"></span>
+          <button id="logout-btn" class="btn btn-sm btn-ghost">Logout</button>
+        </div>
+      </div>
+      <button class="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="mobile-menu">
+  <a href="index.html#work">WORK</a>
+  <a href="index.html#services">서비스</a>
+  <a href="brand.html">브랜드 스토리</a>
+  <a href="contact.html">문의하기</a>
+  <a href="campaigns.html">Campaigns</a>
+  <div id="mobile-auth">
+    <a href="#" id="mobile-login-link" class="btn btn-accent" style="width: 100%; text-align: center;">Login</a>
+    <div id="mobile-user-profile" class="mobile-user-profile" style="display:none;">
+      <p id="mobile-user-name"></p>
+      <button id="mobile-logout-btn" class="btn btn-sm btn-accent" style="width: 100%;">Logout</button>
+    </div>
+  </div>
+</div>
+
+<!-- Login Modal -->
+<div id="login-modal" class="login-modal" style="display:none;">
+  <div class="login-modal-content">
+    <button class="modal-close" id="modal-close">&times;</button>
+    <div class="login-form-container">
+      <h2>Login to Vively</h2>
+      
+      <form id="user-login-form" class="auth-form">
+        <div class="form-group">
+          <label for="user-email">Email</label>
+          <input type="email" id="user-email" required />
+        </div>
+        <div class="form-group">
+          <label for="user-password">Password</label>
+          <input type="password" id="user-password" required />
+        </div>
+        <button type="submit" class="btn btn-accent" style="width: 100%;">Login</button>
+      </form>
+
+      <div class="divider">OR</div>
+
+      <button id="google-login-btn" class="btn btn-ghost" style="width: 100%; gap: 12px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path>
+        </svg>
+        Continue with Google
+      </button>
+
+      <p class="form-footer">Don't have an account? <a href="#" id="signup-toggle">Sign up</a></p>
+    </div>
+
+    <div class="signup-form-container" style="display:none;">
+      <h2>Create Account</h2>
+      
+      <form id="user-signup-form" class="auth-form">
+        <div class="form-group">
+          <label for="signup-name">Full Name</label>
+          <input type="text" id="signup-name" required />
+        </div>
+        <div class="form-group">
+          <label for="signup-email">Email</label>
+          <input type="email" id="signup-email" required />
+        </div>
+        <div class="form-group">
+          <label for="signup-password">Password</label>
+          <input type="password" id="signup-password" required />
+        </div>
+        <button type="submit" class="btn btn-accent" style="width: 100%;">Sign Up</button>
+      </form>
+
+      <p class="form-footer">Already have an account? <a href="#" id="login-toggle">Login</a></p>
+    </div>
+  </div>
+</div>

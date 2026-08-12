@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Campaigns | Vively</title>
+  <link rel="stylesheet" href="assets/css/style.v13.css" />
+  <link rel="stylesheet" href="assets/css/style.work.css" />
+  <link rel="stylesheet" href="assets/css/campaigns.css" />
+  <link rel="stylesheet" href="assets/css/user-auth.css" />
+  <link rel="stylesheet" href="assets/css/style.mobile.v2.css" />
+</head>
+<body>
+
+<div id="header-container"></div>
+
+<section class="campaign-hero">
+  <div class="wrap">
+    <h1>Featured Campaigns</h1>
+    <p>Discover opportunities to collaborate with Korean brands.</p>
+  </div>
+</section>
+
+<section class="campaign-filters">
+  <div class="wrap">
+    <div class="filter-group">
+      <label for="category-filter">Category:</label>
+      <select id="category-filter">
+        <option value="all">All Categories</option>
+        <option value="Beauty & Care">Beauty & Care</option>
+        <option value="Dining">Dining</option>
+        <option value="Stay & Travel">Stay & Travel</option>
+        <option value="Product">Product</option>
+        <option value="Class & Activity">Class & Activity</option>
+        <option value="Life Service">Life Service</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="search-filter">Search:</label>
+      <input type="text" id="search-filter" placeholder="Brand name or campaign...">
+    </div>
+  </div>
+</section>
+
+<section class="campaign-grid">
+  <div class="wrap">
+    <div id="campaigns-list" class="campaigns-container">
+      <!-- Campaigns will be loaded here -->
+    </div>
+  </div>
+</section>
+
+<div id="footer-container"></div>
+
+<script src="assets/js/component-loader.js"></script>
+<script src="assets/js/main.v2.js"></script>
+<script src="assets/js/campaigns.js"></script>
+</body>
+</html>

@@ -5,7 +5,94 @@
 // "main.js?v=19" kept serving a stale main.js. Bump to main.v3.js (and update
 // the four HTML pages) whenever this file changes in a way that must land.
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  const escapeHtml = (value) =>
+    String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+
+  const hydrateBrandPageFromJson = async () => {
+    const foundersSection = document.getElementById("founders");
+    if (!foundersSection) return;
+
+    try {
+      const res = await fetch("assets/data/brand-content.json", { cache: "no-store" });
+      if (!res.ok) return;
+      const data = await res.json();
+
+      const founders = Array.isArray(data.founders) ? data.founders : [];
+      const stats = Array.isArray(data.stats) ? data.stats : [];
+
+      if (founders.length) {
+        const track = document.getElementById("f-track");
+        const stories = foundersSection.querySelector(".f-stories");
+        const story = document.getElementById("f-story");
+
+        if (track) {
+          track.innerHTML = founders
+            .map(
+              (item, idx) =>
+                '<button class="f-card' + (idx === 0 ? " active" : "") + '" type="button" data-i="' + idx + '">' +
+                  '<img src="' + escapeHtml(item.image || "") + '" alt="' + escapeHtml(item.name || "") + '"' +
+                  (item.objectPosition ? ' style="object-position:' + escapeHtml(item.objectPosition) + ';"' : "") + ">" +
+                  '<span class="nm">' + escapeHtml(item.name || "") + "</span>" +
+                  '<span class="rl">' + escapeHtml(item.role || "") + "</span>" +
+                "</button>"
+            )
+            .join("");
+        }
+
+        if (stories) {
+          stories.innerHTML = founders
+            .map((item) => "<div>" + (item.storyHtml || "") + "</div>")
+            .join("");
+        }
+
+        if (story && founders[0] && founders[0].storyHtml) {
+          story.innerHTML = founders[0].storyHtml;
+        }
+
+        const total = document.getElementById("f-total");
+        if (total) {
+          total.textContent = String(founders.length).padStart(2, "0");
+        }
+      }
+
+      if (stats.length) {
+        const strip = foundersSection.parentElement.querySelector(".stats-strip");
+        if (strip) {
+          strip.innerHTML = stats
+            .map((item) => {
+              const count = Number(item.count);
+              const prefix = item.prefix || "";
+              const suffix = item.suffix || "";
+              const initial = Number.isFinite(count)
+                ? prefix + count.toLocaleString() + suffix
+                : escapeHtml(item.display || "");
+              return (
+                '<div class="stat" style="border-color:rgba(255,255,255,.18);">' +
+                  '<b style="color:#fff;" data-count="' + escapeHtml(item.count || "") + '"' +
+                  (prefix ? ' data-prefix="' + escapeHtml(prefix) + '"' : "") +
+                  (suffix ? ' data-suffix="' + escapeHtml(suffix) + '"' : "") + ">" +
+                  initial +
+                  "</b>" +
+                  '<span style="color:rgba(255,255,255,.6);">' + escapeHtml(item.label || "") + "</span>" +
+                "</div>"
+              );
+            })
+            .join("");
+        }
+      }
+    } catch (_) {
+      // Keep static fallback content when JSON is unavailable.
+    }
+  };
+
+  await hydrateBrandPageFromJson();
+
   /* Mobile nav toggle */
   const burger = document.querySelector(".nav-burger");
   const mobileMenu = document.querySelector(".mobile-menu");

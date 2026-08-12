@@ -1,0 +1,61 @@
+{
+  "nav": {
+    "work": "작업",
+    "services": "서비스",
+    "brand": "브랜드 스토리",
+    "contact": "연락처",
+    "campaigns": "캠페인"
+  },
+  "auth": {
+    "login": "로그인",
+    "logout": "로그아웃",
+    "email": "이메일",
+    "password": "비밀번호",
+    "name": "이름",
+    "signup": "회원가입",
+    "signupToggle": "계정이 없으신가요? 회원가입",
+    "loginToggle": "이미 계정이 있으신가요? 로그인",
+    "googleLogin": "Google로 계속",
+    "or": "또는",
+    "loading": "로딩 중...",
+    "error": "오류가 발생했습니다",
+    "success": "성공했습니다!"
+  },
+  "campaigns": {
+    "title": "캠페인",
+    "filter": "카테고리별 필터",
+    "search": "캠페인 검색...",
+    "budget": "예산",
+    "spots": "자리",
+    "viewDetails": "자세히 보기",
+    "noCampaigns": "캠페인을 찾을 수 없습니다",
+    "description": "설명"
+  },
+  "campaign": {
+    "guidelines": "캠페인 지침",
+    "targetAudience": "타겟 오디언스",
+    "apply": "이 캠페인에 신청하기",
+    "applicationSubmitted": "신청이 성공적으로 제출되었습니다!",
+    "instagram": "Instagram 핸들",
+    "message": "메시지",
+    "submit": "신청 제출",
+    "appliedAlready": "이 캠페인에 이미 신청했습니다"
+  },
+  "admin": {
+    "dashboard": "관리자 대시보드",
+    "campaigns": "캠페인",
+    "applications": "신청",
+    "profile": "프로필",
+    "newCampaign": "+ 새 캠페인",
+    "edit": "수정",
+    "delete": "삭제",
+    "save": "저장",
+    "cancel": "취소"
+  },
+  "footer": {
+    "company": "Vively",
+    "about": "소개",
+    "privacy": "개인정보 보호정책",
+    "terms": "서비스 약관"
+  }
+}

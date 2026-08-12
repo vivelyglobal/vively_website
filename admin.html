@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Panel | Vively</title>
+  <link rel="stylesheet" href="assets/css/style.v13.css" />
+  <link rel="stylesheet" href="assets/css/admin.css" />
+</head>
+<body class="admin-page">
+
+<div class="admin-container">
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <img src="assets/logo/vively-logo-black.png" alt="Vively" />
+      <h2>Admin</h2>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#dashboard" class="nav-item active" data-section="dashboard">Dashboard</a>
+      <a href="#campaigns" class="nav-item" data-section="campaigns">Campaigns</a>
+      <a href="#applications" class="nav-item" data-section="applications">Applications</a>
+      <a href="#profile" class="nav-item" data-section="profile">Profile</a>
+      <a href="#" id="logout-btn" class="nav-item logout">Logout</a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <header class="admin-header">
+      <h1 id="section-title">Dashboard</h1>
+      <div id="user-info" class="user-info"></div>
+    </header>
+
+    <!-- Login Section -->
+    <section id="login-section" class="admin-section active">
+      <div class="login-form-wrapper">
+        <h2>Admin Dashboard Login</h2>
+        <p class="login-subtitle">Authorized administrators only</p>
+        <form id="admin-login-form" class="admin-form">
+          <div class="form-group">
+            <label for="login-email">Admin Email</label>
+            <input type="email" id="login-email" placeholder="admin@vively.com" required />
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" required />
+          </div>
+          <button type="submit" class="btn btn-accent">Login</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="admin-section">
+      <div class="dashboard-stats">
+        <div class="stat-card">
+          <h3 id="stat-campaigns">0</h3>
+          <p>Total Campaigns</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="stat-applications">0</h3>
+          <p>Total Applications</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Campaigns Management Section -->
+    <section id="campaigns" class="admin-section">
+      <div class="section-header">
+        <h2>Campaigns</h2>
+        <button id="new-campaign-btn" class="btn btn-primary">+ New Campaign</button>
+      </div>
+      
+      <table id="campaigns-table" class="admin-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Brand</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th>Applicants</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="campaigns-tbody">
+          <!-- Campaigns will be loaded here -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Campaign Form Modal -->
+    <div id="campaign-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modal-title">New Campaign</h2>
+        <form id="campaign-form" class="admin-form">
+          <input type="hidden" id="campaign-id" />
+          
+          <div class="form-group">
+            <label for="campaign-title">Title *</label>
+            <input type="text" id="campaign-title" required />
+          </div>
+
+          <div class="form-group">
+            <label for="campaign-brand">Brand *</label>
+            <input type="text" id="campaign-brand" required />
+          </div>
+
+          <div class="form-group">
+            <label for="campaign-category">Category *</label>
+            <select id="campaign-category" required>
+              <option value="">Select category</option>
+              <option value="Beauty & Care">Beauty & Care</option>
+              <option value="Dining">Dining</option>
+              <option value="Stay & Travel">Stay & Travel</option>
+              <option value="Product">Product</option>
+              <option value="Class & Activity">Class & Activity</option>
+              <option value="Life Service">Life Service</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="campaign-description">Description *</label>
+            <textarea id="campaign-description" rows="5" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="campaign-budget">Budget Range</label>
+            <input type="text" id="campaign-budget" placeholder="e.g., ₩100,000 - ₩500,000" />
+          </div>
+
+          <div class="form-group">
+            <label for="campaign-spots">Available Spots</label>
+            <input type="number" id="campaign-spots" min="1" />
+          </div>
+
+          <div class="form-group">
+            <label for="campaign-deadline">Application Deadline</label>
+            <input type="date" id="campaign-deadline" />
+          </div>
+
+          <div class="form-group checkbox">
+            <input type="checkbox" id="campaign-active" checked />
+            <label for="campaign-active">Active</label>
+          </div>
+
+          <button type="submit" class="btn btn-accent">Save Campaign</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Applications Section -->
+    <section id="applications" class="admin-section">
+      <h2>Applications</h2>
+      <table id="applications-table" class="admin-table">
+        <thead>
+          <tr>
+            <th>Applicant Name</th>
+            <th>Email</th>
+            <th>Campaign</th>
+            <th>Status</th>
+            <th>Applied Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="applications-tbody">
+          <!-- Applications will be loaded here -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Profile Section -->
+    <section id="profile" class="admin-section">
+      <h2>Profile</h2>
+      <div class="profile-info">
+        <p><strong>Email:</strong> <span id="profile-email"></span></p>
+        <p><strong>Role:</strong> <span id="profile-role"></span></p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="assets/js/admin.js"></script>
+</body>
+</html>
