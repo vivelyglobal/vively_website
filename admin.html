@@ -12,20 +12,21 @@
 <div class="admin-container">
   <aside class="admin-sidebar">
     <div class="sidebar-brand">
-      <img src="assets/logo/vively-logo-black.png" alt="Vively" />
+      <img src="assets/logo/vively-logo-white.png" alt="Vively" />
       <h2>Admin</h2>
     </div>
     <nav class="sidebar-nav">
       <a href="#dashboard" class="nav-item active" data-section="dashboard">Dashboard</a>
       <a href="#campaigns" class="nav-item" data-section="campaigns">Campaigns</a>
       <a href="#applications" class="nav-item" data-section="applications">Applications</a>
+      <a href="#users" class="nav-item" data-section="users">Users</a>
       <a href="#profile" class="nav-item" data-section="profile">Profile</a>
       <a href="#" id="logout-btn" class="nav-item logout">Logout</a>
     </nav>
   </aside>
 
   <main class="admin-main">
-    <header class="admin-header">
+    <header class="admin-header" id="admin-header">
       <h1 id="section-title">Dashboard</h1>
       <div id="user-info" class="user-info"></div>
     </header>
@@ -33,7 +34,10 @@
     <!-- Login Section -->
     <section id="login-section" class="admin-section active">
       <div class="login-form-wrapper">
-        <h2>Admin Dashboard Login</h2>
+        <div class="login-brand">
+          <img src="assets/logo/vively-logo-white.png" alt="Vively" />
+        </div>
+        <h2>Admin Dashboard</h2>
         <p class="login-subtitle">Authorized administrators only</p>
         <form id="admin-login-form" class="admin-form">
           <div class="form-group">
@@ -59,6 +63,10 @@
         <div class="stat-card">
           <h3 id="stat-applications">0</h3>
           <p>Total Applications</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="stat-users">0</h3>
+          <p>Registered Users</p>
         </div>
       </div>
     </section>
@@ -124,6 +132,26 @@
           </div>
 
           <div class="form-group">
+            <label for="campaign-image-file">Upload Campaign Image</label>
+            <input type="file" id="campaign-image-file" accept="image/jpeg,image/png,image/webp,image/gif" />
+            <small style="color: var(--ink-50, #666); font-size: 12px; margin-top: 4px; display: block;">
+              JPEG, PNG, WebP, or GIF · Max 5MB
+            </small>
+            <div id="campaign-image-preview" style="margin-top: 12px; display: none;">
+              <img id="campaign-image-preview-img" src="" alt="Preview" style="max-width: 200px; max-height: 150px; border-radius: 6px; border: 1px solid var(--line, #ddd);" />
+              <button type="button" id="campaign-image-clear" style="margin-left: 12px; background: none; border: 1px solid #ddd; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">Clear</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="campaign-image">Or Paste Image URL</label>
+            <input type="url" id="campaign-image" placeholder="https://example.com/image.jpg or assets/img/campaign.jpg" />
+            <small style="color: var(--ink-50, #666); font-size: 12px; margin-top: 4px; display: block;">
+              Optional: use existing image URL instead of uploading
+            </small>
+          </div>
+
+          <div class="form-group">
             <label for="campaign-budget">Budget Range</label>
             <input type="text" id="campaign-budget" placeholder="e.g., ₩100,000 - ₩500,000" />
           </div>
@@ -136,6 +164,24 @@
           <div class="form-group">
             <label for="campaign-deadline">Application Deadline</label>
             <input type="date" id="campaign-deadline" />
+          </div>
+
+          <div class="form-group">
+            <label for="campaign-guidelines">Guidelines (one per line)</label>
+            <textarea id="campaign-guidelines" rows="4" placeholder="No content creation&#10;Do not film without consent&#10;Attend one session&#10;Come as you normally would"></textarea>
+            <small style="color: var(--ink-50, #666); font-size: 12px; margin-top: 4px; display: block;">
+              Enter each guideline on a new line
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label>Target Audience</label>
+            <div id="target-audience-container" style="border: 1px solid #ddd; border-radius: 6px; padding: 12px; background: #fafafa;">
+              <div id="target-audience-list"></div>
+              <button type="button" id="add-audience-row" class="btn btn-sm" style="background: #f0f0f0; color: #333; border: 1px solid #ddd; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-top: 8px;">
+                + Add Target Audience
+              </button>
+            </div>
           </div>
 
           <div class="form-group checkbox">
@@ -167,6 +213,45 @@
         </tbody>
       </table>
     </section>
+
+    <!-- Users Management Section -->
+    <section id="users" class="admin-section">
+      <div class="section-header">
+        <h2>Users</h2>
+        <input type="search" id="users-search" placeholder="Search by name, email, username, IG…" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; min-width: 260px;" />
+      </div>
+
+      <table id="users-table" class="admin-table">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Instagram</th>
+            <th>Nationality</th>
+            <th>Provider</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Joined</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="users-tbody"></tbody>
+      </table>
+    </section>
+
+    <!-- User Detail Modal -->
+    <div id="user-modal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="user-modal-close">&times;</span>
+        <h2>User Details</h2>
+        <div id="user-detail-body">Loading…</div>
+        <div style="display:flex; gap:8px; margin-top:16px; flex-wrap: wrap;">
+          <button id="user-toggle-active" type="button" class="btn btn-primary">Toggle Active</button>
+          <button id="user-delete" type="button" class="btn-delete" style="padding: 8px 16px;">Delete User</button>
+        </div>
+      </div>
+    </div>
 
     <!-- Profile Section -->
     <section id="profile" class="admin-section">

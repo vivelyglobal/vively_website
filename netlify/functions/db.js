@@ -47,6 +47,26 @@ async function getApplicationsCollection() {
   return db.collection("applications");
 }
 
+async function getVerificationCodesCollection() {
+  const { db } = await connectToDatabase();
+  const col = db.collection("verification_codes");
+  // TTL index: MongoDB auto-deletes expired codes.
+  // Idempotent: createIndex is a no-op if the index already exists.
+  await col
+    .createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 })
+    .catch(() => {});
+  await col.createIndex({ email: 1 }).catch(() => {});
+  return col;
+}
+
+async function getBrandsCollection() {
+  const { db } = await connectToDatabase();
+  const col = db.collection("brands");
+  await col.createIndex({ email: 1 }, { unique: true }).catch(() => {});
+  await col.createIndex({ status: 1 }).catch(() => {});
+  return col;
+}
+
 async function closeDatabase() {
   if (cachedClient) {
     await cachedClient.close();
@@ -60,5 +80,7 @@ module.exports = {
   getCampaignsCollection,
   getUsersCollection,
   getApplicationsCollection,
+  getVerificationCodesCollection,
+  getBrandsCollection,
   closeDatabase,
 };

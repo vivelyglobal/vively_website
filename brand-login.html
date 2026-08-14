@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brand Login | Vively</title>
+  <link rel="icon" type="image/png" href="assets/logo/favicon.png" />
+  <link href="assets/css/style.v13.css" rel="stylesheet" />
+  <link href="assets/css/style.work.css" rel="stylesheet" />
+  <link href="assets/css/user-auth.css" rel="stylesheet" />
+  <link href="assets/css/style.mobile.css" rel="stylesheet" />
+  <style>
+    .brand-login-wrap {
+      max-width: 440px;
+      margin: 80px auto;
+      padding: 0 24px;
+    }
+    .brand-login-wrap .card {
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 12px;
+      padding: 40px 32px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    }
+    .brand-login-wrap h1 {
+      font-size: 28px;
+      margin: 0 0 6px;
+      text-align: center;
+    }
+    .brand-login-wrap .subtitle {
+      color: #666;
+      text-align: center;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+    .brand-login-wrap .form-group { margin-bottom: 16px; }
+    .brand-login-wrap label {
+      display: block;
+      font-weight: 600;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+    .brand-login-wrap input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    .brand-login-wrap .btn { width: 100%; margin-top: 8px; }
+    .brand-login-wrap .banner {
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .brand-login-wrap .banner.error {
+      background: #fdecea;
+      color: #b71c1c;
+      border: 1px solid #f5c6c9;
+    }
+    .brand-login-wrap .banner.info {
+      background: #e3f2fd;
+      color: #0d47a1;
+      border: 1px solid #90caf9;
+    }
+    .brand-login-wrap .footer-link {
+      text-align: center;
+      margin-top: 20px;
+      color: #666;
+      font-size: 14px;
+    }
+    .brand-login-wrap .footer-link a {
+      color: #ff6b6b;
+      font-weight: 600;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<div id="header-container"></div>
+
+<main class="brand-login-wrap">
+  <div class="card">
+    <h1>Brand Login</h1>
+    <p class="subtitle">Manage your campaigns and see performance</p>
+
+    <div id="brand-login-banner" class="banner"></div>
+
+    <form id="brand-login-form">
+      <div class="form-group">
+        <label for="brand-login-email">Business Email</label>
+        <input type="email" id="brand-login-email" required autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <label for="brand-login-password">Password</label>
+        <input type="password" id="brand-login-password" required autocomplete="current-password" />
+      </div>
+      <button type="submit" id="brand-login-submit" class="btn btn-accent">Login</button>
+    </form>
+
+    <p class="footer-link">
+      Don't have a brand account? <a href="brand-signup.html">Apply here</a>
+    </p>
+  </div>
+</main>
+
+<div id="footer-container"></div>
+
+<script src="assets/js/component-loader.js"></script>
+<script>
+(function () {
+  const form = document.getElementById('brand-login-form');
+  const banner = document.getElementById('brand-login-banner');
+  const btn = document.getElementById('brand-login-submit');
+
+  function showBanner(kind, msg) {
+    banner.className = 'banner ' + kind;
+    banner.textContent = msg;
+    banner.style.display = 'block';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    banner.style.display = 'none';
+    btn.disabled = true;
+    const orig = btn.textContent;
+    btn.textContent = 'Logging in...';
+
+    try {
+      const email = document.getElementById('brand-login-email').value.trim().toLowerCase();
+      const password = document.getElementById('brand-login-password').value;
+
+      const res = await fetch('/.netlify/functions/auth-brand', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'login', email, password }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        // Special-case pending / rejected so message stays friendly.
+        if (data.status === 'pending') {
+          showBanner('info', data.error);
+        } else {
+          showBanner('error', data.error || 'Login failed.');
+        }
+        return;
+      }
+
+      localStorage.setItem('brandToken', data.token);
+      localStorage.setItem('brandData', JSON.stringify(data.brand));
+      window.location.href = 'brand-dashboard.html';
+    } catch (err) {
+      console.error('Brand login error:', err);
+      showBanner('error', 'Something went wrong. Please try again.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = orig;
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

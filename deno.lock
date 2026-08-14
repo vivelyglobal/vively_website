@@ -16,6 +16,7 @@
         "npm:cors@^2.8.6",
         "npm:dotenv@^17.4.2",
         "npm:express@^5.2.1",
+        "npm:google-auth-library@^11.0.2",
         "npm:jsonwebtoken@^9.0.3",
         "npm:mongodb@^7.5.0"
       ]

@@ -1,0 +1,251 @@
+<!-- Multi-step Signup Modal -->
+<div class="signup-form-container" style="display:none;">
+  <!-- Step 1: Email Verification -->
+  <div id="signup-step-1" class="signup-step">
+    <h2>Verify Your Email</h2>
+    <form id="signup-email-form" class="auth-form">
+      <div class="form-group">
+        <label for="signup-email-input">Email Address</label>
+        <input type="email" id="signup-email-input" placeholder="your@email.com" required />
+      </div>
+      <button type="submit" class="btn btn-accent" style="width: 100%; margin-bottom: 12px;">Send Verification Code</button>
+    </form>
+    <p class="form-footer">Already have an account? <a href="#" id="login-toggle-1">Login</a></p>
+  </div>
+
+  <!-- Step 1b: Code Verification -->
+  <div id="signup-step-1b" class="signup-step" style="display:none;">
+    <h2>Verify Your Email</h2>
+    <p style="text-align: center; font-size: 14px; color: #666; margin-bottom: 20px;">
+      We sent a 6-digit code to <strong id="verify-email-display"></strong>
+    </p>
+    <form id="signup-verify-code-form" class="auth-form">
+      <div class="form-group">
+        <label>Verification Code</label>
+        <div style="display: flex; gap: 4px; justify-content: center; margin-bottom: 20px;" id="code-inputs-container">
+          <input type="text" maxlength="1" class="code-input" style="width: 40px; height: 40px; text-align: center; font-size: 18px; border: 1px solid #ddd; border-radius: 4px;" />
+          <input type="text" maxlength="1" class="code-input" style="width: 40px; height: 40px; text-align: center; font-size: 18px; border: 1px solid #ddd; border-radius: 4px;" />
+          <input type="text" maxlength="1" class="code-input" style="width: 40px; height: 40px; text-align: center; font-size: 18px; border: 1px solid #ddd; border-radius: 4px;" />
+          <input type="text" maxlength="1" class="code-input" style="width: 40px; height: 40px; text-align: center; font-size: 18px; border: 1px solid #ddd; border-radius: 4px;" />
+          <input type="text" maxlength="1" class="code-input" style="width: 40px; height: 40px; text-align: center; font-size: 18px; border: 1px solid #ddd; border-radius: 4px;" />
+          <input type="text" maxlength="1" class="code-input" style="width: 40px; height: 40px; text-align: center; font-size: 18px; border: 1px solid #ddd; border-radius: 4px;" />
+        </div>
+        <input type="hidden" id="signup-code" />
+      </div>
+      <button type="submit" class="btn btn-accent" style="width: 100%; margin-bottom: 12px;">Verify Code</button>
+    </form>
+    <p class="form-footer" style="text-align: center; font-size: 12px;">
+      Didn't receive? <a href="#" id="resend-code-link" style="color: #e53e3e;">Resend code</a>
+    </p>
+  </div>
+
+  <!-- Step 2: Profile Setup -->
+  <div id="signup-step-2" class="signup-step" style="display:none;">
+    <h2>Set Up Your Profile</h2>
+    <form id="signup-profile-form" class="auth-form">
+      <div class="form-group">
+        <label for="signup-username">Username *</label>
+        <input type="text" id="signup-username" placeholder="@ your_handle" required />
+        <small style="color: #666; font-size: 12px;">Lowercase letters, numbers, underscores only</small>
+      </div>
+      <div class="form-group">
+        <label for="signup-full-name">Full Name *</label>
+        <input type="text" id="signup-full-name" placeholder="Jhonny Siahaan" required />
+      </div>
+      <div class="form-group">
+        <label>Gender *</label>
+        <div style="display: flex; gap: 16px;">
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="radio" name="gender" value="Male" /> Male
+          </label>
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="radio" name="gender" value="Female" /> Female
+          </label>
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="radio" name="gender" value="Non-binary" /> Non-binary
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="signup-nationality">Nationality *</label>
+        <select id="signup-nationality" required>
+          <option value="">Select your nationality</option>
+          <option value="United States">United States</option>
+          <option value="Indonesia">Indonesia</option>
+          <option value="South Korea">South Korea</option>
+          <option value="United Kingdom">United Kingdom</option>
+          <option value="Canada">Canada</option>
+          <option value="Australia">Australia</option>
+          <option value="Japan">Japan</option>
+          <option value="Other">Other</option>
+        </select>
+        <input type="text" id="signup-nationality-other" placeholder="Please type your nationality" style="display:none; margin-top:8px; width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;" />
+      </div>
+      <div class="form-group">
+        <label for="signup-residence">Current Residence *</label>
+        <select id="signup-residence" required>
+          <option value="">Country you currently live in</option>
+          <option value="South Korea">South Korea</option>
+          <option value="United States">United States</option>
+          <option value="Indonesia">Indonesia</option>
+          <option value="United Kingdom">United Kingdom</option>
+          <option value="Canada">Canada</option>
+          <option value="Australia">Australia</option>
+          <option value="Japan">Japan</option>
+          <option value="Other">Other</option>
+        </select>
+        <input type="text" id="signup-residence-other" placeholder="Please type your current country of residence" style="display:none; margin-top:8px; width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;" />
+      </div>
+      <div class="form-group">
+        <label for="signup-second-nationality">Second Nationality</label>
+        <select id="signup-second-nationality">
+          <option value="">Select if applicable (optional)</option>
+          <option value="United States">United States</option>
+          <option value="Indonesia">Indonesia</option>
+          <option value="South Korea">South Korea</option>
+          <option value="United Kingdom">United Kingdom</option>
+          <option value="Canada">Canada</option>
+          <option value="Australia">Australia</option>
+          <option value="Japan">Japan</option>
+          <option value="Other">Other</option>
+        </select>
+        <input type="text" id="signup-second-nationality-other" placeholder="Please type your second nationality" style="display:none; margin-top:8px; width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;" />
+      </div>
+      <div class="form-group">
+        <label>Date of Birth *</label>
+        <div style="display: flex; gap: 8px;">
+          <select id="signup-dob-month" required style="flex: 1.2; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            <option value="">Month</option>
+            <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+          <select id="signup-dob-day" required style="flex: 0.7; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            <option value="">Day</option>
+          </select>
+          <select id="signup-dob-year" required style="flex: 0.9; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            <option value="">Year</option>
+          </select>
+        </div>
+        <small style="color: #666; font-size: 12px;">If you're under 19 (aged 14–18), a parent or guardian will need to give consent to apply for campaigns.</small>
+      </div>
+      <button type="button" id="signup-next-2" class="btn btn-accent" style="width: 100%;">Continue</button>
+    </form>
+  </div>
+
+  <!-- Step 3: Social Accounts & Content -->
+  <div id="signup-step-3" class="signup-step" style="display:none;">
+    <h2>Connect Your Socials</h2>
+    <form id="signup-socials-form" class="auth-form">
+      <div class="form-group">
+        <label for="signup-phone">Phone *</label>
+        <div style="display: flex; gap: 8px;">
+          <select id="signup-country-code" style="flex: 0.3; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            <option value="+82">🇰🇷 +82</option>
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+62">🇮🇩 +62</option>
+          </select>
+          <input type="tel" id="signup-phone" placeholder="010-1234-5678" style="flex: 1;" required />
+        </div>
+        <small style="color: #666; font-size: 12px;">Numbers only (e.g. 01012345678)</small>
+      </div>
+      <div class="form-group">
+        <label for="signup-instagram">Instagram *</label>
+        <input type="text" id="signup-instagram" placeholder="@ your_handle" required />
+        <small style="color: #666; font-size: 12px;">Instagram is required. Adding more social accounts increases matching chances.</small>
+      </div>
+      <div class="form-group">
+        <label for="signup-tiktok">TikTok</label>
+        <input type="text" id="signup-tiktok" placeholder="@ your_handle" />
+        <small style="color: #666; font-size: 12px;">Leave blank if you don't have an account</small>
+      </div>
+      <div class="form-group">
+        <label for="signup-youtube">YouTube</label>
+        <input type="text" id="signup-youtube" placeholder="@ your_channel" />
+        <small style="color: #666; font-size: 12px;">Leave blank if you don't have an account</small>
+      </div>
+      <div class="form-group">
+        <label>Content Categories *</label>
+        <p style="font-size: 12px; color: #666; margin-bottom: 12px;">Select categories that match your content</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="checkbox" name="categories" value="Food" /> Food
+          </label>
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="checkbox" name="categories" value="Beauty" /> Beauty
+          </label>
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="checkbox" name="categories" value="Travel" /> Travel
+          </label>
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="checkbox" name="categories" value="Fitness" /> Fitness
+          </label>
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="checkbox" name="categories" value="Fashion" /> Fashion
+          </label>
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="checkbox" name="categories" value="Lifestyle" /> Lifestyle
+          </label>
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="checkbox" name="categories" value="Tech" /> Tech
+          </label>
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="checkbox" name="categories" value="Entertainment" /> Entertainment
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="signup-bio">Bio</label>
+        <textarea id="signup-bio" placeholder="Tell us about yourself (optional)" rows="3" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="signup-portfolio">Portfolio URL</label>
+        <input type="url" id="signup-portfolio" placeholder="https://your-portfolio.com" />
+        <small style="color: #666; font-size: 12px;">Optional — helps us match you to the right campaigns faster</small>
+      </div>
+      <div class="form-group">
+        <label for="signup-inviter">Inviter Username (optional)</label>
+        <input type="text" id="signup-inviter" placeholder="@ alice" />
+        <small style="color: #666; font-size: 12px;">If a friend invited you, enter their Vively username — both of you get +2 CP.</small>
+      </div>
+      <button type="button" id="signup-next-3" class="btn btn-accent" style="width: 100%;">Continue</button>
+    </form>
+  </div>
+
+  <!-- Step 4: Terms & Agreement -->
+  <div id="signup-step-4" class="signup-step" style="display:none;">
+    <h2>Terms & Agreement</h2>
+    <form id="signup-final-form" class="auth-form">
+      <div class="form-group" style="margin-bottom: 16px;">
+        <label style="display: flex; gap: 8px; cursor: pointer;">
+          <input type="checkbox" id="signup-terms" required />
+          <span style="font-size: 12px;">
+            I agree to the collection and use of my personal information for service operation, including whether emails we send are opened. <a href="#" style="color: #e53e3e;">Terms of Service</a>, <a href="#" style="color: #e53e3e;">Privacy Policy</a> (Required)
+          </span>
+        </label>
+      </div>
+      <div class="form-group">
+        <label style="display: flex; gap: 8px; cursor: pointer;">
+          <input type="checkbox" id="signup-age" required />
+          <span style="font-size: 12px;">I confirm that I am 17 years of age or older. (Required)</span>
+        </label>
+      </div>
+      <div class="form-group">
+        <label style="display: flex; gap: 8px; cursor: pointer;">
+          <input type="checkbox" id="signup-marketing" />
+          <span style="font-size: 12px;">Send me updates about new campaigns and opportunities. (Optional)</span>
+        </label>
+      </div>
+      <button type="submit" id="signup-create-btn" class="btn btn-accent" style="width: 100%;">Create Account</button>
+    </form>
+  </div>
+</div>

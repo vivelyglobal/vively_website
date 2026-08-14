@@ -2,3 +2,21 @@ node_modules/
 
 # Local Netlify folder
 .netlify
+
+# Env / secrets — NEVER commit these
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+*.pem
+*.key
+
+# Google OAuth client JSON (never commit)
+client_secret_*.json
+credentials.json
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/

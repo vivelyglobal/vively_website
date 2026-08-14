@@ -193,11 +193,6 @@
   color: var(--ink);
 }
 
-.campaign-content .btn {
-  margin-top: auto;
-  padding: clamp(14px, 2vw, 18px) clamp(24px, 3vw, 32px);
-}
-
 .campaign-meta-label {
   display: block;
   font-size: 11px;

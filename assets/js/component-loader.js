@@ -1,6 +1,22 @@
 // Component loader utility - loads reusable header and footer
 // Also initializes user authentication UI
 
+// Load the Google Identity Services script exactly once, using
+// createElement so it actually executes. `innerHTML` never runs
+// <script> tags, which is why the GSI script inside header.html
+// was silently ignored — that's the "Could not load Google Sign-In
+// script" error users saw.
+function ensureGoogleSignInScript() {
+  if (document.getElementById('vively-gsi-script')) return;
+  if (window.google && window.google.accounts && window.google.accounts.id) return;
+  const s = document.createElement('script');
+  s.id = 'vively-gsi-script';
+  s.src = 'https://accounts.google.com/gsi/client';
+  s.async = true;
+  s.defer = true;
+  document.head.appendChild(s);
+}
+
 async function loadComponent(componentName, targetSelector) {
   try {
     const response = await fetch(`/assets/components/${componentName}.html`);
@@ -30,6 +46,7 @@ async function loadComponent(componentName, targetSelector) {
 
 // Load header and footer on page load
 async function loadPageComponents() {
+  ensureGoogleSignInScript();
   // Load header at the beginning of body
   const headerContainer = document.querySelector('body');
   if (headerContainer) {
@@ -55,7 +72,7 @@ function initHeaderScripts() {
   if (burger && mobileMenu) {
     burger.addEventListener("click", () => {
       mobileMenu.classList.toggle("open");
-      burger.classList.toggle("is-open");
+      burger.classList.remove("is-open");
     });
     
     mobileMenu.querySelectorAll("a").forEach((a) =>
@@ -88,14 +105,32 @@ function initHeaderScripts() {
     onScroll();
   }
 
-  // Initialize user auth UI (attached to header)
-  initUserAuthUI();
+  // Load signup modal FIRST, then load user-auth.js so the auth script
+  // never runs before its DOM (signup steps) exists. This eliminates the
+  // race that made the "Sign up" link do nothing.
+  loadSignupModal().finally(() => initUserAuthUI());
+}
+
+// Load signup modal component
+async function loadSignupModal() {
+  try {
+    const container = document.getElementById("signup-modal-container");
+    if (!container) return;
+    
+    const html = await fetch('/assets/components/signup-modal.html').then(r => r.text());
+    container.innerHTML = html;
+  } catch (error) {
+    console.error('Error loading signup modal:', error);
+  }
 }
 
 // Initialize user authentication UI
 function initUserAuthUI() {
+  // Guard against double-injection (happens if header re-renders)
+  if (document.getElementById('vively-user-auth-script')) return;
   // Dynamically load user-auth.js script
   const script = document.createElement('script');
+  script.id = 'vively-user-auth-script';
   script.src = '/assets/js/user-auth.js';
   script.defer = true;
   document.body.appendChild(script);
@@ -109,6 +144,10 @@ function initFooterScripts() {
 
 // Auto-load components if page has header-container and footer-container elements
 document.addEventListener("DOMContentLoaded", async () => {
+  // Kick off the Google Identity Services script as early as possible so
+  // the login modal has it ready by the time the user opens the modal.
+  ensureGoogleSignInScript();
+
   // If page uses component containers, load them
   const headerContainer = document.getElementById("header-container");
   const footerContainer = document.getElementById("footer-container");
