@@ -1,4 +1,7 @@
 // Seed demo campaigns data
+// SECURITY: This endpoint can overwrite records. It is disabled unless:
+//   1. NODE_ENV !== "production" (dev/local), OR
+//   2. Request includes X-Seed-Token header matching SEED_TOKEN env var.
 const { getCampaignsCollection, getUsersCollection } = require("./db");
 const { hashPassword } = require("./auth");
 
@@ -8,6 +11,20 @@ exports.handler = async (event) => {
       statusCode: 405,
       body: JSON.stringify({ error: "Method not allowed" }),
     };
+  }
+
+  const isProd = process.env.NODE_ENV === "production";
+  const providedToken =
+    (event.headers && (event.headers["x-seed-token"] || event.headers["X-Seed-Token"])) || "";
+  const expectedToken = process.env.SEED_TOKEN || "";
+
+  if (isProd) {
+    if (!expectedToken || providedToken !== expectedToken) {
+      return {
+        statusCode: 403,
+        body: JSON.stringify({ error: "Seed endpoint disabled in production" }),
+      };
+    }
   }
 
   try {

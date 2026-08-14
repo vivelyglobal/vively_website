@@ -2,7 +2,19 @@
 const jwt = require("jsonwebtoken");
 const bcryptjs = require("bcryptjs");
 
-const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
+// Fail loudly in production if the JWT secret is missing. Only fall back to
+// a dev secret when NODE_ENV !== "production" (local dev / preview builds).
+const JWT_SECRET = (() => {
+  const s = process.env.JWT_SECRET;
+  if (s && s.length >= 16) return s;
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "JWT_SECRET is required in production and must be at least 16 characters."
+    );
+  }
+  console.warn("[auth] JWT_SECRET missing/short — using dev fallback (NOT for production)");
+  return "dev-secret-key-do-not-use-in-production";
+})();
 
 function generateToken(userId, email, role = "user") {
   return jwt.sign(

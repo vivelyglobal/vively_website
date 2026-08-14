@@ -6,6 +6,7 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const { verifyRequest } = require("./auth");
+const { requirePermission, PERMISSIONS } = require("./_shared/permissions");
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
@@ -39,14 +40,12 @@ exports.handler = async (event) => {
     };
   }
 
-  // Require admin auth
+  // Require auth + upload permission (admin, brand, creator — anyone signed in
+  // may upload for their own content). We rely on the caller's endpoint using
+  // the returned URL responsibly.
   const auth = verifyRequest(event);
-  if (auth.error) {
-    return {
-      statusCode: auth.status,
-      body: JSON.stringify({ error: auth.error }),
-    };
-  }
+  const denial = requirePermission(auth, PERMISSIONS.UPLOAD_IMAGE);
+  if (denial) return denial;
 
   try {
     const body = JSON.parse(event.body || "{}");

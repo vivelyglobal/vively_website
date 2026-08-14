@@ -14,5 +14,7 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
+# Production context uses the same no-op build as dev (this is a static site).
+# If a real build pipeline is added later, change command here.
 [context.production]
-  command = "npm run build:prod"
+  command = "npm run build"
