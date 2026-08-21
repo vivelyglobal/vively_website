@@ -10,6 +10,18 @@
   targetPort = 8888
 
 [[redirects]]
+  from = "/brand"
+  to = "/brand-login.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/brand/"
+  to = "/brand-login.html"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
