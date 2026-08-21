@@ -53,10 +53,13 @@
 
   /* ---- hero ---------------------------------------------------------------*/
   .hero-center{ padding:104px 0 56px; }
+   .hero-showcase{ display:grid; grid-template-columns:1fr; gap:24px; }
   .hero-oneline{ font-size:clamp(23px,6.6vw,31px); line-height:1.32; }
   .hero-center .hero-sub{ margin-top:16px; font-size:14.5px; }
   .hero-center .hero-ctas{ margin-top:24px; gap:10px; }
-  .hero-visual-wide{ margin-top:40px; max-width:none; }
+   .hero-visual-wide{ margin:0 auto; width:100%; max-width:420px; }
+   .hero-loop{ border-radius:20px; transform:rotate(-3deg); }
+   .hero-loop-frame{ animation-duration:16s; }
   .hero-collage{ gap:8px; }
 
   /* The hook is an inline-flex pill on desktop, which is why its two lines
