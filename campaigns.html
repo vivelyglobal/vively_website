@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,49 +11,172 @@
   <link rel="stylesheet" href="assets/css/style.mobile.v2.css" />
 </head>
 <body>
+  <div id="header-container"></div>
 
-<div id="header-container"></div>
+  <main class="campaigns-page">
+    <section class="campaign-hero">
+      <div class="wrap">
+        <div class="campaign-hero-card">
+          <div class="campaign-hero-copy">
+            <span class="campaign-hero-badge" id="campaign-hero-badge">Live campaigns</span>
+            <h1>Your Experience Partner<br />More Than a Platform</h1>
+            <p>Build your portfolio, earn rewards, and connect with Seoul's top brands.</p>
+            <div class="campaign-hero-actions">
+              <button type="button" class="btn btn-accent" id="campaign-login-btn">Login</button>
+              <button type="button" class="btn btn-ghost" id="campaign-signup-btn">Sign Up</button>
+              <a class="btn btn-primary" href="#campaigns-list">Browse campaigns</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<section class="campaign-hero">
-  <div class="wrap">
-    <h1>Featured Campaigns</h1>
-    <p>Discover opportunities to collaborate with Korean brands.</p>
-  </div>
-</section>
+    <section class="campaign-category-strip" aria-label="Campaign categories">
+      <div class="wrap">
+        <div class="campaign-category-row" id="campaign-category-row">
+          <button type="button" class="campaign-category-chip is-active" data-category-filter="all">
+            <span class="campaign-category-media">
+              <img src="assets/img/content-04.jpeg" alt="category" />
+            </span>
+            <span class="campaign-category-label">All</span>
+            <span class="campaign-category-count" data-category-count="all">0</span>
+          </button>
 
-<section class="campaign-filters">
-  <div class="wrap">
-    <div class="filter-group">
-      <label for="category-filter">Category:</label>
-      <select id="category-filter">
-        <option value="all">All Categories</option>
-        <option value="Beauty & Care">Beauty & Care</option>
-        <option value="Dining">Dining</option>
-        <option value="Stay & Travel">Stay & Travel</option>
-        <option value="Product">Product</option>
-        <option value="Class & Activity">Class & Activity</option>
-        <option value="Life Service">Life Service</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <label for="search-filter">Search:</label>
-      <input type="text" id="search-filter" placeholder="Brand name or campaign...">
-    </div>
-  </div>
-</section>
+          <button type="button" class="campaign-category-chip" data-category-filter="Casting">
+            <span class="campaign-category-media">
+              <img src="assets/img/content-24.jpeg" alt="Casting category" />
+            </span>
+            <span class="campaign-category-label">Casting</span>
+            <span class="campaign-category-count" data-category-count="Casting">0</span>
+          </button>
 
-<section class="campaign-grid">
-  <div class="wrap">
-    <div id="campaigns-list" class="campaigns-container">
-      <!-- Campaigns will be loaded here -->
-    </div>
-  </div>
-</section>
+          <button type="button" class="campaign-category-chip" data-category-filter="Dining">
+            <span class="campaign-category-media">
+              <img src="assets/img/content-08.jpeg" alt="Dining category" />
+            </span>
+            <span class="campaign-category-label">Dining</span>
+            <span class="campaign-category-count" data-category-count="Dining">0</span>
+          </button>
 
-<div id="footer-container"></div>
+          <button type="button" class="campaign-category-chip" data-category-filter="Beauty & Care">
+            <span class="campaign-category-media">
+              <img src="assets/img/content-12.jpeg" alt="Beauty and care category" />
+            </span>
+            <span class="campaign-category-label">Beauty &amp; Care</span>
+            <span class="campaign-category-count" data-category-count="Beauty & Care">0</span>
+          </button>
 
-<script src="assets/js/component-loader.js"></script>
-<script src="assets/js/main.v2.js"></script>
-<script src="assets/js/campaigns.js"></script>
+          <button type="button" class="campaign-category-chip" data-category-filter="Product">
+            <span class="campaign-category-media">
+              <img src="assets/img/content-22.jpeg" alt="Product category" />
+            </span>
+            <span class="campaign-category-label">Product</span>
+            <span class="campaign-category-count" data-category-count="Product">0</span>
+          </button>
+
+          <button type="button" class="campaign-category-chip" data-category-filter="Stay & Travel">
+            <span class="campaign-category-media">
+              <img src="assets/img/content-32.jpeg" alt="Stay and travel category" />
+            </span>
+            <span class="campaign-category-label">Stay &amp; Travel</span>
+            <span class="campaign-category-count" data-category-count="Stay & Travel">0</span>
+          </button>
+
+          <button type="button" class="campaign-category-chip" data-category-filter="Class & Activity">
+            <span class="campaign-category-media">
+              <img src="assets/img/content-28.jpeg" alt="Class and activity category" />
+            </span>
+            <span class="campaign-category-label">Class &amp; Activity</span>
+            <span class="campaign-category-count" data-category-count="Class & Activity">0</span>
+          </button>
+
+          <button type="button" class="campaign-category-chip" data-category-filter="Life Service">
+            <span class="campaign-category-media">
+              <img src="assets/img/content-33.jpeg" alt="Life service category" />
+            </span>
+            <span class="campaign-category-label">Life Service</span>
+            <span class="campaign-category-count" data-category-count="Life Service">0</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="campaign-guide">
+      <div class="wrap">
+        <div class="campaign-guide-card">
+          <div class="campaign-guide-copy">
+            <span class="campaign-guide-kicker">User Instruction Menu</span>
+            <h2>How to apply</h2>
+            <p>Login first, open a campaign, then submit your profile and social links with confidence.</p>
+          </div>
+          <ol class="campaign-guide-list">
+            <li>Login or sign up first.</li>
+            <li>Open a campaign to review the brief.</li>
+            <li>Check budget, deadline, and requirements.</li>
+            <li>Apply with your profile and social accounts.</li>
+          </ol>
+          <div class="campaign-guide-actions">
+            <button type="button" class="btn btn-accent" id="campaign-login-btn-2">Login</button>
+            <button type="button" class="btn btn-ghost" id="campaign-signup-btn-2">Sign Up</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="campaign-featured">
+      <div class="wrap">
+        <div class="campaign-section-head">
+          <div>
+            <span class="eyebrow">Featured Campaigns</span>
+            <h2>Featured Campaigns</h2>
+          </div>
+          <div class="campaign-section-tools">
+            <input type="text" id="search-filter" placeholder="Search campaigns or brands..." />
+            <a href="#campaigns-list" class="campaign-section-link">See all →</a>
+          </div>
+        </div>
+
+        <div id="campaigns-list" class="campaigns-container">
+          <!-- Campaigns will be loaded here -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-container"></div>
+
+  <script src="assets/js/component-loader.js"></script>
+  <script src="assets/js/main.v2.js"></script>
+  <script src="assets/js/campaigns.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const loginButtons = [
+        document.getElementById('campaign-login-btn'),
+        document.getElementById('campaign-login-btn-2'),
+      ];
+      const signupButtons = [
+        document.getElementById('campaign-signup-btn'),
+        document.getElementById('campaign-signup-btn-2'),
+      ];
+
+      loginButtons.forEach((button) => {
+        if (!button) return;
+        button.addEventListener('click', () => {
+          if (window.vivelyOpenLoginModal) return window.vivelyOpenLoginModal();
+          const fallback = document.getElementById('login-link');
+          if (fallback) fallback.click();
+        });
+      });
+
+      signupButtons.forEach((button) => {
+        if (!button) return;
+        button.addEventListener('click', () => {
+          if (window.vivelyOpenSignupModal) return window.vivelyOpenSignupModal();
+          const fallback = document.getElementById('login-link');
+          if (fallback) fallback.click();
+        });
+      });
+    });
+  </script>
 </body>
 </html>
