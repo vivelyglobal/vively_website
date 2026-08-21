@@ -1,5 +1,4 @@
 // Signup handler: send verification code, verify code, create account
-const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const { getUsersCollection, getVerificationCodesCollection } = require("./db");
 const jwt = require("jsonwebtoken");
@@ -270,6 +269,7 @@ exports.handler = async (event) => {
       const {
         username,
         fullName,
+        password,
         gender,
         nationality,
         secondNationality,
@@ -293,6 +293,29 @@ exports.handler = async (event) => {
           statusCode: 400,
           body: JSON.stringify({
             error: "Username, full name, and Instagram required",
+          }),
+        };
+      }
+
+      if (!password || typeof password !== "string") {
+        return {
+          statusCode: 400,
+          body: JSON.stringify({ error: "Password is required" }),
+        };
+      }
+
+      if (password.length < 8) {
+        return {
+          statusCode: 400,
+          body: JSON.stringify({ error: "Password must be at least 8 characters" }),
+        };
+      }
+
+      if (!/[A-Za-z]/.test(password) || !/\d/.test(password)) {
+        return {
+          statusCode: 400,
+          body: JSON.stringify({
+            error: "Password must include at least one letter and one number",
           }),
         };
       }
@@ -322,7 +345,7 @@ exports.handler = async (event) => {
       }
 
       // Create new user
-      const hashedPassword = await bcrypt.hash(crypto.randomBytes(16).toString("hex"), 10);
+      const passwordHash = await bcrypt.hash(password, 10);
 
       // If this signup started via Google Sign-In, auth-google stashed
       // the verified googleId + picture on the verification code record.
@@ -334,7 +357,7 @@ exports.handler = async (event) => {
       const newUser = {
         email: email,
         username: username.toLowerCase(),
-        password: hashedPassword,
+        passwordHash,
         profile: {
           fullName,
           gender,

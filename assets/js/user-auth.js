@@ -23,6 +23,26 @@
     // Delegated fallbacks so the toggles always work, even if a re-render
     // wiped the direct handlers or the modal loaded after setup.
     setupDelegatedToggles();
+
+    // Expose simple portal-level helpers so any page (e.g. campaigns)
+    // can open auth UI without duplicating modal logic.
+    window.vivelyOpenLoginModal = () => {
+      const loginLink = document.getElementById('login-link');
+      if (loginLink) {
+        loginLink.click();
+        return;
+      }
+      const loginModal = document.getElementById('login-modal');
+      if (loginModal) loginModal.style.display = 'flex';
+    };
+
+    window.vivelyOpenSignupModal = () => {
+      const loginModal = document.getElementById('login-modal');
+      if (loginModal) loginModal.style.display = 'flex';
+      const loginContainer = document.querySelector('.login-form-container');
+      if (loginContainer) loginContainer.style.display = 'none';
+      showSignupStep(1);
+    };
   }
 
   function checkAuthStatus() {
@@ -699,9 +719,26 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
+      const password = document.getElementById('signup-password')?.value || '';
+      const confirmPassword = document.getElementById('signup-password-confirm')?.value || '';
       const terms = document.getElementById('signup-terms')?.checked;
       const age = document.getElementById('signup-age')?.checked;
       const marketingOptIn = document.getElementById('signup-marketing')?.checked;
+
+      if (!password || password.length < 8) {
+        alert('Password must be at least 8 characters');
+        return;
+      }
+
+      if (!/[A-Za-z]/.test(password) || !/\d/.test(password)) {
+        alert('Password must include at least one letter and one number');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert('Password confirmation does not match');
+        return;
+      }
 
       if (!terms || !age) {
         alert('Please agree to terms and confirm age');
@@ -722,6 +759,7 @@
             email: signupState.email,
             userData: {
               ...signupState.userData,
+              password,
               marketingOptIn,
             },
           }),

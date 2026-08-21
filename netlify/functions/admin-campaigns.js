@@ -21,14 +21,36 @@ exports.handler = async (event) => {
 
   const campaigns = await getCampaignsCollection();
 
+  // Extract :id from path (Netlify routes /.netlify/functions/admin-campaigns/:id here)
+  const pathParts = (event.path || "").split("/").filter(Boolean);
+  const fnIndex = pathParts.indexOf("admin-campaigns");
+  const id = fnIndex >= 0 ? pathParts[fnIndex + 1] : undefined;
+
   // GET single campaign or list
   if (event.httpMethod === "GET") {
     try {
-      const id = event.pathParameters?.id;
       if (id) {
+        let objectId;
+        try {
+          objectId = new ObjectId(id);
+        } catch (_) {
+          return {
+            statusCode: 400,
+            body: JSON.stringify({ error: "Invalid campaign ID" }),
+          };
+        }
+
         const campaign = await campaigns.findOne({
-          _id: new ObjectId(id),
+          _id: objectId,
         });
+
+        if (!campaign) {
+          return {
+            statusCode: 404,
+            body: JSON.stringify({ error: "Campaign not found" }),
+          };
+        }
+
         return {
           statusCode: 200,
           headers: { "Content-Type": "application/json" },
@@ -60,7 +82,7 @@ exports.handler = async (event) => {
         createdBy: auth.user.userId,
         createdAt: new Date(),
         updatedAt: new Date(),
-        isActive: true,
+        isActive: typeof body.isActive === "boolean" ? body.isActive : true,
         applicantCount: 0,
       };
 
@@ -82,11 +104,20 @@ exports.handler = async (event) => {
   // PUT update campaign
   if (event.httpMethod === "PUT") {
     try {
-      const id = event.pathParameters?.id;
       if (!id) {
         return {
           statusCode: 400,
           body: JSON.stringify({ error: "Campaign ID required" }),
+        };
+      }
+
+      let objectId;
+      try {
+        objectId = new ObjectId(id);
+      } catch (_) {
+        return {
+          statusCode: 400,
+          body: JSON.stringify({ error: "Invalid campaign ID" }),
         };
       }
 
@@ -100,7 +131,7 @@ exports.handler = async (event) => {
       delete updateData.createdBy;
 
       const result = await campaigns.updateOne(
-        { _id: new ObjectId(id) },
+        { _id: objectId },
         { $set: updateData }
       );
 
@@ -127,7 +158,6 @@ exports.handler = async (event) => {
   // DELETE campaign
   if (event.httpMethod === "DELETE") {
     try {
-      const id = event.pathParameters?.id;
       if (!id) {
         return {
           statusCode: 400,
@@ -135,7 +165,17 @@ exports.handler = async (event) => {
         };
       }
 
-      const result = await campaigns.deleteOne({ _id: new ObjectId(id) });
+      let objectId;
+      try {
+        objectId = new ObjectId(id);
+      } catch (_) {
+        return {
+          statusCode: 400,
+          body: JSON.stringify({ error: "Invalid campaign ID" }),
+        };
+      }
+
+      const result = await campaigns.deleteOne({ _id: objectId });
 
       if (result.deletedCount === 0) {
         return {

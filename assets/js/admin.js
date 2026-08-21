@@ -8,6 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const adminForm = document.getElementById("admin-login-form");
   const logoutBtn = document.getElementById("logout-btn");
   const userInfo = document.getElementById("user-info");
+  const campaignsGrid = document.getElementById("campaigns-grid");
+  const campaignDetailPanel = document.getElementById("campaign-detail-panel");
+  let campaignsCache = [];
 
   // Check if user is logged in
   function checkAuth() {
@@ -15,8 +18,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const user = localStorage.getItem("adminUser");
 
     if (token && user) {
-      authToken = token;
-      currentUser = JSON.parse(user);
+      try {
+        authToken = token;
+        currentUser = JSON.parse(user);
+      } catch (error) {
+        localStorage.removeItem("adminToken");
+        localStorage.removeItem("adminUser");
+        authToken = null;
+        currentUser = null;
+      }
+    }
+
+    if (authToken && currentUser) {
       loginSection.style.display = "none";
       adminSidebar.style.display = "block";
       if (adminHeader) adminHeader.style.display = "flex";
@@ -52,6 +65,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
 
       if (response.ok) {
+        if (!data.user || data.user.role !== "admin") {
+          alert("Admin account required");
+          return;
+        }
+
         authToken = data.token;
         currentUser = data.user;
 
@@ -93,6 +111,14 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function showSection(sectionId) {
+    const headerTitleMap = {
+      dashboard: "Overview",
+      campaigns: "Campaign Studio",
+      applications: "Applications Hub",
+      users: "User Directory",
+      profile: "Admin Profile",
+    };
+
     document.querySelectorAll(".admin-section").forEach((s) => {
       s.classList.remove("active");
     });
@@ -100,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (section) {
       section.classList.add("active");
       document.getElementById("section-title").textContent =
-        section.querySelector("h2")?.textContent || "Admin";
+        headerTitleMap[sectionId] || "Admin";
 
       if (sectionId === "campaigns") {
         loadCampaigns();
@@ -145,28 +171,256 @@ document.addEventListener("DOMContentLoaded", () => {
       const response = await fetch("/.netlify/functions/admin-campaigns", {
         headers: { Authorization: `Bearer ${authToken}` },
       });
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.error || "Failed to load campaigns");
+      }
       const campaigns = await response.json();
-
-      const tbody = document.getElementById("campaigns-tbody");
-      tbody.innerHTML = campaigns
-        .map(
-          (c) => `
-        <tr>
-          <td>${c.title}</td>
-          <td>${c.brand}</td>
-          <td>${c.category}</td>
-          <td>${c.isActive ? "Active" : "Inactive"}</td>
-          <td>${c.applicantCount || 0}</td>
-          <td>
-            <button class="btn-edit" onclick="editCampaign('${c._id}')">Edit</button>
-            <button class="btn-delete" onclick="deleteCampaign('${c._id}')">Delete</button>
-          </td>
-        </tr>
-      `
-        )
-        .join("");
+      campaignsCache = Array.isArray(campaigns) ? campaigns : [];
+      renderCampaignCards(campaignsCache);
+      if (campaignDetailPanel) campaignDetailPanel.style.display = "none";
     } catch (error) {
       console.error("Error loading campaigns:", error);
+      if (campaignsGrid) {
+        campaignsGrid.innerHTML =
+          '<p class="admin-campaign-empty">Failed to load campaigns.</p>';
+      }
+    }
+  }
+
+  function formatMoney(value) {
+    const rawValue = String(value || "").trim();
+    if (!rawValue) return "TBD";
+
+    const formatPart = (part) => {
+      const numericValue = Number(String(part || "").replace(/[^\d]/g, ""));
+      if (!Number.isFinite(numericValue) || numericValue <= 0) {
+        return String(part || "").trim();
+      }
+      return `₩${numericValue.toLocaleString("en-US")}`;
+    };
+
+    const rangeMatch = rawValue.match(/^(.*\d)\s*-\s*(.*\d)$/);
+    if (rangeMatch) {
+      return `${formatPart(rangeMatch[1])} - ${formatPart(rangeMatch[2])}`;
+    }
+
+    if (/^\d+$/.test(rawValue)) {
+      return `₩${Number(rawValue).toLocaleString("en-US")}`;
+    }
+
+    return rawValue;
+  }
+
+  function renderCampaignCards(campaigns) {
+    if (!campaignsGrid) return;
+
+    if (!campaigns.length) {
+      campaignsGrid.innerHTML =
+        '<p class="admin-campaign-empty">No campaigns found yet.</p>';
+      return;
+    }
+
+    campaignsGrid.innerHTML = campaigns
+      .map(
+        (campaign) => `
+      <article class="admin-campaign-card">
+        <div class="admin-campaign-image">
+          <img src="${campaign.imageUrl || "assets/img/content-04.jpeg"}" alt="${escapeHtml(campaign.title || "Campaign")}" loading="lazy" />
+          <span class="admin-campaign-category">${escapeHtml(campaign.category || "Campaign")}</span>
+          <span class="admin-campaign-status ${campaign.isActive ? "is-active" : "is-inactive"}">
+            ${campaign.isActive ? "Active" : "Inactive"}
+          </span>
+        </div>
+        <div class="admin-campaign-content">
+          <div class="admin-campaign-brand">${escapeHtml(campaign.brand || "-")}</div>
+          <h3>${escapeHtml(campaign.title || "Untitled campaign")}</h3>
+          <p>${escapeHtml(String(campaign.description || "").slice(0, 110))}${campaign.description && campaign.description.length > 110 ? "..." : ""}</p>
+          <div class="admin-campaign-meta">
+            <span><strong>Budget:</strong> ${escapeHtml(formatMoney(campaign.budget))}</span>
+            <span><strong>Deadline:</strong> ${escapeHtml(campaign.deadline || "TBD")}</span>
+            <span><strong>Applicants:</strong> ${Number(campaign.applicantCount || 0)}</span>
+          </div>
+          <div class="admin-campaign-actions">
+            <button class="btn-view" onclick="viewCampaignDetails('${campaign._id}')">Details</button>
+            <button class="btn-edit" onclick="editCampaign('${campaign._id}')">Edit</button>
+            <button class="btn-delete" onclick="deleteCampaign('${campaign._id}')">Delete</button>
+          </div>
+        </div>
+      </article>
+    `
+      )
+      .join("");
+  }
+
+  async function renderCampaignDetailPanel(campaign) {
+    if (!campaignDetailPanel || !campaign) return;
+
+    let applications = [];
+    try {
+      const response = await fetch(
+        `/.netlify/functions/applications?campaignId=${encodeURIComponent(campaign._id)}`,
+        { headers: { Authorization: `Bearer ${authToken}` } }
+      );
+      applications = response.ok ? await response.json() : [];
+    } catch (error) {
+      console.error("Error loading campaign applications:", error);
+      applications = [];
+    }
+
+    const applicantsMarkup = applications.length
+      ? applications
+          .map(
+            (app) => `
+          <tr data-app-status="${escapeHtml(app.status || "pending")}">
+            <td>${escapeHtml(app.creatorName || app.name || "-")}</td>
+            <td>${escapeHtml(app.creatorEmail || app.email || "-")}</td>
+            <td>${escapeHtml(app.creatorInstagram || app.instagram || "-")}</td>
+            <td>
+              <span class="admin-app-status status-${escapeHtml(app.status || "pending")}">
+                ${escapeHtml(app.status || "pending")}
+              </span>
+            </td>
+            <td>${formatDate(app.createdAt)}</td>
+            <td>
+              <div class="admin-app-actions">
+                <button class="btn-edit" data-app-action="approved" data-app-id="${app._id}">Approve</button>
+                <button class="btn-delete" data-app-action="rejected" data-app-id="${app._id}">Reject</button>
+              </div>
+            </td>
+          </tr>
+        `
+          )
+          .join("")
+      : `<tr><td colspan="6" class="admin-campaign-empty-cell">No applicants yet.</td></tr>`;
+
+    campaignDetailPanel.innerHTML = `
+      <div class="admin-campaign-detail-head">
+        <h3>${escapeHtml(campaign.title || "Campaign details")}</h3>
+        <button type="button" class="btn btn-sm" id="close-campaign-detail">Close</button>
+      </div>
+
+      <div class="admin-campaign-detail-grid">
+        <div class="admin-campaign-detail-item"><span>Brand</span><strong>${escapeHtml(campaign.brand || "-")}</strong></div>
+        <div class="admin-campaign-detail-item"><span>Category</span><strong>${escapeHtml(campaign.category || "-")}</strong></div>
+        <div class="admin-campaign-detail-item"><span>Budget</span><strong>${escapeHtml(formatMoney(campaign.budget))}</strong></div>
+        <div class="admin-campaign-detail-item"><span>Spots</span><strong>${escapeHtml(String(campaign.spots || "TBD"))}</strong></div>
+        <div class="admin-campaign-detail-item"><span>Deadline</span><strong>${escapeHtml(campaign.deadline || "TBD")}</strong></div>
+        <div class="admin-campaign-detail-item"><span>Status</span><strong>${campaign.isActive ? "Active" : "Inactive"}</strong></div>
+      </div>
+
+      <div class="admin-campaign-detail-description">
+        <h4>Description</h4>
+        <p>${escapeHtml(campaign.description || "-")}</p>
+      </div>
+
+      <div class="admin-campaign-applicants">
+        <div class="admin-campaign-applicants-head">
+          <h4>Applicants</h4>
+          <div class="admin-app-filter" role="group" aria-label="Filter applicants by status">
+            <button type="button" class="admin-app-filter-btn is-active" data-app-filter="all">All</button>
+            <button type="button" class="admin-app-filter-btn" data-app-filter="pending">Pending</button>
+            <button type="button" class="admin-app-filter-btn" data-app-filter="approved">Approved</button>
+            <button type="button" class="admin-app-filter-btn" data-app-filter="rejected">Rejected</button>
+          </div>
+        </div>
+        <div class="admin-campaign-applicants-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Instagram</th>
+                <th>Status</th>
+                <th>Applied Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>${applicantsMarkup}</tbody>
+          </table>
+        </div>
+      </div>
+    `;
+
+    campaignDetailPanel.style.display = "block";
+    campaignDetailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    const closeBtn = document.getElementById("close-campaign-detail");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        campaignDetailPanel.style.display = "none";
+      });
+    }
+
+    const filterButtons = Array.from(
+      campaignDetailPanel.querySelectorAll("[data-app-filter]")
+    );
+    const applicantRows = Array.from(
+      campaignDetailPanel.querySelectorAll("tbody tr[data-app-status]")
+    );
+
+    function applyApplicantFilter(filter) {
+      applicantRows.forEach((row) => {
+        const rowStatus = row.getAttribute("data-app-status") || "pending";
+        row.style.display = filter === "all" || rowStatus === filter ? "" : "none";
+      });
+
+      filterButtons.forEach((btn) => {
+        btn.classList.toggle("is-active", btn.dataset.appFilter === filter);
+      });
+    }
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        applyApplicantFilter(btn.dataset.appFilter || "all");
+      });
+    });
+
+    const actionButtons = Array.from(
+      campaignDetailPanel.querySelectorAll("[data-app-action][data-app-id]")
+    );
+    actionButtons.forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const nextStatus = btn.dataset.appAction;
+        const appId = btn.dataset.appId;
+        await updateApplicationStatus(appId, nextStatus, campaign);
+      });
+    });
+
+    applyApplicantFilter("all");
+  }
+
+  async function updateApplicationStatus(applicationId, status, campaign) {
+    if (!applicationId || !status) return;
+
+    const statusLabel =
+      status === "approved" ? "Approve" : status === "rejected" ? "Reject" : "Set Pending";
+    const shouldContinue = confirm(`Confirm ${statusLabel} this applicant?`);
+    if (!shouldContinue) return;
+
+    try {
+      const response = await fetch("/.netlify/functions/applications", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({ applicationId, status }),
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        alert(data.error || "Failed to update applicant status");
+        return;
+      }
+
+      const note = data.emailSent ? "Email sent to applicant." : "Status updated. Email not sent.";
+      alert(`Applicant status updated to ${status}. ${note}`);
+      await renderCampaignDetailPanel(campaign);
+      await loadCampaigns();
+    } catch (error) {
+      console.error("Error updating applicant status:", error);
+      alert("Failed to update applicant status.");
     }
   }
 
@@ -175,6 +429,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const response = await fetch("/.netlify/functions/applications", {
         headers: { Authorization: `Bearer ${authToken}` },
       });
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.error || "Failed to load applications");
+      }
       const applications = await response.json();
 
       const tbody = document.getElementById("applications-tbody");
@@ -182,9 +440,9 @@ document.addEventListener("DOMContentLoaded", () => {
         .map(
           (app) => `
         <tr>
-          <td>${app.name}</td>
-          <td>${app.email}</td>
-          <td>${app.campaignId}</td>
+          <td>${app.creatorName || app.name || "-"}</td>
+          <td>${app.creatorEmail || app.email || "-"}</td>
+          <td>${app.campaignTitle || app.brandName || app.campaignId || "-"}</td>
           <td>${app.status}</td>
           <td>${new Date(app.createdAt).toLocaleDateString()}</td>
           <td>
@@ -438,11 +696,11 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("campaign-deadline").value = campaign.deadline || "";
       document.getElementById("campaign-active").checked = campaign.isActive;
       // Populate guidelines
-      const guidelinesText = (campaign.guidelines || []).join(\"\\n\");
-      document.getElementById(\"campaign-guidelines\").value = guidelinesText;
+      const guidelinesText = (campaign.guidelines || []).join("\n");
+      document.getElementById("campaign-guidelines").value = guidelinesText;
 
       // Populate target audience
-      audienceContainer.innerHTML = \"\";
+      audienceContainer.innerHTML = "";
       if (campaign.targetAudience && campaign.targetAudience.length > 0) {
         campaign.targetAudience.forEach((audience) => {
           audienceContainer.appendChild(
@@ -484,6 +742,26 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       console.error("Error deleting campaign:", error);
       alert("Error deleting campaign");
+    }
+  };
+
+  window.viewCampaignDetails = async (id) => {
+    const existing = campaignsCache.find((c) => String(c._id) === String(id));
+    if (existing) {
+      await renderCampaignDetailPanel(existing);
+      return;
+    }
+
+    try {
+      const response = await fetch(`/.netlify/functions/admin-campaigns/${id}`, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      if (!response.ok) throw new Error("Failed to load campaign detail");
+      const campaign = await response.json();
+      await renderCampaignDetailPanel(campaign);
+    } catch (error) {
+      console.error("Error loading campaign detail:", error);
+      alert("Failed to load campaign detail");
     }
   };
 
