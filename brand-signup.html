@@ -10,456 +10,441 @@
   <link href="assets/css/user-auth.css" rel="stylesheet" />
   <link href="assets/css/style.mobile.css" rel="stylesheet" />
   <style>
-    .brand-signup-wrap {
-      max-width: 720px;
-      margin: 40px auto 80px;
-      padding: 0 24px;
+    .brand-shell-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: #ffffff;
+      border-bottom: 1px solid #eceff3;
     }
-    .brand-signup-wrap h1 {
-      font-size: 32px;
-      margin-bottom: 8px;
-    }
-    .brand-signup-wrap .subtitle {
-      color: #666;
-      margin-bottom: 32px;
-      font-size: 15px;
-    }
-    .brand-signup-wrap .card {
-      background: #fff;
-      border: 1px solid #eee;
-      border-radius: 12px;
-      padding: 32px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    }
-    .brand-signup-wrap .section-title {
-      font-size: 18px;
-      font-weight: 700;
-      margin: 24px 0 12px;
-      padding-top: 20px;
-      border-top: 1px solid #eee;
-    }
-    .brand-signup-wrap .section-title:first-of-type {
-      border-top: none;
-      padding-top: 0;
-      margin-top: 0;
-    }
-    .brand-signup-wrap .form-group {
-      margin-bottom: 16px;
-    }
-    .brand-signup-wrap .form-group label {
-      display: block;
-      font-weight: 600;
-      font-size: 13px;
-      margin-bottom: 6px;
-      color: #333;
-    }
-    .brand-signup-wrap .form-group input[type="text"],
-    .brand-signup-wrap .form-group input[type="email"],
-    .brand-signup-wrap .form-group input[type="password"],
-    .brand-signup-wrap .form-group input[type="tel"],
-    .brand-signup-wrap .form-group input[type="url"],
-    .brand-signup-wrap .form-group input[type="file"],
-    .brand-signup-wrap .form-group select,
-    .brand-signup-wrap .form-group textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      font-size: 14px;
-      font-family: inherit;
-      box-sizing: border-box;
-    }
-    .brand-signup-wrap .form-group textarea {
-      min-height: 90px;
-      resize: vertical;
-    }
-    .brand-signup-wrap .form-group small {
-      display: block;
-      color: #888;
-      font-size: 12px;
-      margin-top: 4px;
-    }
-    .brand-signup-wrap .row {
-      display: flex;
-      gap: 12px;
-    }
-    .brand-signup-wrap .row > .form-group {
-      flex: 1;
-    }
-    .brand-signup-wrap .checkbox-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-    }
-    .brand-signup-wrap .checkbox-grid label {
+    .brand-shell-topbar .inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 18px;
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-weight: normal;
-      font-size: 14px;
-      padding: 8px 10px;
-      border: 1px solid #eee;
-      border-radius: 6px;
-      cursor: pointer;
+      justify-content: space-between;
+      gap: 14px;
     }
-    .brand-signup-wrap .checkbox-grid input {
-      margin: 0;
-    }
-    .brand-signup-wrap .submit-row {
-      margin-top: 32px;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-    .brand-signup-wrap .submit-row .btn {
-      flex: 1;
-    }
-    .brand-signup-wrap .banner {
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      margin-bottom: 16px;
-    }
-    .brand-signup-wrap .banner.error {
-      background: #fdecea;
-      color: #b71c1c;
-      border: 1px solid #f5c6c9;
-    }
-    .brand-signup-wrap .banner.success {
-      background: #e8f5e9;
-      color: #1b5e20;
-      border: 1px solid #a5d6a7;
-    }
-    .brand-signup-wrap .footer-link {
-      text-align: center;
-      margin-top: 20px;
-      color: #666;
-      font-size: 14px;
-    }
-    .brand-signup-wrap .footer-link a {
-      color: #ff6b6b;
-      font-weight: 600;
-      text-decoration: none;
-    }
-    @media (max-width: 640px) {
-      .brand-signup-wrap .row { flex-direction: column; gap: 0; }
-      .brand-signup-wrap .checkbox-grid { grid-template-columns: 1fr; }
-      .brand-signup-wrap .card { padding: 20px; }
-    }
-  </style>
-</head>
-<body>
-
-<!-- Shared header (loaded by component-loader) -->
-<div id="header-container"></div>
-
-<main class="brand-signup-wrap">
-  <h1>Partner With Vively</h1>
-  <p class="subtitle">
-    Create a brand account to run campaigns with our creator network. We'll review your application and email you once approved.
-  </p>
-
-  <div id="brand-signup-banner" class="banner" style="display:none;"></div>
-
-  <div class="card">
-    <form id="brand-signup-form">
-      <!-- ================= COMPANY ================= -->
-      <div class="section-title">Company Information</div>
-
-      <div class="form-group">
-        <label for="companyName">Company Name *</label>
-        <input type="text" id="companyName" name="companyName" required />
-      </div>
-
-      <div class="row">
-        <div class="form-group">
-          <label for="email">Business Email * <small style="display:inline;color:#888;font-weight:normal;">(login email)</small></label>
-          <input type="email" id="email" name="email" required />
-        </div>
-        <div class="form-group">
-          <label for="password">Password *</label>
-          <input type="password" id="password" name="password" required minlength="8" />
-          <small>Minimum 8 characters</small>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="form-group" style="flex: 0.4;">
-          <label for="countryCode">Country Code *</label>
-          <select id="countryCode" required>
-            <option value="+82">🇰🇷 +82</option>
-            <option value="+62">🇮🇩 +62</option>
-            <option value="+1">🇺🇸 +1</option>
-            <option value="+44">🇬🇧 +44</option>
-            <option value="+81">🇯🇵 +81</option>
-            <option value="+61">🇦🇺 +61</option>
-            <option value="+65">🇸🇬 +65</option>
-            <option value="+other">Other</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="phone">Phone Number *</label>
-          <input type="tel" id="phone" name="phone" required placeholder="10-2345-6789" />
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="industry">Industry *</label>
-        <select id="industry" name="industry" required>
-          <option value="">Select industry</option>
-          <option value="Beauty">Beauty & Cosmetics</option>
-          <option value="Fashion">Fashion & Apparel</option>
-          <option value="Food">Food & Beverage</option>
-          <option value="Health">Health & Wellness</option>
-          <option value="Tech">Tech & Electronics</option>
-          <option value="Lifestyle">Lifestyle</option>
-          <option value="Entertainment">Entertainment</option>
-          <option value="Travel">Travel & Hospitality</option>
-          <option value="Education">Education</option>
-          <option value="Other">Other</option>
-        </select>
-        <input type="text" id="industryOther" placeholder="Please specify your industry" style="display:none; margin-top:8px;" />
-      </div>
-
-      <div class="form-group">
-        <label for="address">Business Address *</label>
-        <input type="text" id="address" name="address" required placeholder="Street, City, State/Province, Postal Code, Country" />
-      </div>
-
-      <div class="form-group">
-        <label for="website">Company Website</label>
-        <input type="url" id="website" name="website" placeholder="https://" />
-      </div>
-
-      <!-- ================= BUSINESS REGISTRATION ================= -->
-      <div class="section-title">사업자등록증 (Business Registration)</div>
-
-      <div class="form-group">
-        <label for="businessRegNumber">Business Registration Number *</label>
-        <input type="text" id="businessRegNumber" name="businessRegNumber" required placeholder="e.g. 123-45-67890" />
-        <small>사업자등록번호 — required for verification</small>
-      </div>
-
-      <div class="form-group">
-        <label for="businessRegCertFile">Business Registration Certificate (사업자등록증)</label>
-        <input type="file" id="businessRegCertFile" accept=".pdf,image/jpeg,image/png,image/webp" />
-        <small>Optional — PDF or image, max 5 MB. Can be provided later during review.</small>
-      </div>
-
-      <!-- ================= REPRESENTATIVE ================= -->
-      <div class="section-title">Representative Contact</div>
-
-      <div class="row">
-        <div class="form-group">
-          <label for="repName">Full Name *</label>
-          <input type="text" id="repName" name="repName" required />
-        </div>
-        <div class="form-group">
-          <label for="repTitle">Job Title / Position *</label>
-          <input type="text" id="repTitle" name="repTitle" required placeholder="e.g. Marketing Manager" />
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="repEmail">Personal Contact Email</label>
-        <input type="email" id="repEmail" name="repEmail" placeholder="Leave blank to use business email" />
-      </div>
-
-      <!-- ================= CAMPAIGN NEEDS ================= -->
-      <div class="section-title">Campaign Needs</div>
-
-      <div class="form-group">
-        <label>Influencer Tier(s) You Need</label>
-        <div class="checkbox-grid">
-          <label><input type="checkbox" name="influencerTypes" value="Nano" /> Nano (1K–10K)</label>
-          <label><input type="checkbox" name="influencerTypes" value="Micro" /> Micro (10K–100K)</label>
-          <label><input type="checkbox" name="influencerTypes" value="Macro" /> Macro (100K–1M)</label>
-          <label><input type="checkbox" name="influencerTypes" value="Mega" /> Mega (1M+)</label>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Target Region(s)</label>
-        <div class="checkbox-grid">
-          <label><input type="checkbox" name="targetRegions" value="Korea" /> South Korea</label>
-          <label><input type="checkbox" name="targetRegions" value="SEA" /> Southeast Asia</label>
-          <label><input type="checkbox" name="targetRegions" value="Japan" /> Japan</label>
-          <label><input type="checkbox" name="targetRegions" value="US" /> United States</label>
-          <label><input type="checkbox" name="targetRegions" value="Europe" /> Europe</label>
-          <label><input type="checkbox" name="targetRegions" value="Global" /> Global</label>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Content Categories</label>
-        <div class="checkbox-grid">
-          <label><input type="checkbox" name="contentCategories" value="Beauty" /> Beauty</label>
-          <label><input type="checkbox" name="contentCategories" value="Fashion" /> Fashion</label>
-          <label><input type="checkbox" name="contentCategories" value="Food" /> Food</label>
-          <label><input type="checkbox" name="contentCategories" value="Travel" /> Travel</label>
-          <label><input type="checkbox" name="contentCategories" value="Fitness" /> Fitness</label>
-          <label><input type="checkbox" name="contentCategories" value="Tech" /> Tech</label>
-          <label><input type="checkbox" name="contentCategories" value="Lifestyle" /> Lifestyle</label>
-          <label><input type="checkbox" name="contentCategories" value="Entertainment" /> Entertainment</label>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="budgetRange">Estimated Budget per Campaign</label>
-        <select id="budgetRange" name="budgetRange">
-          <option value="">Prefer not to say</option>
-          <option value="< $1,000">Under $1,000</option>
-          <option value="$1,000 - $5,000">$1,000 – $5,000</option>
-          <option value="$5,000 - $20,000">$5,000 – $20,000</option>
-          <option value="$20,000 - $50,000">$20,000 – $50,000</option>
-          <option value="$50,000+">$50,000+</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="notes">Campaign Goals / Notes</label>
-        <textarea id="notes" name="notes" placeholder="Tell us about the products or campaigns you'd like to launch..."></textarea>
-      </div>
-
-      <div class="submit-row">
-        <button type="submit" id="brand-signup-submit" class="btn btn-accent" style="width:100%;">
-          Submit Application
-        </button>
-      </div>
-
-      <p class="footer-link">
-        Already have a brand account? <a href="brand-login.html">Log in</a>
-      </p>
-    </form>
-  </div>
-</main>
-
-<!-- Shared footer -->
-<div id="footer-container"></div>
-
-<script src="assets/js/component-loader.js"></script>
-<script>
-(function () {
-  const form = document.getElementById('brand-signup-form');
-  const banner = document.getElementById('brand-signup-banner');
-  const submitBtn = document.getElementById('brand-signup-submit');
-
-  // "Other" industry reveals free-text input
-  const industrySel = document.getElementById('industry');
-  const industryOther = document.getElementById('industryOther');
-  industrySel.addEventListener('change', () => {
-    if (industrySel.value === 'Other') {
-      industryOther.style.display = 'block';
-      industryOther.required = true;
-    } else {
-      industryOther.style.display = 'none';
-      industryOther.required = false;
-      industryOther.value = '';
-    }
-  });
-
-  function showBanner(kind, msg) {
-    banner.className = 'banner ' + kind;
-    banner.textContent = msg;
-    banner.style.display = 'block';
-    banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-
-  function getChecked(name) {
-    return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
-      .map((el) => el.value);
-  }
-
-  function fileToDataUrl(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(new Error('Failed to read file'));
-      reader.readAsDataURL(file);
-    });
-  }
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    banner.style.display = 'none';
-
-    submitBtn.disabled = true;
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Submitting...';
-
-    try {
-      // Combine country code + phone
-      const countryCode = document.getElementById('countryCode').value;
-      const phoneRaw = document.getElementById('phone').value.trim();
-      const phone = `${countryCode} ${phoneRaw}`;
-
-      const payload = {
-        action: 'signup',
-        companyName: document.getElementById('companyName').value.trim(),
-        email: document.getElementById('email').value.trim().toLowerCase(),
-        password: document.getElementById('password').value,
-        phone,
-        industry: industrySel.value === 'Other'
-          ? (industryOther.value.trim() || 'Other')
-          : industrySel.value,
-        industryOther: industrySel.value === 'Other' ? industryOther.value.trim() : null,
-        address: document.getElementById('address').value.trim(),
-        website: document.getElementById('website').value.trim() || null,
-        businessRegNumber: document.getElementById('businessRegNumber').value.trim(),
-        repName: document.getElementById('repName').value.trim(),
-        repTitle: document.getElementById('repTitle').value.trim(),
-        repEmail: document.getElementById('repEmail').value.trim() || null,
-        influencerTypes: getChecked('influencerTypes'),
-        targetRegions: getChecked('targetRegions'),
-        contentCategories: getChecked('contentCategories'),
-        budgetRange: document.getElementById('budgetRange').value || null,
-        notes: document.getElementById('notes').value.trim() || null,
-      };
-
-      // Optional file upload — read as data URL and include in body.
-      const fileInput = document.getElementById('businessRegCertFile');
-      if (fileInput.files && fileInput.files[0]) {
-        const f = fileInput.files[0];
-        if (f.size > 5 * 1024 * 1024) {
-          throw new Error('Business registration certificate exceeds 5 MB.');
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Brand Signup | Vively</title>
+      <link rel="icon" type="image/png" href="assets/logo/favicon.png" />
+      <link href="assets/css/style.v13.css" rel="stylesheet" />
+      <link href="assets/css/style.mobile.css" rel="stylesheet" />
+      <link href="brand-shell.css" rel="stylesheet" />
+      <style>
+        .brand-form-card {
+          padding: 28px;
         }
-        payload.businessRegCertFile = await fileToDataUrl(f);
-      }
+        .brand-form-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 14px;
+        }
+        .brand-form-grid.two {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .brand-form-grid.three {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .brand-section-title {
+          margin: 28px 0 14px;
+          padding-top: 20px;
+          border-top: 1px solid var(--shell-line);
+          font-size: 18px;
+          font-weight: 800;
+        }
+        .brand-section-title:first-of-type {
+          margin-top: 0;
+          padding-top: 0;
+          border-top: none;
+        }
+        .brand-form-card .form-group {
+          margin-bottom: 0;
+        }
+        .brand-form-card .form-group label {
+          display: block;
+          font-size: 13px;
+          font-weight: 700;
+          margin-bottom: 6px;
+          color: var(--shell-ink);
+        }
+        .brand-form-card input,
+        .brand-form-card select,
+        .brand-form-card textarea {
+          width: 100%;
+          padding: 12px 13px;
+          border: 1px solid var(--shell-line);
+          border-radius: 12px;
+          font-size: 14px;
+          box-sizing: border-box;
+          background: #fff;
+          color: var(--shell-ink);
+        }
+        .brand-form-card textarea {
+          min-height: 96px;
+          resize: vertical;
+        }
+        .brand-form-card small {
+          display: block;
+          color: var(--shell-muted);
+          margin-top: 4px;
+          font-size: 12px;
+        }
+        .pill-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 10px;
+        }
+        .pill-grid label {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 10px 12px;
+          border: 1px solid var(--shell-line);
+          border-radius: 12px;
+          background: #fff;
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+        }
+        .brand-banner {
+          padding: 12px 14px;
+          border-radius: 12px;
+          margin-bottom: 18px;
+          display: none;
+        }
+        .brand-banner.error {
+          background: #f7e9e6;
+          color: #7d2d24;
+          border: 1px solid #e2c0b9;
+        }
+        .brand-banner.success {
+          background: #efe8de;
+          color: #2c261f;
+          border: 1px solid #d9d0c5;
+        }
+        .brand-banner.info {
+          background: #f2f0ec;
+          color: #404040;
+          border: 1px solid #dcd6ce;
+        }
+        @media (max-width: 900px) {
+          .brand-form-grid.two,
+          .brand-form-grid.three,
+          .pill-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+      </style>
+    </head>
+    <body class="shell-page">
+      <div class="shell-layout">
+        <aside class="shell-sidebar">
+          <div class="shell-brand">
+            <img src="assets/logo/vively-logo-white.png" alt="Vively" />
+            <div class="shell-brand-text">
+              <h2>Brand Portal</h2>
+              <p>Company signup</p>
+            </div>
+          </div>
 
-      const res = await fetch('/.netlify/functions/auth-brand', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
+          <nav class="shell-nav" aria-label="Brand Navigation">
+            <a href="brand-login.html">Login</a>
+            <a class="active" href="brand-signup.html">Sign Up</a>
+            <a href="/">Main Website</a>
+            <a href="/admin.html">Admin Login</a>
+          </nav>
+        </aside>
 
-      if (!res.ok) {
-        showBanner('error', data.error || 'Submission failed. Please try again.');
-        return;
-      }
+        <main class="shell-main">
+          <header class="shell-header">
+            <div>
+              <h1>Brand Signup</h1>
+              <div class="shell-subtitle">Create a company account to submit campaigns</div>
+            </div>
+            <div class="shell-user">Pending admin approval required</div>
+          </header>
 
-      form.reset();
-      industryOther.style.display = 'none';
-      showBanner(
-        'success',
-        'Application received! We\'ll review your account and email you at ' +
-          payload.email +
-          ' once approved.'
-      );
-      submitBtn.textContent = 'Application Submitted';
-      submitBtn.disabled = true;
-    } catch (err) {
-      console.error('Brand signup error:', err);
-      showBanner('error', err.message || 'Something went wrong. Please try again.');
-    } finally {
-      if (submitBtn.textContent === 'Submitting...') {
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
-      }
-    }
-  });
-})();
-</script>
+          <section class="shell-content">
+            <div class="shell-card brand-form-card">
+              <div id="brand-signup-banner" class="brand-banner"></div>
 
-</body>
-</html>
+              <form id="brand-signup-form">
+                <div class="brand-section-title">Company Information</div>
+                <div class="brand-form-grid two">
+                  <div class="form-group">
+                    <label for="companyName">Company Name *</label>
+                    <input type="text" id="companyName" name="companyName" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="email">Business Email *</label>
+                    <input type="email" id="email" name="email" required />
+                  </div>
+                </div>
+
+                <div class="brand-form-grid two">
+                  <div class="form-group">
+                    <label for="password">Password *</label>
+                    <input type="password" id="password" name="password" required minlength="8" />
+                    <small>Minimum 8 characters</small>
+                  </div>
+                  <div class="form-group">
+                    <label for="website">Company Website</label>
+                    <input type="url" id="website" name="website" placeholder="https://" />
+                  </div>
+                </div>
+
+                <div class="brand-form-grid two">
+                  <div class="form-group">
+                    <label for="countryCode">Country Code *</label>
+                    <select id="countryCode" required>
+                      <option value="+82">🇰🇷 +82</option>
+                      <option value="+62">🇮🇩 +62</option>
+                      <option value="+1">🇺🇸 +1</option>
+                      <option value="+44">🇬🇧 +44</option>
+                      <option value="+81">🇯🇵 +81</option>
+                      <option value="+61">🇦🇺 +61</option>
+                      <option value="+65">🇸🇬 +65</option>
+                      <option value="+other">Other</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" required placeholder="10-2345-6789" />
+                  </div>
+                </div>
+
+                <div class="brand-form-grid two">
+                  <div class="form-group">
+                    <label for="industry">Industry *</label>
+                    <select id="industry" name="industry" required>
+                      <option value="">Select industry</option>
+                      <option value="Beauty">Beauty & Cosmetics</option>
+                      <option value="Fashion">Fashion & Apparel</option>
+                      <option value="Food">Food & Beverage</option>
+                      <option value="Health">Health & Wellness</option>
+                      <option value="Tech">Tech & Electronics</option>
+                      <option value="Lifestyle">Lifestyle</option>
+                      <option value="Entertainment">Entertainment</option>
+                      <option value="Travel">Travel & Hospitality</option>
+                      <option value="Education">Education</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    <input type="text" id="industryOther" placeholder="Please specify your industry" style="display:none; margin-top:8px;" />
+                  </div>
+                  <div class="form-group">
+                    <label for="address">Business Address *</label>
+                    <input type="text" id="address" name="address" required placeholder="Street, City, State/Province, Postal Code, Country" />
+                  </div>
+                </div>
+
+                <div class="brand-section-title">사업자등록증 (Business Registration)</div>
+                <div class="brand-form-grid two">
+                  <div class="form-group">
+                    <label for="businessRegNumber">Business Registration Number *</label>
+                    <input type="text" id="businessRegNumber" name="businessRegNumber" required placeholder="e.g. 123-45-67890" />
+                    <small>사업자등록번호 — required for verification</small>
+                  </div>
+                  <div class="form-group">
+                    <label for="businessRegCertFile">Business Registration Certificate (사업자등록증)</label>
+                    <input type="file" id="businessRegCertFile" accept=".pdf,image/jpeg,image/png,image/webp" />
+                    <small>Optional — PDF or image, max 5 MB.</small>
+                  </div>
+                </div>
+
+                <div class="brand-section-title">Representative Contact</div>
+                <div class="brand-form-grid two">
+                  <div class="form-group">
+                    <label for="repName">Full Name *</label>
+                    <input type="text" id="repName" name="repName" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="repTitle">Job Title / Position *</label>
+                    <input type="text" id="repTitle" name="repTitle" required placeholder="e.g. Marketing Manager" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="repEmail">Personal Contact Email</label>
+                  <input type="email" id="repEmail" name="repEmail" placeholder="Leave blank to use business email" />
+                </div>
+
+                <div class="brand-section-title">Campaign Needs</div>
+                <div class="form-group" style="margin-bottom: 14px;">
+                  <label>Influencer Tier(s) You Need</label>
+                  <div class="pill-grid">
+                    <label><input type="checkbox" name="influencerTypes" value="Nano" /> Nano (1K–10K)</label>
+                    <label><input type="checkbox" name="influencerTypes" value="Micro" /> Micro (10K–100K)</label>
+                    <label><input type="checkbox" name="influencerTypes" value="Macro" /> Macro (100K–1M)</label>
+                    <label><input type="checkbox" name="influencerTypes" value="Mega" /> Mega (1M+)</label>
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 14px;">
+                  <label>Target Region(s)</label>
+                  <div class="pill-grid">
+                    <label><input type="checkbox" name="targetRegions" value="Korea" /> South Korea</label>
+                    <label><input type="checkbox" name="targetRegions" value="SEA" /> Southeast Asia</label>
+                    <label><input type="checkbox" name="targetRegions" value="Japan" /> Japan</label>
+                    <label><input type="checkbox" name="targetRegions" value="US" /> United States</label>
+                    <label><input type="checkbox" name="targetRegions" value="Europe" /> Europe</label>
+                    <label><input type="checkbox" name="targetRegions" value="Global" /> Global</label>
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 14px;">
+                  <label>Content Categories</label>
+                  <div class="pill-grid">
+                    <label><input type="checkbox" name="contentCategories" value="Beauty" /> Beauty</label>
+                    <label><input type="checkbox" name="contentCategories" value="Fashion" /> Fashion</label>
+                    <label><input type="checkbox" name="contentCategories" value="Food" /> Food</label>
+                    <label><input type="checkbox" name="contentCategories" value="Travel" /> Travel</label>
+                    <label><input type="checkbox" name="contentCategories" value="Fitness" /> Fitness</label>
+                    <label><input type="checkbox" name="contentCategories" value="Tech" /> Tech</label>
+                    <label><input type="checkbox" name="contentCategories" value="Lifestyle" /> Lifestyle</label>
+                    <label><input type="checkbox" name="contentCategories" value="Entertainment" /> Entertainment</label>
+                  </div>
+                </div>
+
+                <div class="brand-form-grid two">
+                  <div class="form-group">
+                    <label for="budgetRange">Estimated Budget per Campaign</label>
+                    <select id="budgetRange" name="budgetRange">
+                      <option value="">Prefer not to say</option>
+                      <option value="< $1,000">Under $1,000</option>
+                      <option value="$1,000 - $5,000">$1,000 – $5,000</option>
+                      <option value="$5,000 - $20,000">$5,000 – $20,000</option>
+                      <option value="$20,000 - $50,000">$20,000 – $50,000</option>
+                      <option value="$50,000+">$50,000+</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="notes">Campaign Goals / Notes</label>
+                    <textarea id="notes" name="notes" placeholder="Tell us about the products or campaigns you'd like to launch..."></textarea>
+                  </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top: 28px;">
+                  <button type="submit" id="brand-signup-submit" class="btn btn-accent" style="flex:1;">Submit Application</button>
+                  <a class="btn" style="flex:1; display:flex; align-items:center; justify-content:center; text-decoration:none; background:var(--shell-soft); color:var(--shell-ink); border:1px solid var(--shell-line);" href="brand-login.html">I already have an account</a>
+                </div>
+              </form>
+            </div>
+          </section>
+        </main>
+      </div>
+
+      <script>
+      (function () {
+        const form = document.getElementById('brand-signup-form');
+        const banner = document.getElementById('brand-signup-banner');
+        const submitBtn = document.getElementById('brand-signup-submit');
+
+        const industrySel = document.getElementById('industry');
+        const industryOther = document.getElementById('industryOther');
+        industrySel.addEventListener('change', () => {
+          const showOther = industrySel.value === 'Other';
+          industryOther.style.display = showOther ? 'block' : 'none';
+          industryOther.required = showOther;
+          if (!showOther) industryOther.value = '';
+        });
+
+        function showBanner(kind, msg) {
+          banner.className = 'brand-banner ' + kind;
+          banner.textContent = msg;
+          banner.style.display = 'block';
+          banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function getChecked(name) {
+          return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map((el) => el.value);
+        }
+
+        function fileToDataUrl(file) {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(new Error('Failed to read file'));
+            reader.readAsDataURL(file);
+          });
+        }
+
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          banner.style.display = 'none';
+
+          submitBtn.disabled = true;
+          const originalText = submitBtn.textContent;
+          submitBtn.textContent = 'Submitting...';
+
+          try {
+            const countryCode = document.getElementById('countryCode').value;
+            const phoneRaw = document.getElementById('phone').value.trim();
+            const phone = `${countryCode} ${phoneRaw}`;
+
+            const payload = {
+              action: 'signup',
+              companyName: document.getElementById('companyName').value.trim(),
+              email: document.getElementById('email').value.trim().toLowerCase(),
+              password: document.getElementById('password').value,
+              phone,
+              industry: industrySel.value === 'Other' ? (industryOther.value.trim() || 'Other') : industrySel.value,
+              industryOther: industrySel.value === 'Other' ? industryOther.value.trim() : null,
+              address: document.getElementById('address').value.trim(),
+              website: document.getElementById('website').value.trim() || null,
+              businessRegNumber: document.getElementById('businessRegNumber').value.trim(),
+              repName: document.getElementById('repName').value.trim(),
+              repTitle: document.getElementById('repTitle').value.trim(),
+              repEmail: document.getElementById('repEmail').value.trim() || null,
+              influencerTypes: getChecked('influencerTypes'),
+              targetRegions: getChecked('targetRegions'),
+              contentCategories: getChecked('contentCategories'),
+              budgetRange: document.getElementById('budgetRange').value || null,
+              notes: document.getElementById('notes').value.trim() || null,
+            };
+
+            const fileInput = document.getElementById('businessRegCertFile');
+            if (fileInput.files && fileInput.files[0]) {
+              const f = fileInput.files[0];
+              if (f.size > 5 * 1024 * 1024) {
+                throw new Error('Business registration certificate exceeds 5 MB.');
+              }
+              payload.businessRegCertFile = await fileToDataUrl(f);
+            }
+
+            const res = await fetch('/.netlify/functions/auth-brand', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+              showBanner('error', data.error || 'Submission failed. Please try again.');
+              return;
+            }
+
+            form.reset();
+            industryOther.style.display = 'none';
+            showBanner('success', 'Application received! We\'ll review your account and email you once approved.');
+            submitBtn.textContent = 'Application Submitted';
+            submitBtn.disabled = true;
+          } catch (err) {
+            console.error('Brand signup error:', err);
+            showBanner('error', err.message || 'Something went wrong. Please try again.');
+          } finally {
+            if (submitBtn.textContent === 'Submitting...') {
+              submitBtn.textContent = originalText;
+              submitBtn.disabled = false;
+            }
+          }
+        });
+      })();
+      </script>
+    </body>
+    </html>
+          : industrySel.value,
