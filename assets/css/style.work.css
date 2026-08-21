@@ -16,8 +16,19 @@
 .nav-links a{ color:rgba(255,255,255,.66); }
 .nav-links a:hover, .nav-links a.active{ color:#fff; }
 .nav-links a.active::after{ background:var(--accent); }
-.nav .btn-primary{ background:#fff; color:#0d0d0c; }
-.nav .btn-primary:hover{ background:var(--accent); color:#fff; }
+.nav #login-link,
+.nav #logout-btn{
+  background:transparent;
+  border-color:transparent;
+  color:#fff;
+}
+.nav #login-link:hover,
+.nav #logout-btn:hover{
+  background:transparent;
+  border-color:transparent;
+  color:var(--accent);
+  transform:none;
+}
 .nav #user-name,
 .nav .user-profile,
 .nav .user-profile .btn,
@@ -47,18 +58,18 @@
 
 .hero-center .hero-showcase{
   display:grid;
-  grid-template-columns:minmax(290px, 420px) minmax(0, 720px);
+  grid-template-columns:minmax(360px, 500px) minmax(0, 820px);
   gap:clamp(28px, 4vw, 68px);
   align-items:center;
   justify-content:center;
   min-height:calc(100svh - 120px);
 }
 .hero-copy{ max-width:1180px; margin:0 auto; }
-.hero-center .hero-copy{ max-width:670px; margin:0; text-align:left; }
+.hero-center .hero-copy{ max-width:820px; margin:0; text-align:left; }
 .hero-center .eyebrow{ justify-content:flex-start; color:rgba(255,255,255,.76); }
 .hero-oneline{
-  margin-top:18px;
-  font-size:clamp(31px,2.85vw,54px);
+  margin-top:22px;
+  font-size:clamp(36px,3.25vw,64px);
   line-height:1.1;
   max-width:none;
   letter-spacing:-0.05em;
@@ -66,26 +77,26 @@
 }
 @media (min-width:1080px){ .hero-oneline{ white-space:nowrap; } }
 .hero-center .hero-sub{
-  margin:22px 0 0;
-  max-width:620px;
-  font-size:clamp(15px,1.4vw,19px);
+  margin:26px 0 0;
+  max-width:760px;
+  font-size:clamp(17px,1.5vw,22px);
   line-height:1.62;
   color:rgba(255,255,255,.72);
 }
 .hero-center .hero-hook{
-  margin-top:18px;
+  margin-top:22px;
   color:rgba(255,255,255,.8);
   display:inline-block;
-  padding:10px 18px;
+  padding:12px 21px;
   border-radius:999px;
   background:#2a2a2a;
   border:none;
-  font-size:14px;
+  font-size:16px;
   line-height:1.5;
 }
 .hero-center .hero-hook b{ color:#fff; }
-.hero-center .hero-ctas{ justify-content:flex-start; margin-top:28px; gap:12px; }
-.hero-center .hero-ctas .btn{ height:48px; padding:0 24px; font-size:14px; }
+.hero-center .hero-ctas{ justify-content:flex-start; margin-top:34px; gap:14px; }
+.hero-center .hero-ctas .btn{ height:56px; padding:0 28px; font-size:16px; }
 .hero-center .hero-ctas .btn-ghost{
   color:#fff;
 }
@@ -93,7 +104,7 @@
 .hero-visual-wide{
   position:relative;
   margin:0;
-  width:420px;
+  width:500px;
   max-width:100%;
   justify-self:center;
 }

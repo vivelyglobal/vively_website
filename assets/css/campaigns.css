@@ -9,6 +9,8 @@
 
 .campaign-hero {
   padding: clamp(24px, 4vw, 44px) 0 0;
+  --campaign-hero-gradient: linear-gradient(135deg, #1b1b1b 0%, #101010 46%, #050505 100%);
+  background: var(--campaign-hero-gradient);
 }
 
 .campaign-hero-card {
@@ -18,7 +20,7 @@
   min-height: 420px;
   border-radius: 28px;
   overflow: hidden;
-  background: #0b0b0b;
+  background: var(--campaign-hero-gradient);
   box-shadow: 0 24px 60px rgba(19, 19, 19, 0.18);
 }
 
@@ -26,9 +28,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.12), transparent 34%),
-    linear-gradient(115deg, rgba(255, 255, 255, 0.04), transparent 62%);
+  background: transparent;
   pointer-events: none;
 }
 
