@@ -6,7 +6,7 @@
   <title>Campaign Details | Vively</title>
   <link rel="stylesheet" href="assets/css/style.v13.css" />
   <link rel="stylesheet" href="assets/css/style.work.css" />
-  <link rel="stylesheet" href="assets/css/campaigns.css" />
+  <link rel="stylesheet" href="assets/css/campaigns.css?v=20260821" />
   <link rel="stylesheet" href="assets/css/user-auth.css" />
   <link rel="stylesheet" href="assets/css/style.mobile.v2.css" />
 </head>
@@ -25,31 +25,9 @@
 <section class="campaign-application">
   <div class="wrap">
     <h2>Apply for this Campaign</h2>
-    <form id="application-form" class="application-form">
-      <input type="hidden" id="campaign-id" />
-      
-      <div class="form-group">
-        <label for="app-name">Full Name *</label>
-        <input type="text" id="app-name" name="name" required />
-      </div>
-
-      <div class="form-group">
-        <label for="app-email">Email *</label>
-        <input type="email" id="app-email" name="email" required />
-      </div>
-
-      <div class="form-group">
-        <label for="app-instagram">Instagram Handle</label>
-        <input type="text" id="app-instagram" name="instagram" placeholder="@yourhandle" />
-      </div>
-
-      <div class="form-group">
-        <label for="app-message">Message</label>
-        <textarea id="app-message" name="message" rows="4"></textarea>
-      </div>
-
-      <button type="submit" class="btn btn-accent">Submit Application</button>
-    </form>
+    <div id="apply-container">
+      <!-- Populated by campaign-detail.js based on login state -->
+    </div>
     <div id="form-success" class="form-success" style="display:none;">
       <p>✓ Application submitted successfully!</p>
     </div>
@@ -60,6 +38,6 @@
 
 <script src="assets/js/component-loader.js"></script>
 <script src="assets/js/main.v2.js"></script>
-<script src="assets/js/campaign-detail.js"></script>
+<script src="assets/js/campaign-detail.js?v=20260821"></script>
 </body>
 </html>
