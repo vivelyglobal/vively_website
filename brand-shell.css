@@ -1,0 +1,247 @@
+/* Shared shell for admin + brand portals.
+   Palette: black / white / beige / grey. */
+:root {
+  --shell-bg: #f4efe7;
+  --shell-surface: #ffffff;
+  --shell-ink: #191919;
+  --shell-muted: #6f6a63;
+  --shell-line: #d8d1c7;
+  --shell-soft: #efe8de;
+  --shell-soft-2: #e6ddd0;
+  --shell-accent: #111111;
+  --shell-accent-2: #6f6253;
+  --shell-shadow: 0 18px 50px rgba(25, 25, 25, 0.12);
+}
+
+.shell-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f6f1ea 0%, #f0ebe4 45%, #f8f7f5 100%);
+  color: var(--shell-ink);
+}
+
+.shell-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.shell-sidebar {
+  width: 280px;
+  background: linear-gradient(180deg, #141414 0%, #23211f 100%);
+  color: #fff;
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.08);
+}
+
+.shell-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.shell-brand img {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.shell-brand-text h2,
+.shell-brand-text p {
+  margin: 0;
+}
+
+.shell-brand-text h2 {
+  font-size: 18px;
+  letter-spacing: 0.02em;
+}
+
+.shell-brand-text p {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.shell-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.shell-nav a {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.82);
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.shell-nav a:hover,
+.shell-nav a.active {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.shell-nav .danger {
+  margin-top: auto;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.shell-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.shell-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 20px 28px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(216, 209, 199, 0.8);
+}
+
+.shell-header h1 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.shell-header .shell-subtitle {
+  margin-top: 6px;
+  color: var(--shell-muted);
+  font-size: 13px;
+}
+
+.shell-user {
+  font-size: 14px;
+  color: var(--shell-muted);
+  background: var(--shell-soft);
+  border: 1px solid var(--shell-line);
+  padding: 9px 14px;
+  border-radius: 999px;
+}
+
+.shell-content {
+  padding: 34px 28px 50px;
+}
+
+.shell-card {
+  background: var(--shell-surface);
+  border: 1px solid rgba(216, 209, 199, 0.8);
+  border-radius: 20px;
+  box-shadow: var(--shell-shadow);
+  overflow: hidden;
+}
+
+.shell-auth-card {
+  max-width: 480px;
+  margin: 64px auto;
+  padding: 34px 30px;
+  background: var(--shell-surface);
+  border-radius: 20px;
+  border: 1px solid rgba(216, 209, 199, 0.8);
+  box-shadow: var(--shell-shadow);
+}
+
+.shell-auth-card h2 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  letter-spacing: -0.03em;
+}
+
+.shell-auth-card .muted {
+  color: var(--shell-muted);
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+
+.shell-auth-link-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.shell-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 16px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  border: 1px solid var(--shell-line);
+  color: var(--shell-ink);
+  background: #fff;
+}
+
+.shell-btn.primary {
+  background: var(--shell-accent);
+  color: #fff;
+  border-color: var(--shell-accent);
+}
+
+.shell-btn.secondary {
+  background: var(--shell-soft);
+  color: var(--shell-ink);
+}
+
+.shell-brand-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--shell-soft);
+  color: var(--shell-ink);
+  border: 1px solid var(--shell-line);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .shell-layout {
+    flex-direction: column;
+  }
+
+  .shell-sidebar {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .shell-header,
+  .shell-content {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .shell-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .shell-auth-card {
+    margin: 36px 16px;
+    padding: 24px 18px;
+  }
+}
