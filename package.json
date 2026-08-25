@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "netlify dev",
+    "dev:render": "node server.js",
     "build": "echo 'Static site, no build needed'",
-    "start": "netlify dev",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
