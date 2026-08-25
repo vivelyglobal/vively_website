@@ -6,445 +6,504 @@
   <title>Brand Signup | Vively</title>
   <link rel="icon" type="image/png" href="assets/logo/favicon.png" />
   <link href="assets/css/style.v13.css" rel="stylesheet" />
-  <link href="assets/css/style.work.css" rel="stylesheet" />
-  <link href="assets/css/user-auth.css" rel="stylesheet" />
-  <link href="assets/css/style.mobile.css" rel="stylesheet" />
+  <link href="brand-shell.css" rel="stylesheet" />
   <style>
-    .brand-shell-topbar {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: #ffffff;
-      border-bottom: 1px solid #eceff3;
+    .brand-form-card {
+      padding: clamp(22px, 3vw, 34px);
     }
-    .brand-shell-topbar .inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 14px 18px;
+
+    .brand-form-intro {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 28px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--shell-line);
+    }
+
+    .brand-form-intro h2 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 34px);
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+    }
+
+    .brand-form-intro p {
+      margin: 0;
+      max-width: 760px;
+      color: var(--shell-muted);
+      line-height: 1.6;
+    }
+
+    .brand-form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .brand-form-grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .brand-section-title {
+      margin: 30px 0 16px;
+      padding-top: 22px;
+      border-top: 1px solid var(--shell-line);
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-section-title:first-of-type {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+
+    .brand-form-card .form-group {
+      margin-bottom: 0;
+    }
+
+    .brand-form-card .form-group label,
+    .brand-form-card .field-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 7px;
+      color: var(--shell-ink);
+    }
+
+    .brand-form-card input,
+    .brand-form-card select,
+    .brand-form-card textarea {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 14px;
+      border: 1px solid var(--shell-line);
+      border-radius: 12px;
+      font-size: 14px;
+      box-sizing: border-box;
+      background: #fff;
+      color: var(--shell-ink);
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .brand-form-card input:focus,
+    .brand-form-card select:focus,
+    .brand-form-card textarea:focus {
+      border-color: #111;
+      box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08);
+    }
+
+    .brand-form-card textarea {
+      min-height: 118px;
+      resize: vertical;
+    }
+
+    .brand-form-card small {
+      display: block;
+      color: var(--shell-muted);
+      margin-top: 5px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .pill-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .pill-grid label {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 14px;
+      gap: 9px;
+      min-height: 46px;
+      padding: 10px 12px;
+      border: 1px solid var(--shell-line);
+      border-radius: 12px;
+      background: #fff;
+      font-size: 14px;
+      font-weight: 650;
+      cursor: pointer;
     }
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Brand Signup | Vively</title>
-      <link rel="icon" type="image/png" href="assets/logo/favicon.png" />
-      <link href="assets/css/style.v13.css" rel="stylesheet" />
-      <link href="assets/css/style.mobile.css" rel="stylesheet" />
-      <link href="brand-shell.css" rel="stylesheet" />
-      <style>
-        .brand-form-card {
-          padding: 28px;
-        }
-        .brand-form-grid {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 14px;
-        }
-        .brand-form-grid.two {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-        .brand-form-grid.three {
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-        .brand-section-title {
-          margin: 28px 0 14px;
-          padding-top: 20px;
-          border-top: 1px solid var(--shell-line);
-          font-size: 18px;
-          font-weight: 800;
-        }
-        .brand-section-title:first-of-type {
-          margin-top: 0;
-          padding-top: 0;
-          border-top: none;
-        }
-        .brand-form-card .form-group {
-          margin-bottom: 0;
-        }
-        .brand-form-card .form-group label {
-          display: block;
-          font-size: 13px;
-          font-weight: 700;
-          margin-bottom: 6px;
-          color: var(--shell-ink);
-        }
-        .brand-form-card input,
-        .brand-form-card select,
-        .brand-form-card textarea {
-          width: 100%;
-          padding: 12px 13px;
-          border: 1px solid var(--shell-line);
-          border-radius: 12px;
-          font-size: 14px;
-          box-sizing: border-box;
-          background: #fff;
-          color: var(--shell-ink);
-        }
-        .brand-form-card textarea {
-          min-height: 96px;
-          resize: vertical;
-        }
-        .brand-form-card small {
-          display: block;
-          color: var(--shell-muted);
-          margin-top: 4px;
-          font-size: 12px;
-        }
-        .pill-grid {
-          display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 10px;
-        }
-        .pill-grid label {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          padding: 10px 12px;
-          border: 1px solid var(--shell-line);
-          border-radius: 12px;
-          background: #fff;
-          font-size: 14px;
-          font-weight: 600;
-          cursor: pointer;
-        }
-        .brand-banner {
-          padding: 12px 14px;
-          border-radius: 12px;
-          margin-bottom: 18px;
-          display: none;
-        }
-        .brand-banner.error {
-          background: #f7e9e6;
-          color: #7d2d24;
-          border: 1px solid #e2c0b9;
-        }
-        .brand-banner.success {
-          background: #efe8de;
-          color: #2c261f;
-          border: 1px solid #d9d0c5;
-        }
-        .brand-banner.info {
-          background: #f2f0ec;
-          color: #404040;
-          border: 1px solid #dcd6ce;
-        }
-        @media (max-width: 900px) {
-          .brand-form-grid.two,
-          .brand-form-grid.three,
-          .pill-grid {
-            grid-template-columns: 1fr;
-          }
-        }
-      </style>
-    </head>
-    <body class="shell-page">
-      <div class="shell-layout">
-        <aside class="shell-sidebar">
-          <div class="shell-brand">
-            <img src="assets/logo/vively-logo-white.png" alt="Vively" />
-            <div class="shell-brand-text">
-              <h2>Brand Portal</h2>
-              <p>Company signup</p>
-            </div>
-          </div>
 
-          <nav class="shell-nav" aria-label="Brand Navigation">
-            <a href="brand-login.html">Login</a>
-            <a class="active" href="brand-signup.html">Sign Up</a>
-            <a href="/">Main Website</a>
-            <a href="/admin.html">Admin Login</a>
-          </nav>
-        </aside>
+    .pill-grid input {
+      width: auto;
+      min-height: auto;
+      padding: 0;
+      accent-color: #111;
+    }
 
-        <main class="shell-main">
-          <header class="shell-header">
-            <div>
-              <h1>Brand Signup</h1>
-              <div class="shell-subtitle">Create a company account to submit campaigns</div>
-            </div>
-            <div class="shell-user">Pending admin approval required</div>
-          </header>
+    .brand-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 30px;
+    }
 
-          <section class="shell-content">
-            <div class="shell-card brand-form-card">
-              <div id="brand-signup-banner" class="brand-banner"></div>
+    .brand-actions .btn {
+      width: 100%;
+      height: 54px;
+    }
 
-              <form id="brand-signup-form">
-                <div class="brand-section-title">Company Information</div>
-                <div class="brand-form-grid two">
-                  <div class="form-group">
-                    <label for="companyName">Company Name *</label>
-                    <input type="text" id="companyName" name="companyName" required />
-                  </div>
-                  <div class="form-group">
-                    <label for="email">Business Email *</label>
-                    <input type="email" id="email" name="email" required />
-                  </div>
-                </div>
+    .brand-actions .btn-secondary {
+      background: var(--shell-soft);
+      color: var(--shell-ink);
+      border: 1px solid var(--shell-line);
+    }
 
-                <div class="brand-form-grid two">
-                  <div class="form-group">
-                    <label for="password">Password *</label>
-                    <input type="password" id="password" name="password" required minlength="8" />
-                    <small>Minimum 8 characters</small>
-                  </div>
-                  <div class="form-group">
-                    <label for="website">Company Website</label>
-                    <input type="url" id="website" name="website" placeholder="https://" />
-                  </div>
-                </div>
+    .brand-banner {
+      padding: 13px 15px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: none;
+      font-size: 14px;
+      font-weight: 650;
+    }
 
-                <div class="brand-form-grid two">
-                  <div class="form-group">
-                    <label for="countryCode">Country Code *</label>
-                    <select id="countryCode" required>
-                      <option value="+82">🇰🇷 +82</option>
-                      <option value="+62">🇮🇩 +62</option>
-                      <option value="+1">🇺🇸 +1</option>
-                      <option value="+44">🇬🇧 +44</option>
-                      <option value="+81">🇯🇵 +81</option>
-                      <option value="+61">🇦🇺 +61</option>
-                      <option value="+65">🇸🇬 +65</option>
-                      <option value="+other">Other</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="phone">Phone Number *</label>
-                    <input type="tel" id="phone" name="phone" required placeholder="10-2345-6789" />
-                  </div>
-                </div>
+    .brand-banner.error {
+      background: #f7e9e6;
+      color: #7d2d24;
+      border: 1px solid #e2c0b9;
+    }
 
-                <div class="brand-form-grid two">
-                  <div class="form-group">
-                    <label for="industry">Industry *</label>
-                    <select id="industry" name="industry" required>
-                      <option value="">Select industry</option>
-                      <option value="Beauty">Beauty & Cosmetics</option>
-                      <option value="Fashion">Fashion & Apparel</option>
-                      <option value="Food">Food & Beverage</option>
-                      <option value="Health">Health & Wellness</option>
-                      <option value="Tech">Tech & Electronics</option>
-                      <option value="Lifestyle">Lifestyle</option>
-                      <option value="Entertainment">Entertainment</option>
-                      <option value="Travel">Travel & Hospitality</option>
-                      <option value="Education">Education</option>
-                      <option value="Other">Other</option>
-                    </select>
-                    <input type="text" id="industryOther" placeholder="Please specify your industry" style="display:none; margin-top:8px;" />
-                  </div>
-                  <div class="form-group">
-                    <label for="address">Business Address *</label>
-                    <input type="text" id="address" name="address" required placeholder="Street, City, State/Province, Postal Code, Country" />
-                  </div>
-                </div>
+    .brand-banner.success {
+      background: #efe8de;
+      color: #2c261f;
+      border: 1px solid #d9d0c5;
+    }
 
-                <div class="brand-section-title">사업자등록증 (Business Registration)</div>
-                <div class="brand-form-grid two">
-                  <div class="form-group">
-                    <label for="businessRegNumber">Business Registration Number *</label>
-                    <input type="text" id="businessRegNumber" name="businessRegNumber" required placeholder="e.g. 123-45-67890" />
-                    <small>사업자등록번호 — required for verification</small>
-                  </div>
-                  <div class="form-group">
-                    <label for="businessRegCertFile">Business Registration Certificate (사업자등록증)</label>
-                    <input type="file" id="businessRegCertFile" accept=".pdf,image/jpeg,image/png,image/webp" />
-                    <small>Optional — PDF or image, max 5 MB.</small>
-                  </div>
-                </div>
+    .brand-banner.info {
+      background: #f2f0ec;
+      color: #404040;
+      border: 1px solid #dcd6ce;
+    }
 
-                <div class="brand-section-title">Representative Contact</div>
-                <div class="brand-form-grid two">
-                  <div class="form-group">
-                    <label for="repName">Full Name *</label>
-                    <input type="text" id="repName" name="repName" required />
-                  </div>
-                  <div class="form-group">
-                    <label for="repTitle">Job Title / Position *</label>
-                    <input type="text" id="repTitle" name="repTitle" required placeholder="e.g. Marketing Manager" />
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="repEmail">Personal Contact Email</label>
-                  <input type="email" id="repEmail" name="repEmail" placeholder="Leave blank to use business email" />
-                </div>
-
-                <div class="brand-section-title">Campaign Needs</div>
-                <div class="form-group" style="margin-bottom: 14px;">
-                  <label>Influencer Tier(s) You Need</label>
-                  <div class="pill-grid">
-                    <label><input type="checkbox" name="influencerTypes" value="Nano" /> Nano (1K–10K)</label>
-                    <label><input type="checkbox" name="influencerTypes" value="Micro" /> Micro (10K–100K)</label>
-                    <label><input type="checkbox" name="influencerTypes" value="Macro" /> Macro (100K–1M)</label>
-                    <label><input type="checkbox" name="influencerTypes" value="Mega" /> Mega (1M+)</label>
-                  </div>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 14px;">
-                  <label>Target Region(s)</label>
-                  <div class="pill-grid">
-                    <label><input type="checkbox" name="targetRegions" value="Korea" /> South Korea</label>
-                    <label><input type="checkbox" name="targetRegions" value="SEA" /> Southeast Asia</label>
-                    <label><input type="checkbox" name="targetRegions" value="Japan" /> Japan</label>
-                    <label><input type="checkbox" name="targetRegions" value="US" /> United States</label>
-                    <label><input type="checkbox" name="targetRegions" value="Europe" /> Europe</label>
-                    <label><input type="checkbox" name="targetRegions" value="Global" /> Global</label>
-                  </div>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 14px;">
-                  <label>Content Categories</label>
-                  <div class="pill-grid">
-                    <label><input type="checkbox" name="contentCategories" value="Beauty" /> Beauty</label>
-                    <label><input type="checkbox" name="contentCategories" value="Fashion" /> Fashion</label>
-                    <label><input type="checkbox" name="contentCategories" value="Food" /> Food</label>
-                    <label><input type="checkbox" name="contentCategories" value="Travel" /> Travel</label>
-                    <label><input type="checkbox" name="contentCategories" value="Fitness" /> Fitness</label>
-                    <label><input type="checkbox" name="contentCategories" value="Tech" /> Tech</label>
-                    <label><input type="checkbox" name="contentCategories" value="Lifestyle" /> Lifestyle</label>
-                    <label><input type="checkbox" name="contentCategories" value="Entertainment" /> Entertainment</label>
-                  </div>
-                </div>
-
-                <div class="brand-form-grid two">
-                  <div class="form-group">
-                    <label for="budgetRange">Estimated Budget per Campaign</label>
-                    <select id="budgetRange" name="budgetRange">
-                      <option value="">Prefer not to say</option>
-                      <option value="< $1,000">Under $1,000</option>
-                      <option value="$1,000 - $5,000">$1,000 – $5,000</option>
-                      <option value="$5,000 - $20,000">$5,000 – $20,000</option>
-                      <option value="$20,000 - $50,000">$20,000 – $50,000</option>
-                      <option value="$50,000+">$50,000+</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="notes">Campaign Goals / Notes</label>
-                    <textarea id="notes" name="notes" placeholder="Tell us about the products or campaigns you'd like to launch..."></textarea>
-                  </div>
-                </div>
-
-                <div style="display:flex; gap:12px; margin-top: 28px;">
-                  <button type="submit" id="brand-signup-submit" class="btn btn-accent" style="flex:1;">Submit Application</button>
-                  <a class="btn" style="flex:1; display:flex; align-items:center; justify-content:center; text-decoration:none; background:var(--shell-soft); color:var(--shell-ink); border:1px solid var(--shell-line);" href="brand-login.html">I already have an account</a>
-                </div>
-              </form>
-            </div>
-          </section>
-        </main>
+    @media (max-width: 900px) {
+      .brand-form-grid.two,
+      .pill-grid,
+      .brand-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="shell-page">
+  <div class="shell-layout">
+    <aside class="shell-sidebar">
+      <div class="shell-brand">
+        <img src="assets/logo/vively-logo-white.png" alt="Vively" />
+        <div class="shell-brand-text">
+          <h2>Brand Portal</h2>
+          <p>Company signup</p>
+        </div>
       </div>
 
-      <script>
-      (function () {
-        const form = document.getElementById('brand-signup-form');
-        const banner = document.getElementById('brand-signup-banner');
-        const submitBtn = document.getElementById('brand-signup-submit');
+      <nav class="shell-nav" aria-label="Brand Navigation">
+        <a href="brand-login.html">Login</a>
+        <a class="active" href="brand-signup.html">Sign Up</a>
+        <a href="/">Main Website</a>
+        <a href="/admin.html">Admin Login</a>
+      </nav>
+    </aside>
 
-        const industrySel = document.getElementById('industry');
-        const industryOther = document.getElementById('industryOther');
-        industrySel.addEventListener('change', () => {
-          const showOther = industrySel.value === 'Other';
-          industryOther.style.display = showOther ? 'block' : 'none';
-          industryOther.required = showOther;
-          if (!showOther) industryOther.value = '';
+    <main class="shell-main">
+      <header class="shell-header">
+        <div>
+          <h1>Brand Signup</h1>
+          <div class="shell-subtitle">Create a company account to submit campaigns</div>
+        </div>
+        <div class="shell-user">Pending admin approval required</div>
+      </header>
+
+      <section class="shell-content">
+        <div class="shell-card brand-form-card">
+          <div class="brand-form-intro">
+            <h2>Company application</h2>
+            <p>Tell us about your company, representative contact, and campaign needs. Vively will review the account before opening brand portal access.</p>
+          </div>
+
+          <div id="brand-signup-banner" class="brand-banner"></div>
+
+          <form id="brand-signup-form">
+            <div class="brand-section-title">Company Information</div>
+            <div class="brand-form-grid two">
+              <div class="form-group">
+                <label for="companyName">Company Name *</label>
+                <input type="text" id="companyName" name="companyName" required />
+              </div>
+              <div class="form-group">
+                <label for="email">Business Email *</label>
+                <input type="email" id="email" name="email" required />
+              </div>
+            </div>
+
+            <div class="brand-form-grid two">
+              <div class="form-group">
+                <label for="password">Password *</label>
+                <input type="password" id="password" name="password" required minlength="8" />
+                <small>Minimum 8 characters</small>
+              </div>
+              <div class="form-group">
+                <label for="website">Company Website</label>
+                <input type="url" id="website" name="website" placeholder="https://" />
+              </div>
+            </div>
+
+            <div class="brand-form-grid two">
+              <div class="form-group">
+                <label for="countryCode">Country Code *</label>
+                <select id="countryCode" required>
+                  <option value="+82">KR +82</option>
+                  <option value="+62">ID +62</option>
+                  <option value="+1">US +1</option>
+                  <option value="+44">UK +44</option>
+                  <option value="+81">JP +81</option>
+                  <option value="+61">AU +61</option>
+                  <option value="+65">SG +65</option>
+                  <option value="+other">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="phone">Phone Number *</label>
+                <input type="tel" id="phone" name="phone" required placeholder="10-2345-6789" />
+              </div>
+            </div>
+
+            <div class="brand-form-grid two">
+              <div class="form-group">
+                <label for="industry">Industry *</label>
+                <select id="industry" name="industry" required>
+                  <option value="">Select industry</option>
+                  <option value="Beauty">Beauty &amp; Cosmetics</option>
+                  <option value="Fashion">Fashion &amp; Apparel</option>
+                  <option value="Food">Food &amp; Beverage</option>
+                  <option value="Health">Health &amp; Wellness</option>
+                  <option value="Tech">Tech &amp; Electronics</option>
+                  <option value="Lifestyle">Lifestyle</option>
+                  <option value="Entertainment">Entertainment</option>
+                  <option value="Travel">Travel &amp; Hospitality</option>
+                  <option value="Education">Education</option>
+                  <option value="Other">Other</option>
+                </select>
+                <input type="text" id="industryOther" placeholder="Please specify your industry" style="display:none; margin-top:8px;" />
+              </div>
+              <div class="form-group">
+                <label for="address">Business Address *</label>
+                <input type="text" id="address" name="address" required placeholder="Street, City, State/Province, Postal Code, Country" />
+              </div>
+            </div>
+
+            <div class="brand-section-title">Business Registration</div>
+            <div class="brand-form-grid two">
+              <div class="form-group">
+                <label for="businessRegNumber">Business Registration Number *</label>
+                <input type="text" id="businessRegNumber" name="businessRegNumber" required placeholder="e.g. 123-45-67890" />
+                <small>사업자등록번호 - required for verification</small>
+              </div>
+              <div class="form-group">
+                <label for="businessRegCertFile">Business Registration Certificate</label>
+                <input type="file" id="businessRegCertFile" accept=".pdf,image/jpeg,image/png,image/webp" />
+                <small>Optional - PDF or image, max 5 MB.</small>
+              </div>
+            </div>
+
+            <div class="brand-section-title">Representative Contact</div>
+            <div class="brand-form-grid two">
+              <div class="form-group">
+                <label for="repName">Full Name *</label>
+                <input type="text" id="repName" name="repName" required />
+              </div>
+              <div class="form-group">
+                <label for="repTitle">Job Title / Position *</label>
+                <input type="text" id="repTitle" name="repTitle" required placeholder="e.g. Marketing Manager" />
+              </div>
+            </div>
+            <div class="brand-form-grid">
+              <div class="form-group">
+                <label for="repEmail">Personal Contact Email</label>
+                <input type="email" id="repEmail" name="repEmail" placeholder="Leave blank to use business email" />
+              </div>
+            </div>
+
+            <div class="brand-section-title">Campaign Needs</div>
+            <div class="brand-form-grid two">
+              <div class="form-group">
+                <span class="field-label">Influencer Tier(s) You Need</span>
+                <div class="pill-grid">
+                  <label><input type="checkbox" name="influencerTypes" value="Nano" /> Nano (1K-10K)</label>
+                  <label><input type="checkbox" name="influencerTypes" value="Micro" /> Micro (10K-100K)</label>
+                  <label><input type="checkbox" name="influencerTypes" value="Macro" /> Macro (100K-1M)</label>
+                  <label><input type="checkbox" name="influencerTypes" value="Mega" /> Mega (1M+)</label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <span class="field-label">Target Region(s)</span>
+                <div class="pill-grid">
+                  <label><input type="checkbox" name="targetRegions" value="Korea" /> South Korea</label>
+                  <label><input type="checkbox" name="targetRegions" value="SEA" /> Southeast Asia</label>
+                  <label><input type="checkbox" name="targetRegions" value="Japan" /> Japan</label>
+                  <label><input type="checkbox" name="targetRegions" value="US" /> United States</label>
+                  <label><input type="checkbox" name="targetRegions" value="Europe" /> Europe</label>
+                  <label><input type="checkbox" name="targetRegions" value="Global" /> Global</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="brand-form-grid two">
+              <div class="form-group">
+                <span class="field-label">Content Categories</span>
+                <div class="pill-grid">
+                  <label><input type="checkbox" name="contentCategories" value="Beauty" /> Beauty</label>
+                  <label><input type="checkbox" name="contentCategories" value="Fashion" /> Fashion</label>
+                  <label><input type="checkbox" name="contentCategories" value="Food" /> Food</label>
+                  <label><input type="checkbox" name="contentCategories" value="Travel" /> Travel</label>
+                  <label><input type="checkbox" name="contentCategories" value="Fitness" /> Fitness</label>
+                  <label><input type="checkbox" name="contentCategories" value="Tech" /> Tech</label>
+                  <label><input type="checkbox" name="contentCategories" value="Lifestyle" /> Lifestyle</label>
+                  <label><input type="checkbox" name="contentCategories" value="Entertainment" /> Entertainment</label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="budgetRange">Estimated Budget per Campaign</label>
+                <select id="budgetRange" name="budgetRange">
+                  <option value="">Prefer not to say</option>
+                  <option value="Under $1,000">Under $1,000</option>
+                  <option value="$1,000 - $5,000">$1,000 - $5,000</option>
+                  <option value="$5,000 - $20,000">$5,000 - $20,000</option>
+                  <option value="$20,000 - $50,000">$20,000 - $50,000</option>
+                  <option value="$50,000+">$50,000+</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="brand-form-grid">
+              <div class="form-group">
+                <label for="notes">Campaign Goals / Notes</label>
+                <textarea id="notes" name="notes" placeholder="Tell us about the products or campaigns you'd like to launch..."></textarea>
+              </div>
+            </div>
+
+            <div class="brand-actions">
+              <button type="submit" id="brand-signup-submit" class="btn btn-accent">Submit Application</button>
+              <a class="btn btn-secondary" href="brand-login.html">I already have an account</a>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      const form = document.getElementById("brand-signup-form");
+      const banner = document.getElementById("brand-signup-banner");
+      const submitBtn = document.getElementById("brand-signup-submit");
+      const industrySel = document.getElementById("industry");
+      const industryOther = document.getElementById("industryOther");
+
+      industrySel.addEventListener("change", () => {
+        const showOther = industrySel.value === "Other";
+        industryOther.style.display = showOther ? "block" : "none";
+        industryOther.required = showOther;
+        if (!showOther) industryOther.value = "";
+      });
+
+      function showBanner(kind, message) {
+        banner.className = "brand-banner " + kind;
+        banner.textContent = message;
+        banner.style.display = "block";
+        banner.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+
+      function getChecked(name) {
+        return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map((el) => el.value);
+      }
+
+      function fileToDataUrl(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(new Error("Failed to read file"));
+          reader.readAsDataURL(file);
         });
+      }
 
-        function showBanner(kind, msg) {
-          banner.className = 'brand-banner ' + kind;
-          banner.textContent = msg;
-          banner.style.display = 'block';
-          banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        banner.style.display = "none";
 
-        function getChecked(name) {
-          return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map((el) => el.value);
-        }
+        submitBtn.disabled = true;
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = "Submitting...";
 
-        function fileToDataUrl(file) {
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = () => reject(new Error('Failed to read file'));
-            reader.readAsDataURL(file);
-          });
-        }
+        try {
+          const countryCode = document.getElementById("countryCode").value;
+          const phoneRaw = document.getElementById("phone").value.trim();
+          const phone = `${countryCode} ${phoneRaw}`;
 
-        form.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          banner.style.display = 'none';
+          const payload = {
+            action: "signup",
+            companyName: document.getElementById("companyName").value.trim(),
+            email: document.getElementById("email").value.trim().toLowerCase(),
+            password: document.getElementById("password").value,
+            phone,
+            industry: industrySel.value === "Other" ? (industryOther.value.trim() || "Other") : industrySel.value,
+            industryOther: industrySel.value === "Other" ? industryOther.value.trim() : null,
+            address: document.getElementById("address").value.trim(),
+            website: document.getElementById("website").value.trim() || null,
+            businessRegNumber: document.getElementById("businessRegNumber").value.trim(),
+            repName: document.getElementById("repName").value.trim(),
+            repTitle: document.getElementById("repTitle").value.trim(),
+            repEmail: document.getElementById("repEmail").value.trim() || null,
+            influencerTypes: getChecked("influencerTypes"),
+            targetRegions: getChecked("targetRegions"),
+            contentCategories: getChecked("contentCategories"),
+            budgetRange: document.getElementById("budgetRange").value || null,
+            notes: document.getElementById("notes").value.trim() || null,
+          };
 
-          submitBtn.disabled = true;
-          const originalText = submitBtn.textContent;
-          submitBtn.textContent = 'Submitting...';
-
-          try {
-            const countryCode = document.getElementById('countryCode').value;
-            const phoneRaw = document.getElementById('phone').value.trim();
-            const phone = `${countryCode} ${phoneRaw}`;
-
-            const payload = {
-              action: 'signup',
-              companyName: document.getElementById('companyName').value.trim(),
-              email: document.getElementById('email').value.trim().toLowerCase(),
-              password: document.getElementById('password').value,
-              phone,
-              industry: industrySel.value === 'Other' ? (industryOther.value.trim() || 'Other') : industrySel.value,
-              industryOther: industrySel.value === 'Other' ? industryOther.value.trim() : null,
-              address: document.getElementById('address').value.trim(),
-              website: document.getElementById('website').value.trim() || null,
-              businessRegNumber: document.getElementById('businessRegNumber').value.trim(),
-              repName: document.getElementById('repName').value.trim(),
-              repTitle: document.getElementById('repTitle').value.trim(),
-              repEmail: document.getElementById('repEmail').value.trim() || null,
-              influencerTypes: getChecked('influencerTypes'),
-              targetRegions: getChecked('targetRegions'),
-              contentCategories: getChecked('contentCategories'),
-              budgetRange: document.getElementById('budgetRange').value || null,
-              notes: document.getElementById('notes').value.trim() || null,
-            };
-
-            const fileInput = document.getElementById('businessRegCertFile');
-            if (fileInput.files && fileInput.files[0]) {
-              const f = fileInput.files[0];
-              if (f.size > 5 * 1024 * 1024) {
-                throw new Error('Business registration certificate exceeds 5 MB.');
-              }
-              payload.businessRegCertFile = await fileToDataUrl(f);
+          const fileInput = document.getElementById("businessRegCertFile");
+          if (fileInput.files && fileInput.files[0]) {
+            const file = fileInput.files[0];
+            if (file.size > 5 * 1024 * 1024) {
+              throw new Error("Business registration certificate exceeds 5 MB.");
             }
-
-            const res = await fetch('/.netlify/functions/auth-brand', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(payload),
-            });
-            const data = await res.json();
-
-            if (!res.ok) {
-              showBanner('error', data.error || 'Submission failed. Please try again.');
-              return;
-            }
-
-            form.reset();
-            industryOther.style.display = 'none';
-            showBanner('success', 'Application received! We\'ll review your account and email you once approved.');
-            submitBtn.textContent = 'Application Submitted';
-            submitBtn.disabled = true;
-          } catch (err) {
-            console.error('Brand signup error:', err);
-            showBanner('error', err.message || 'Something went wrong. Please try again.');
-          } finally {
-            if (submitBtn.textContent === 'Submitting...') {
-              submitBtn.textContent = originalText;
-              submitBtn.disabled = false;
-            }
+            payload.businessRegCertFile = await fileToDataUrl(file);
           }
-        });
-      })();
-      </script>
-    </body>
-    </html>
-          : industrySel.value,
+
+          const response = await fetch("/.netlify/functions/auth-brand", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const data = await response.json();
+
+          if (!response.ok) {
+            showBanner("error", data.error || "Submission failed. Please try again.");
+            return;
+          }
+
+          form.reset();
+          industryOther.style.display = "none";
+          showBanner("success", "Application received! We'll review your account and email you once approved.");
+          submitBtn.textContent = "Application Submitted";
+          submitBtn.disabled = true;
+        } catch (error) {
+          console.error("Brand signup error:", error);
+          showBanner("error", error.message || "Something went wrong. Please try again.");
+        } finally {
+          if (submitBtn.textContent === "Submitting...") {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+          }
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

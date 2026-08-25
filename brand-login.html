@@ -8,6 +8,93 @@
   <link href="assets/css/style.v13.css" rel="stylesheet" />
   <link href="assets/css/style.mobile.css" rel="stylesheet" />
   <link href="brand-shell.css" rel="stylesheet" />
+  <style>
+    .brand-login-card {
+      width: min(100%, 520px);
+      padding: clamp(28px, 4vw, 40px);
+    }
+
+    .brand-login-card h2 {
+      font-size: clamp(30px, 3vw, 40px);
+      line-height: 1.05;
+    }
+
+    .brand-login-card .muted {
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .brand-login-card .form-group {
+      margin-bottom: 16px;
+    }
+
+    .brand-login-card label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--shell-ink);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .brand-login-card input {
+      width: 100%;
+      min-height: 50px;
+      padding: 12px 14px;
+      border: 1px solid var(--shell-line);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--shell-ink);
+      font-size: 15px;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .brand-login-card input:focus {
+      border-color: #111;
+      box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08);
+    }
+
+    .brand-login-card #brand-login-submit {
+      height: 54px;
+      margin-top: 4px;
+      font-size: 15px;
+    }
+
+    .brand-login-card .banner {
+      display: none;
+      margin-bottom: 18px;
+      padding: 13px 15px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .brand-login-card .banner.error {
+      background: #f7e9e6;
+      color: #7d2d24;
+      border: 1px solid #e2c0b9;
+    }
+
+    .brand-login-card .banner.info {
+      background: #f2f0ec;
+      color: #404040;
+      border: 1px solid #dcd6ce;
+    }
+
+    .brand-login-card .shell-auth-link-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 640px) {
+      .brand-login-card .shell-auth-link-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body class="shell-page">
   <div class="shell-layout">
@@ -38,7 +125,7 @@
       </header>
 
       <section class="shell-content">
-        <div class="shell-auth-card">
+        <div class="shell-auth-card brand-login-card">
           <h2>Sign in</h2>
           <p class="muted">Use your business email and password.</p>
 
