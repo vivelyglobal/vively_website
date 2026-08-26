@@ -476,7 +476,7 @@
             payload.businessRegCertFile = await fileToDataUrl(file);
           }
 
-          const response = await fetch("/.netlify/functions/auth-brand", {
+          const response = await fetch("/api/auth-brand", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),

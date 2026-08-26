@@ -1,6 +1,6 @@
 // Multi-step user signup + login handler
 (function() {
-  const API_BASE = '/.netlify/functions';
+  const API_BASE = '/api';
   const TOKEN_KEY = 'vively_user_token';
   const USER_KEY = 'vively_user_data';
 

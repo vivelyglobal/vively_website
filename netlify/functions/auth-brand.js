@@ -13,6 +13,7 @@
 
 const { getBrandsCollection } = require("./db");
 const { generateToken, hashPassword, comparePassword } = require("./auth");
+const cloudinaryClient = require("./_shared/cloudinary");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
@@ -24,6 +25,7 @@ const ALLOWED_DOC_TYPES = [
   "image/webp",
 ];
 const MAX_DOC_SIZE = 5 * 1024 * 1024; // 5 MB
+const IS_PROD = process.env.NODE_ENV === "production";
 
 const UPLOAD_DIR = path.join(
   __dirname,
@@ -33,12 +35,19 @@ const UPLOAD_DIR = path.join(
   "uploads",
   "business-docs"
 );
-if (!fs.existsSync(UPLOAD_DIR)) {
+if (!IS_PROD && !fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
 
-// Saves a base64 data URL to disk, returns public URL. Throws on invalid input.
-function saveBusinessDoc(dataUrl) {
+// Stores the business registration cert (사업자등록증). This is a KYC
+// document, not public content, so it's uploaded to Cloudinary as
+// type:"authenticated" — not reachable at a guessable public URL — and we
+// persist only the Cloudinary publicId/resourceType, never a direct link.
+// A signed URL is generated on demand (see cloudinaryClient.getSignedDocumentUrl)
+// only when an authorized admin endpoint needs to display it.
+// Dev fallback (no Cloudinary configured, NODE_ENV !== production) writes to
+// local disk, same as before — fine for local testing only.
+async function saveBusinessDoc(dataUrl) {
   const match = /^data:([\w/.+-]+);base64,(.+)$/.exec(dataUrl || "");
   if (!match) throw new Error("Invalid file data URL");
   const contentType = match[1];
@@ -49,10 +58,20 @@ function saveBusinessDoc(dataUrl) {
   if (buffer.length > MAX_DOC_SIZE) {
     throw new Error(`File too large. Max ${MAX_DOC_SIZE / 1024 / 1024} MB`);
   }
+
+  if (cloudinaryClient.isConfigured()) {
+    const { publicId, resourceType } = await cloudinaryClient.uploadPrivateDocument(dataUrl);
+    return { provider: "cloudinary", publicId, resourceType };
+  }
+
+  if (IS_PROD) {
+    throw new Error("Document storage is not configured");
+  }
+
   const ext = contentType === "application/pdf" ? "pdf" : contentType.split("/")[1];
   const uniqueName = `${Date.now()}-${crypto.randomBytes(6).toString("hex")}.${ext}`;
   fs.writeFileSync(path.join(UPLOAD_DIR, uniqueName), buffer);
-  return `/assets/uploads/business-docs/${uniqueName}`;
+  return { provider: "local", url: `/assets/uploads/business-docs/${uniqueName}` };
 }
 
 function bad(status, error, extra = {}) {
@@ -145,7 +164,7 @@ exports.handler = async (event) => {
 
       // 사업자등록증 (Korean business registration)
       businessRegNumber: body.businessRegNumber.trim(),
-      businessRegCertUrl: null, // uploaded file URL (set below if provided)
+      businessRegCert: null, // { provider, publicId, resourceType } — set below if provided
 
       // representative
       repName: body.repName.trim(),
@@ -169,7 +188,7 @@ exports.handler = async (event) => {
     // Optional: business registration certificate file (base64 data URL).
     if (body.businessRegCertFile) {
       try {
-        brand.businessRegCertUrl = saveBusinessDoc(body.businessRegCertFile);
+        brand.businessRegCert = await saveBusinessDoc(body.businessRegCertFile);
       } catch (err) {
         return bad(400, err.message);
       }

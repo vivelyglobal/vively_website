@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function loadCampaignDetail() {
     try {
       const response = await fetch(
-        `/.netlify/functions/campaigns?id=${encodeURIComponent(campaignId)}`
+        `/api/campaigns?id=${encodeURIComponent(campaignId)}`
       );
       if (!response.ok) throw new Error("Campaign not found");
 
@@ -311,7 +311,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-      const response = await fetch("/.netlify/functions/applications", {
+      const response = await fetch("/api/applications", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

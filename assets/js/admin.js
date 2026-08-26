@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const password = document.getElementById("login-password").value;
 
     try {
-      const response = await fetch("/.netlify/functions/auth-login", {
+      const response = await fetch("/api/auth-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "login", email, password }),
@@ -143,13 +143,13 @@ document.addEventListener("DOMContentLoaded", () => {
   async function loadDashboard() {
     try {
       const [campaignsRes, applicationsRes, usersRes] = await Promise.all([
-        fetch("/.netlify/functions/admin-campaigns", {
+        fetch("/api/admin-campaigns", {
           headers: { Authorization: `Bearer ${authToken}` },
         }),
-        fetch("/.netlify/functions/applications", {
+        fetch("/api/applications", {
           headers: { Authorization: `Bearer ${authToken}` },
         }),
-        fetch("/.netlify/functions/admin-users", {
+        fetch("/api/admin-users", {
           headers: { Authorization: `Bearer ${authToken}` },
         }),
       ]);
@@ -168,7 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function loadCampaigns() {
     try {
-      const response = await fetch("/.netlify/functions/admin-campaigns", {
+      const response = await fetch("/api/admin-campaigns", {
         headers: { Authorization: `Bearer ${authToken}` },
       });
       if (!response.ok) {
@@ -259,7 +259,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let applications = [];
     try {
       const response = await fetch(
-        `/.netlify/functions/applications?campaignId=${encodeURIComponent(campaign._id)}`,
+        `/api/applications?campaignId=${encodeURIComponent(campaign._id)}`,
         { headers: { Authorization: `Bearer ${authToken}` } }
       );
       applications = response.ok ? await response.json() : [];
@@ -399,7 +399,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!shouldContinue) return;
 
     try {
-      const response = await fetch("/.netlify/functions/applications", {
+      const response = await fetch("/api/applications", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -426,7 +426,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function loadApplications() {
     try {
-      const response = await fetch("/.netlify/functions/applications", {
+      const response = await fetch("/api/applications", {
         headers: { Authorization: `Bearer ${authToken}` },
       });
       if (!response.ok) {
@@ -591,7 +591,7 @@ document.addEventListener("DOMContentLoaded", () => {
         submitBtn.textContent = "Uploading image...";
 
         const dataUrl = await readFileAsBase64(file);
-        const uploadRes = await fetch("/.netlify/functions/upload-image", {
+        const uploadRes = await fetch("/api/upload-image", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -646,8 +646,8 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       const url = campaignId
-        ? `/.netlify/functions/admin-campaigns/${campaignId}`
-        : "/.netlify/functions/admin-campaigns";
+        ? `/api/admin-campaigns/${campaignId}`
+        : "/api/admin-campaigns";
       const method = campaignId ? "PUT" : "POST";
 
       const response = await fetch(url, {
@@ -679,7 +679,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Global functions for edit/delete
   window.editCampaign = async (id) => {
     try {
-      const response = await fetch(`/.netlify/functions/admin-campaigns/${id}`, {
+      const response = await fetch(`/api/admin-campaigns/${id}`, {
         headers: { Authorization: `Bearer ${authToken}` },
       });
       const campaign = await response.json();
@@ -728,7 +728,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!confirm("Are you sure you want to delete this campaign?")) return;
 
     try {
-      const response = await fetch(`/.netlify/functions/admin-campaigns/${id}`, {
+      const response = await fetch(`/api/admin-campaigns/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${authToken}` },
       });
@@ -753,7 +753,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const response = await fetch(`/.netlify/functions/admin-campaigns/${id}`, {
+      const response = await fetch(`/api/admin-campaigns/${id}`, {
         headers: { Authorization: `Bearer ${authToken}` },
       });
       if (!response.ok) throw new Error("Failed to load campaign detail");
@@ -840,7 +840,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!usersTbody) return;
     usersTbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:24px;">Loading…</td></tr>`;
     try {
-      const res = await fetch("/.netlify/functions/admin-users", {
+      const res = await fetch("/api/admin-users", {
         headers: { Authorization: `Bearer ${authToken}` },
       });
       if (!res.ok) {
@@ -931,7 +931,7 @@ document.addEventListener("DOMContentLoaded", () => {
     userDetailBody.innerHTML = "Loading…";
     userModal.style.display = "block";
     try {
-      const res = await fetch(`/.netlify/functions/admin-users/${id}`, {
+      const res = await fetch(`/api/admin-users/${id}`, {
         headers: { Authorization: `Bearer ${authToken}` },
       });
       if (!res.ok) {
@@ -972,7 +972,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const nextActive = !(currentUserDetail.isActive !== false);
       try {
         const res = await fetch(
-          `/.netlify/functions/admin-users/${currentUserDetail._id}`,
+          `/api/admin-users/${currentUserDetail._id}`,
           {
             method: "PATCH",
             headers: {
@@ -1004,7 +1004,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!confirm(`Delete user @${currentUserDetail.username || currentUserDetail.email}? This cannot be undone.`)) return;
       try {
         const res = await fetch(
-          `/.netlify/functions/admin-users/${currentUserDetail._id}`,
+          `/api/admin-users/${currentUserDetail._id}`,
           {
             method: "DELETE",
             headers: { Authorization: `Bearer ${authToken}` },

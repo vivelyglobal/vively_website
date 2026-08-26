@@ -1,0 +1,4 @@
+# Cloudflare Pages redirects (mirrors the /brand shortcuts in netlify.toml —
+# /api/* is NOT listed here on purpose: it's handled by functions/api/[[path]].js)
+/brand   /brand-login.html   200
+/brand/  /brand-login.html   200

@@ -18,7 +18,7 @@ const JWT_SECRET = (() => {
 
 function generateToken(userId, email, role = "user") {
   return jwt.sign(
-    { userId, email, role, iat: Date.now() },
+    { userId, email, role },
     JWT_SECRET,
     { expiresIn: "7d" }
   );

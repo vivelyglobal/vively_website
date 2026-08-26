@@ -1,7 +1,7 @@
 // Signup handler: send verification code, verify code, create account
 const bcrypt = require("bcryptjs");
 const { getUsersCollection, getVerificationCodesCollection } = require("./db");
-const jwt = require("jsonwebtoken");
+const { generateToken } = require("./auth");
 
 // NOTE: verification codes are persisted in MongoDB (see ./db.js
 // getVerificationCodesCollection). An in-memory Map does NOT work on
@@ -395,14 +395,10 @@ exports.handler = async (event) => {
       await codes.deleteOne({ email }).catch(() => {});
 
       // Generate JWT token
-      const token = jwt.sign(
-        {
-          userId: result.insertedId.toString(),
-          email: newUser.email,
-          role: newUser.role,
-        },
-        process.env.JWT_SECRET || "dev-secret",
-        { expiresIn: "7d" }
+      const token = generateToken(
+        result.insertedId.toString(),
+        newUser.email,
+        newUser.role
       );
 
       return {

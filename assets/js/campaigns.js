@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function loadCampaigns() {
     try {
-      const response = await fetch("/.netlify/functions/campaigns");
+      const response = await fetch("/api/campaigns");
       if (!response.ok) {
         throw new Error(`Failed to fetch campaigns (${response.status})`);
       }

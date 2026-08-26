@@ -2,6 +2,7 @@
 // SECURITY: This endpoint can overwrite records. It is disabled unless:
 //   1. NODE_ENV !== "production" (dev/local), OR
 //   2. Request includes X-Seed-Token header matching SEED_TOKEN env var.
+const crypto = require("crypto");
 const { getCampaignsCollection, getUsersCollection } = require("./db");
 const { hashPassword } = require("./auth");
 
@@ -31,17 +32,29 @@ exports.handler = async (event) => {
     const campaigns = await getCampaignsCollection();
     const users = await getUsersCollection();
 
-    // Create admin user if doesn't exist
-    const adminExists = await users.findOne({ email: "admin@vively.com" });
+    // Create admin user if doesn't exist. Password comes from ADMIN_PASSWORD
+    // (set it in Render/Netlify env vars); if unset, generate a random one
+    // and print it to the server logs only — never returned in the response.
+    const adminEmail = process.env.ADMIN_EMAIL || "admin@vively.com";
+    let generatedPassword = null;
+    const adminExists = await users.findOne({ email: adminEmail });
     if (!adminExists) {
-      const hashedPassword = await hashPassword("admin123");
+      const adminPassword =
+        process.env.ADMIN_PASSWORD || crypto.randomBytes(12).toString("base64url");
+      if (!process.env.ADMIN_PASSWORD) generatedPassword = adminPassword;
+      const hashedPassword = await hashPassword(adminPassword);
       await users.insertOne({
-        email: "admin@vively.com",
+        email: adminEmail,
         name: "Admin",
         passwordHash: hashedPassword,
         role: "admin",
         createdAt: new Date(),
       });
+      if (generatedPassword) {
+        console.log(
+          `[seed] Created admin ${adminEmail} with generated password: ${generatedPassword} — save this, it is not shown again.`
+        );
+      }
     }
 
     // Seed demo campaigns
@@ -152,8 +165,10 @@ exports.handler = async (event) => {
       body: JSON.stringify({
         message: "Demo data seeded successfully",
         admin: {
-          email: "admin@vively.com",
-          password: "admin123",
+          email: adminEmail,
+          passwordNote: adminExists
+            ? "Admin already existed, password unchanged."
+            : "Password was set via ADMIN_PASSWORD env var, or generated and printed to server logs — check logs, it is not returned here.",
         },
       }),
     };

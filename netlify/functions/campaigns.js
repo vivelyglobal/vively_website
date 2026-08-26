@@ -49,10 +49,13 @@ exports.handler = async (event) => {
     }
 
     if (search) {
+      // Escape regex metacharacters so user input can't build a pathological
+      // pattern (ReDoS) or an unintended wildcard match.
+      const escaped = search.slice(0, 100).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       query.$or = [
-        { title: { $regex: search, $options: "i" } },
-        { brand: { $regex: search, $options: "i" } },
-        { description: { $regex: search, $options: "i" } },
+        { title: { $regex: escaped, $options: "i" } },
+        { brand: { $regex: escaped, $options: "i" } },
+        { description: { $regex: escaped, $options: "i" } },
       ];
     }
 

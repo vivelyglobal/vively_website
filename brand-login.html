@@ -175,7 +175,7 @@
         const email = document.getElementById('brand-login-email').value.trim().toLowerCase();
         const password = document.getElementById('brand-login-password').value;
 
-        const res = await fetch('/.netlify/functions/auth-brand', {
+        const res = await fetch('/api/auth-brand', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'login', email, password }),

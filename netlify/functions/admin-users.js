@@ -1,6 +1,7 @@
 // Admin: list, view, and manage registered users (creators)
 const { getUsersCollection } = require("./db");
 const { verifyRequest } = require("./auth");
+const { requirePermission, PERMISSIONS } = require("./_shared/permissions");
 const { ObjectId } = require("mongodb");
 
 // Strip sensitive fields before returning
@@ -13,20 +14,6 @@ function sanitizeUser(user) {
 
 exports.handler = async (event) => {
   const auth = verifyRequest(event);
-  if (auth.error) {
-    return {
-      statusCode: auth.status,
-      body: JSON.stringify({ error: auth.error }),
-    };
-  }
-
-  if (auth.user.role !== "admin") {
-    return {
-      statusCode: 403,
-      body: JSON.stringify({ error: "Admin access required" }),
-    };
-  }
-
   const users = await getUsersCollection();
 
   // Extract :id from path (Netlify routes /.netlify/functions/admin-users/:id here)
@@ -36,6 +23,8 @@ exports.handler = async (event) => {
 
   // ========== GET ==========
   if (event.httpMethod === "GET") {
+    const denial = requirePermission(auth, PERMISSIONS.USER_LIST);
+    if (denial) return denial;
     try {
       if (id) {
         let objectId;
@@ -84,6 +73,8 @@ exports.handler = async (event) => {
 
   // ========== PATCH (toggle active / change role) ==========
   if (event.httpMethod === "PATCH") {
+    const denial = requirePermission(auth, PERMISSIONS.USER_UPDATE_ANY);
+    if (denial) return denial;
     if (!id) {
       return {
         statusCode: 400,
@@ -132,6 +123,8 @@ exports.handler = async (event) => {
 
   // ========== DELETE ==========
   if (event.httpMethod === "DELETE") {
+    const denial = requirePermission(auth, PERMISSIONS.USER_UPDATE_ANY);
+    if (denial) return denial;
     if (!id) {
       return {
         statusCode: 400,
