@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin.html
+Disallow: /brand-portal
+Disallow: /brand-portal.html
+Disallow: /api/
+
+Sitemap: https://www.vivelyglobal.com/sitemap.xml

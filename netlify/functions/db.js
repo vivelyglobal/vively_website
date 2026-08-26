@@ -16,7 +16,11 @@ async function connectToDatabase() {
 
   const client = new MongoClient(uri, {
     maxPoolSize: 10,
-    minPoolSize: 2,
+    // minPoolSize:0 — Render's free tier spins the instance down after 15min
+    // idle, so there's no benefit to holding a floor of open connections;
+    // maxIdleTimeMS lets the driver release any idle ones before that happens.
+    minPoolSize: 0,
+    maxIdleTimeMS: 30000,
   });
 
   try {

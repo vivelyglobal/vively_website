@@ -1,6 +1,93 @@
 // Vively — shared front-end behaviour (no build step, vanilla JS)
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  const escapeHtml = (value) =>
+    String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+
+  const hydrateBrandPageFromJson = async () => {
+    const foundersSection = document.getElementById("founders");
+    if (!foundersSection) return;
+
+    try {
+      const res = await fetch("assets/data/brand-content.json", { cache: "no-store" });
+      if (!res.ok) return;
+      const data = await res.json();
+
+      const founders = Array.isArray(data.founders) ? data.founders : [];
+      const stats = Array.isArray(data.stats) ? data.stats : [];
+
+      if (founders.length) {
+        const track = document.getElementById("f-track");
+        const stories = foundersSection.querySelector(".f-stories");
+        const story = document.getElementById("f-story");
+
+        if (track) {
+          track.innerHTML = founders
+            .map(
+              (item, idx) =>
+                '<button class="f-card' + (idx === 0 ? " active" : "") + '" type="button" data-i="' + idx + '">' +
+                  '<img src="' + escapeHtml(item.image || "") + '" alt="' + escapeHtml(item.name || "") + '"' +
+                  (item.objectPosition ? ' style="object-position:' + escapeHtml(item.objectPosition) + ';"' : "") + ">" +
+                  '<span class="nm">' + escapeHtml(item.name || "") + "</span>" +
+                  '<span class="rl">' + escapeHtml(item.role || "") + "</span>" +
+                "</button>"
+            )
+            .join("");
+        }
+
+        if (stories) {
+          stories.innerHTML = founders
+            .map((item) => "<div>" + (item.storyHtml || "") + "</div>")
+            .join("");
+        }
+
+        if (story && founders[0] && founders[0].storyHtml) {
+          story.innerHTML = founders[0].storyHtml;
+        }
+
+        const total = document.getElementById("f-total");
+        if (total) {
+          total.textContent = String(founders.length).padStart(2, "0");
+        }
+      }
+
+      if (stats.length) {
+        const strip = foundersSection.parentElement.querySelector(".stats-strip");
+        if (strip) {
+          strip.innerHTML = stats
+            .map((item) => {
+              const count = Number(item.count);
+              const prefix = item.prefix || "";
+              const suffix = item.suffix || "";
+              const initial = Number.isFinite(count)
+                ? prefix + count.toLocaleString() + suffix
+                : escapeHtml(item.display || "");
+              return (
+                '<div class="stat" style="border-color:rgba(255,255,255,.18);">' +
+                  '<b style="color:#fff;" data-count="' + escapeHtml(item.count || "") + '"' +
+                  (prefix ? ' data-prefix="' + escapeHtml(prefix) + '"' : "") +
+                  (suffix ? ' data-suffix="' + escapeHtml(suffix) + '"' : "") + ">" +
+                  initial +
+                  "</b>" +
+                  '<span style="color:rgba(255,255,255,.6);">' + escapeHtml(item.label || "") + "</span>" +
+                "</div>"
+              );
+            })
+            .join("");
+        }
+      }
+    } catch (_) {
+      // Keep static fallback content when JSON is unavailable.
+    }
+  };
+
+  await hydrateBrandPageFromJson();
+
   /* Mobile nav toggle */
   const burger = document.querySelector(".nav-burger");
   const mobileMenu = document.querySelector(".mobile-menu");
@@ -212,8 +299,7 @@ document.addEventListener("DOMContentLoaded", () => {
     /* Catmull-Rom spline through a list of waypoints, emitted as cubic
        beziers. Because every control point is derived from its two
        neighbours, the result is C1-continuous — smooth, hand-drawn-feeling
-       curves rather than stitched-together straight diagonals — and it can
-       pass through a ring of points to form a genuine loop. */
+       curves rather than stitched-together straight diagonals. */
     const splineToPath = (p) => {
       if (p.length < 2) return "";
       const f = (n) => Math.round(n * 100) / 100;
@@ -275,8 +361,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const clampX = (x) => Math.max(L, Math.min(R, x));
         const sideX = (i) => (steps[i].getAttribute("data-side") === "left" ? L : R);
 
-        // The sketch starts level with step 01 (no lead-in above it) and ends
-        // with a short tail curving back toward the centre below step 04.
+        // Starts level with step 01 (no lead-in above it) and ends with a
+        // short tail curving back toward the centre below step 04.
         for (let i = 0; i < n; i++) {
           pts.push({ x: sideX(i), y: ys[i] });
           if (i === n - 1) break;
@@ -372,7 +458,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ctx.font = "800 " + fs + "px " + cs.fontFamily;
 
       const chars = Array.from(text);
-      const widths = chars.map((ch) => ctx.measureText(ch === " " ? " " : ch).width);
+      const widths = chars.map((ch) => ctx.measureText(ch === " " ? " " : ch).width);
       const total = widths.reduce((a, b) => a + b, 0);
       if (!total) return;
 
@@ -427,6 +513,8 @@ document.addEventListener("DOMContentLoaded", () => {
       // centre the active card inside the stage
       const shift = stage.offsetWidth / 2 - (card.offsetLeft + card.offsetWidth / 2);
       fTrack.style.transform = "translate3d(" + shift + "px,0,0)";
+      // never blank the block: if the story markup is missing for any reason,
+      // leave whatever is already rendered in place
       if (story && storySrc[idx]) story.innerHTML = storySrc[idx].innerHTML;
       if (cur) cur.textContent = pad(idx);
     };
