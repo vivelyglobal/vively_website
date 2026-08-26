@@ -71,6 +71,16 @@ async function getBrandsCollection() {
   return col;
 }
 
+async function getPasswordResetTokensCollection() {
+  const { db } = await connectToDatabase();
+  const col = db.collection("password_reset_tokens");
+  await col
+    .createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 })
+    .catch(() => {});
+  await col.createIndex({ token: 1 }, { unique: true }).catch(() => {});
+  return col;
+}
+
 async function closeDatabase() {
   if (cachedClient) {
     await cachedClient.close();
@@ -86,5 +96,6 @@ module.exports = {
   getApplicationsCollection,
   getVerificationCodesCollection,
   getBrandsCollection,
+  getPasswordResetTokensCollection,
   closeDatabase,
 };

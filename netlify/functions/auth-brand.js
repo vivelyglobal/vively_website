@@ -14,6 +14,11 @@
 const { getBrandsCollection } = require("./db");
 const { generateToken, hashPassword, comparePassword } = require("./auth");
 const cloudinaryClient = require("./_shared/cloudinary");
+const {
+  requestPasswordReset,
+  consumeResetToken,
+  validateNewPassword,
+} = require("./_shared/password-reset");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
@@ -248,6 +253,55 @@ exports.handler = async (event) => {
         status: brand.status,
       },
     });
+  }
+
+  // ============
+  // FORGOT PASSWORD
+  // ============
+  if (action === "forgot-password") {
+    const email = normalizeEmail(body.email);
+    if (!email) return bad(400, "Email required");
+
+    const existing = await brands.findOne({ email });
+    // Only send when the account exists, but always return the same
+    // generic response — otherwise this would leak which emails are
+    // registered brand accounts.
+    if (existing) {
+      await requestPasswordReset(email, "brand");
+    }
+
+    return ok(200, {
+      message: "If that email is registered, a reset link has been sent.",
+    });
+  }
+
+  // ============
+  // RESET PASSWORD
+  // ============
+  if (action === "reset-password") {
+    const { token: resetToken, newPassword } = body;
+    if (!resetToken || !newPassword) {
+      return bad(400, "Token and new password required");
+    }
+
+    const passwordError = validateNewPassword(newPassword);
+    if (passwordError) return bad(400, passwordError);
+
+    const record = await consumeResetToken(resetToken, "brand");
+    if (!record) {
+      return bad(400, "This reset link is invalid or has expired.");
+    }
+
+    const passwordHash = await hashPassword(newPassword);
+    const result = await brands.updateOne(
+      { email: record.email },
+      { $set: { passwordHash, updatedAt: new Date() } }
+    );
+    if (result.matchedCount === 0) {
+      return bad(404, "Account no longer exists");
+    }
+
+    return ok(200, { message: "Password updated. You can now log in." });
   }
 
   return bad(400, "Invalid action");

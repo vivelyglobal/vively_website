@@ -99,6 +99,21 @@
       margin-top: 16px;
     }
 
+    .brand-login-card .form-footer {
+      text-align: center;
+      font-size: 13px;
+      color: var(--shell-muted);
+    }
+
+    .brand-login-card .form-footer a {
+      color: var(--shell-ink);
+      font-weight: 700;
+    }
+
+    .brand-login-card .form-footer a:hover {
+      text-decoration: underline;
+    }
+
     @media (max-width: 640px) {
       .brand-login-card .shell-auth-link-row {
         grid-template-columns: 1fr;
@@ -144,6 +159,7 @@
             </div>
             <button type="submit" id="brand-login-submit" class="btn btn-accent" style="width:100%;">Login</button>
           </form>
+          <p class="form-footer" style="margin-top:14px;"><a href="forgot-password.html?type=brand">Forgot your password?</a></p>
 
           <div class="shell-auth-link-row">
             <a class="shell-btn secondary" href="brand-signup.html">Create Brand Account</a>
