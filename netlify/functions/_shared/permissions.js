@@ -13,6 +13,7 @@ const PERMISSIONS = Object.freeze({
   // Campaigns
   CAMPAIGN_CREATE: "campaign.create",
   CAMPAIGN_READ_ANY: "campaign.read_any",
+  CAMPAIGN_READ_OWN: "campaign.read_own",
   CAMPAIGN_EDIT_OWN: "campaign.edit_own",
   CAMPAIGN_EDIT_ANY: "campaign.edit_any",
   CAMPAIGN_DELETE: "campaign.delete",
@@ -50,6 +51,7 @@ const ROLE_PERMISSIONS = Object.freeze({
   ]),
   [ROLES.BRAND]: new Set([
     PERMISSIONS.CAMPAIGN_CREATE,
+    PERMISSIONS.CAMPAIGN_READ_OWN,
     PERMISSIONS.CAMPAIGN_EDIT_OWN,
     PERMISSIONS.APPLICATION_READ_FOR_OWN_CAMPAIGN,
     PERMISSIONS.UPLOAD_IMAGE,

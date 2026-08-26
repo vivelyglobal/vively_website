@@ -34,6 +34,10 @@ document.addEventListener("DOMContentLoaded", () => {
       adminSidebar.style.display = "block";
       if (adminHeader) adminHeader.style.display = "flex";
       updateUserInfo();
+      // showSection marks #dashboard .active — without it the section (and
+      // its stat cards) stays hidden until the admin manually clicks
+      // "Dashboard" in the sidebar, so login otherwise lands on a blank page.
+      showSection("dashboard");
       loadDashboard();
     } else {
       loginSection.style.display = "flex";

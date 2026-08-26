@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brand Dashboard | Vively</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/png" href="assets/logo/favicon.png" />
+  <link href="assets/css/style.v13.css" rel="stylesheet" />
+  <link href="brand-shell.css" rel="stylesheet" />
+  <style>
+    .dash-header-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    .dash-header-row h1 {
+      margin: 0 0 6px;
+      font-size: clamp(22px, 2.6vw, 30px);
+      letter-spacing: -0.03em;
+    }
+
+    .dash-header-row .shell-subtitle { margin: 0; }
+
+    .campaign-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .campaign-card {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      background: #fff;
+      border: 1px solid var(--shell-line);
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .campaign-card .thumb {
+      width: 88px;
+      height: 88px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: var(--shell-soft);
+      flex-shrink: 0;
+    }
+
+    .campaign-card .body { flex: 1; min-width: 0; }
+    .campaign-card h3 { margin: 0 0 4px; font-size: 17px; letter-spacing: -0.01em; }
+    .campaign-card .meta { color: var(--shell-muted); font-size: 13px; }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .status-badge.pending_review { background: #f4ecd6; color: #8a6a1f; }
+    .status-badge.published { background: #e3f2e6; color: #1f7a37; }
+    .status-badge.approved { background: #e3f2e6; color: #1f7a37; }
+    .status-badge.rejected,
+    .status-badge.revision_requested { background: #f7e5e2; color: #a4372b; }
+    .status-badge.draft { background: var(--shell-soft); color: var(--shell-muted); }
+
+    .campaign-card .actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--shell-muted);
+      background: #fff;
+      border: 1px dashed var(--shell-line);
+      border-radius: 16px;
+    }
+
+    .applicant-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--shell-line);
+    }
+
+    .applicant-row:last-child { border-bottom: none; }
+    .applicant-row .name { font-weight: 700; }
+    .applicant-row .sub { color: var(--shell-muted); font-size: 13px; margin-top: 2px; }
+
+    /* form styles reused from brand-signup.html for visual consistency */
+    .brand-form-card { padding: clamp(22px, 3vw, 34px); }
+    .brand-form-intro { display: grid; gap: 8px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--shell-line); }
+    .brand-form-intro h2 { margin: 0; font-size: clamp(22px, 2.8vw, 28px); letter-spacing: -0.03em; }
+    .brand-form-intro p { margin: 0; color: var(--shell-muted); line-height: 1.6; }
+    .brand-form-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 16px; }
+    .brand-form-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .brand-form-card .form-group label { display: block; font-size: 13px; font-weight: 800; margin-bottom: 7px; color: var(--shell-ink); }
+    .brand-form-card input,
+    .brand-form-card select,
+    .brand-form-card textarea {
+      width: 100%; min-height: 48px; padding: 12px 14px;
+      border: 1px solid var(--shell-line); border-radius: 12px; font-size: 14px;
+      box-sizing: border-box; background: #fff; color: var(--shell-ink); outline: none;
+    }
+    .brand-form-card textarea { min-height: 100px; resize: vertical; }
+    .brand-form-card small { display: block; color: var(--shell-muted); margin-top: 5px; font-size: 12px; }
+    .brand-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 26px; }
+    .brand-actions .btn { width: 100%; height: 54px; }
+    .brand-actions .btn-secondary { background: var(--shell-soft); color: var(--shell-ink); border: 1px solid var(--shell-line); }
+    .brand-banner { padding: 13px 15px; border-radius: 12px; margin-bottom: 20px; display: none; font-size: 14px; font-weight: 650; }
+    .brand-banner.error { background: #f7e9e6; color: #7d2d24; border: 1px solid #e2c0b9; }
+    .brand-banner.success { background: #efe8de; color: #2c261f; border: 1px solid #d9d0c5; }
+
+    @media (max-width: 700px) {
+      .brand-form-grid.two { grid-template-columns: 1fr; }
+      .campaign-card { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body class="shell-page">
+  <div class="shell-layout">
+    <aside class="shell-sidebar">
+      <div class="shell-brand">
+        <img src="assets/logo/vively-logo-white.png" alt="Vively" />
+        <div class="shell-brand-text">
+          <h2>Brand Portal</h2>
+          <p id="sidebar-brand-name">Loading…</p>
+        </div>
+      </div>
+
+      <nav class="shell-nav" aria-label="Brand Navigation">
+        <a class="active" href="brand-dashboard.html">Dashboard</a>
+        <a href="/">Main Website</a>
+        <a href="#" id="logout-link" class="danger">Log Out</a>
+      </nav>
+    </aside>
+
+    <main class="shell-main">
+      <section class="shell-content">
+        <div id="page-banner" class="brand-banner"></div>
+
+        <div class="dash-header-row">
+          <div>
+            <h1>My Campaigns</h1>
+            <p class="shell-subtitle">Campaigns you've submitted to Vively. New submissions are reviewed before going live.</p>
+          </div>
+          <button id="new-campaign-btn" class="shell-btn primary">+ New Campaign</button>
+        </div>
+
+        <div id="campaign-list" class="campaign-list">
+          <div class="empty-state">Loading your campaigns…</div>
+        </div>
+
+        <!-- New campaign form -->
+        <div id="new-campaign-section" class="shell-card brand-form-card" style="display:none; margin-top:24px;">
+          <div class="brand-form-intro">
+            <h2>New Campaign</h2>
+            <p>Fill in the details below. Your submission goes to the Vively team for review before it's published.</p>
+          </div>
+          <div id="new-campaign-banner" class="brand-banner"></div>
+
+          <form id="new-campaign-form">
+            <div class="brand-form-grid two">
+              <div class="form-group">
+                <label for="nc-title">Campaign Title *</label>
+                <input type="text" id="nc-title" required />
+              </div>
+              <div class="form-group">
+                <label for="nc-category">Category *</label>
+                <select id="nc-category" required>
+                  <option value="">Select category</option>
+                  <option>Casting</option>
+                  <option>Dining</option>
+                  <option>Beauty & Care</option>
+                  <option>Product</option>
+                  <option>Stay & Travel</option>
+                  <option>Class & Activity</option>
+                  <option>Life Service</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom:16px;">
+              <label for="nc-description">Description *</label>
+              <textarea id="nc-description" required placeholder="What will creators experience? What are you offering?"></textarea>
+            </div>
+
+            <div class="brand-form-grid two">
+              <div class="form-group">
+                <label for="nc-location">Location</label>
+                <input type="text" id="nc-location" placeholder="e.g. Gangnam, Seoul" />
+              </div>
+              <div class="form-group">
+                <label for="nc-image">Campaign Image</label>
+                <input type="file" id="nc-image" accept="image/jpeg,image/png,image/webp,image/gif" />
+                <small>JPEG, PNG, WebP, or GIF. Max 5MB.</small>
+              </div>
+            </div>
+
+            <div class="brand-form-grid two">
+              <div class="form-group">
+                <label for="nc-experience">Experience Type</label>
+                <input type="text" id="nc-experience" placeholder="e.g. Free stay for one night" />
+              </div>
+              <div class="form-group">
+                <label for="nc-content">Content Type</label>
+                <input type="text" id="nc-content" placeholder="e.g. Reel, Photos, Video" />
+              </div>
+            </div>
+
+            <div class="brand-form-grid two">
+              <div class="form-group">
+                <label for="nc-followers">Minimum Followers</label>
+                <input type="text" id="nc-followers" placeholder="e.g. 1,000+" />
+              </div>
+              <div class="form-group">
+                <label for="nc-platform">Platform</label>
+                <input type="text" id="nc-platform" placeholder="e.g. Instagram/TikTok" />
+              </div>
+            </div>
+
+            <div class="brand-form-grid two">
+              <div class="form-group">
+                <label for="nc-budget">Budget / Compensation</label>
+                <input type="text" id="nc-budget" placeholder="e.g. ₩200,000 - ₩400,000" />
+              </div>
+              <div class="form-group">
+                <label for="nc-spots">Number of Spots</label>
+                <input type="number" id="nc-spots" min="1" placeholder="e.g. 10" />
+              </div>
+            </div>
+
+            <div class="brand-form-grid two">
+              <div class="form-group">
+                <label for="nc-deadline">Application Deadline</label>
+                <input type="date" id="nc-deadline" />
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom:16px;">
+              <label for="nc-guidelines">Guidelines</label>
+              <textarea id="nc-guidelines" placeholder="One guideline per line"></textarea>
+              <small>Each line becomes a separate guideline shown to applicants.</small>
+            </div>
+
+            <div class="brand-actions">
+              <button type="submit" id="nc-submit" class="btn btn-accent">Submit for Review</button>
+              <button type="button" id="nc-cancel" class="btn btn-secondary">Cancel</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Applicants panel -->
+        <div id="applicants-section" class="shell-card" style="display:none; margin-top:24px; padding:26px 28px;">
+          <div class="dash-header-row">
+            <h2 id="applicants-title" style="margin:0;">Applicants</h2>
+            <button id="close-applicants" class="shell-btn">Close</button>
+          </div>
+          <div id="applicants-list"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+  (function () {
+    const token = localStorage.getItem('brandToken');
+    const brandDataRaw = localStorage.getItem('brandData');
+    if (!token || !brandDataRaw) {
+      window.location.href = 'brand-login.html';
+      return;
+    }
+    const brand = JSON.parse(brandDataRaw);
+    document.getElementById('sidebar-brand-name').textContent = brand.companyName || brand.email || 'Brand account';
+
+    const authHeaders = { 'Authorization': 'Bearer ' + token };
+    const pageBanner = document.getElementById('page-banner');
+
+    function showBanner(el, kind, msg) {
+      el.className = 'brand-banner ' + kind;
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    function escapeHtml(v) {
+      return String(v == null ? '' : v)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function statusLabel(status) {
+      const map = {
+        pending_review: 'Pending Review',
+        revision_requested: 'Revision Requested',
+        rejected: 'Rejected',
+        approved: 'Approved',
+        published: 'Published',
+        application_closed: 'Applications Closed',
+        in_progress: 'In Progress',
+        completed: 'Completed',
+        archived: 'Archived',
+        draft: 'Draft',
+      };
+      return map[status] || status || 'Draft';
+    }
+
+    async function apiFetch(url, options) {
+      const res = await fetch(url, {
+        ...options,
+        headers: { ...(options && options.headers), ...authHeaders },
+      });
+      if (res.status === 401) {
+        localStorage.removeItem('brandToken');
+        localStorage.removeItem('brandData');
+        window.location.href = 'brand-login.html';
+        throw new Error('Session expired');
+      }
+      return res;
+    }
+
+    async function loadCampaigns() {
+      const list = document.getElementById('campaign-list');
+      try {
+        const res = await apiFetch('/api/brand-campaigns');
+        const data = await res.json();
+        if (!res.ok) {
+          list.innerHTML = '<div class="empty-state">' + escapeHtml(data.error || 'Failed to load campaigns.') + '</div>';
+          return;
+        }
+        renderCampaigns(Array.isArray(data) ? data : []);
+      } catch (err) {
+        list.innerHTML = '<div class="empty-state">Failed to load campaigns. Please refresh.</div>';
+      }
+    }
+
+    function renderCampaigns(campaigns) {
+      const list = document.getElementById('campaign-list');
+      if (!campaigns.length) {
+        list.innerHTML = '<div class="empty-state">No campaigns yet. Click "+ New Campaign" to submit your first one.</div>';
+        return;
+      }
+      list.innerHTML = campaigns.map((c) => {
+        const status = c.status || 'draft';
+        const img = c.imageUrl
+          ? '<img class="thumb" src="' + escapeHtml(c.imageUrl) + '" alt="">'
+          : '<div class="thumb"></div>';
+        return (
+          '<div class="campaign-card">' +
+            img +
+            '<div class="body">' +
+              '<span class="status-badge ' + escapeHtml(status) + '">' + escapeHtml(statusLabel(status)) + '</span>' +
+              '<h3>' + escapeHtml(c.title || 'Untitled campaign') + '</h3>' +
+              '<div class="meta">' + escapeHtml(c.category || '') + ' · ' + (c.applicantCount || 0) + ' applicant' + ((c.applicantCount || 0) === 1 ? '' : 's') + '</div>' +
+            '</div>' +
+            '<div class="actions">' +
+              '<button class="shell-btn view-applicants" data-id="' + c._id + '" data-title="' + escapeHtml(c.title || '') + '">Applicants</button>' +
+            '</div>' +
+          '</div>'
+        );
+      }).join('');
+
+      list.querySelectorAll('.view-applicants').forEach((btn) => {
+        btn.addEventListener('click', () => openApplicants(btn.dataset.id, btn.dataset.title));
+      });
+    }
+
+    async function openApplicants(campaignId, title) {
+      const section = document.getElementById('applicants-section');
+      const listEl = document.getElementById('applicants-list');
+      document.getElementById('applicants-title').textContent = 'Applicants — ' + title;
+      section.style.display = 'block';
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      listEl.innerHTML = '<div class="empty-state">Loading…</div>';
+
+      try {
+        const res = await apiFetch('/api/applications?campaignId=' + encodeURIComponent(campaignId));
+        const data = await res.json();
+        if (!res.ok) {
+          listEl.innerHTML = '<div class="empty-state">' + escapeHtml(data.error || 'Failed to load applicants.') + '</div>';
+          return;
+        }
+        if (!data.length) {
+          listEl.innerHTML = '<div class="empty-state">No applicants yet.</div>';
+          return;
+        }
+        listEl.innerHTML = data.map((a) => (
+          '<div class="applicant-row">' +
+            '<div>' +
+              '<div class="name">' + escapeHtml(a.creatorName || a.name || 'Unnamed') + '</div>' +
+              '<div class="sub">' + escapeHtml(a.creatorEmail || a.email || '') + (a.creatorInstagram ? ' · @' + escapeHtml(a.creatorInstagram) : '') + '</div>' +
+            '</div>' +
+            '<span class="status-badge ' + escapeHtml(a.status || 'pending') + '">' + escapeHtml(a.status || 'pending') + '</span>' +
+          '</div>'
+        )).join('');
+      } catch (err) {
+        listEl.innerHTML = '<div class="empty-state">Failed to load applicants.</div>';
+      }
+    }
+
+    document.getElementById('close-applicants').addEventListener('click', () => {
+      document.getElementById('applicants-section').style.display = 'none';
+    });
+
+    // ----- New campaign form -----
+    const newSection = document.getElementById('new-campaign-section');
+    document.getElementById('new-campaign-btn').addEventListener('click', () => {
+      newSection.style.display = newSection.style.display === 'none' ? 'block' : 'none';
+      if (newSection.style.display === 'block') newSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    document.getElementById('nc-cancel').addEventListener('click', () => {
+      newSection.style.display = 'none';
+      document.getElementById('new-campaign-form').reset();
+    });
+
+    function fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('Failed to read file'));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    document.getElementById('new-campaign-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const banner = document.getElementById('new-campaign-banner');
+      banner.style.display = 'none';
+      const submitBtn = document.getElementById('nc-submit');
+      submitBtn.disabled = true;
+      const originalLabel = submitBtn.textContent;
+      submitBtn.textContent = 'Submitting…';
+
+      try {
+        let imageUrl = '';
+        const fileInput = document.getElementById('nc-image');
+        const file = fileInput.files && fileInput.files[0];
+        if (file) {
+          const dataUrl = await fileToDataUrl(file);
+          const uploadRes = await apiFetch('/api/upload-image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ file: dataUrl, filename: file.name, contentType: file.type }),
+          });
+          const uploadData = await uploadRes.json();
+          if (!uploadRes.ok) throw new Error(uploadData.error || 'Image upload failed');
+          imageUrl = uploadData.imageUrl;
+        }
+
+        const guidelines = document.getElementById('nc-guidelines').value
+          .split('\n').map((s) => s.trim()).filter(Boolean);
+
+        const payload = {
+          title: document.getElementById('nc-title').value.trim(),
+          category: document.getElementById('nc-category').value,
+          description: document.getElementById('nc-description').value.trim(),
+          location: document.getElementById('nc-location').value.trim(),
+          imageUrl,
+          experienceType: document.getElementById('nc-experience').value.trim(),
+          contentType: document.getElementById('nc-content').value.trim(),
+          minFollowers: document.getElementById('nc-followers').value.trim(),
+          platform: document.getElementById('nc-platform').value.trim(),
+          budget: document.getElementById('nc-budget').value.trim(),
+          spots: document.getElementById('nc-spots').value ? Number(document.getElementById('nc-spots').value) : null,
+          deadline: document.getElementById('nc-deadline').value,
+          guidelines,
+        };
+
+        const res = await apiFetch('/api/brand-campaigns', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          showBanner(banner, 'error', data.error || 'Failed to submit campaign.');
+          return;
+        }
+
+        document.getElementById('new-campaign-form').reset();
+        newSection.style.display = 'none';
+        showBanner(pageBanner, 'success', 'Campaign submitted for review.');
+        loadCampaigns();
+      } catch (err) {
+        showBanner(banner, 'error', err.message || 'Something went wrong.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+      }
+    });
+
+    document.getElementById('logout-link').addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('brandToken');
+      localStorage.removeItem('brandData');
+      window.location.href = 'brand-login.html';
+    });
+
+    loadCampaigns();
+  })();
+  </script>
+</body>
+</html>
