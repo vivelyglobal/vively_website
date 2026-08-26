@@ -40,7 +40,7 @@
 
 <div class="tally-fallback">
 <p>아래 버튼을 눌러 문의해 주세요. 브랜드와 목표 시장을 알려주시면 첫 테스트 구성안(크리에이터 · 일정 · 예산)을 회신 드립니다.</p>
-<a class="btn btn-accent" href="#" id="contact-login-btn">문의하기</a>
+<a class="btn btn-accent" href="mailto:vivelyglobal@gmail.com?subject=%5BVively%5D%20%EB%AC%B8%EC%9D%98%ED%95%98%EA%B8%B0">문의하기</a>
 </div>
 </div>
 </div>
@@ -64,25 +64,5 @@
 <div id="footer-container"></div>
 <script src="assets/js/component-loader.js"></script>
 <script src="assets/js/main.js?v=20"></script>
-<script>
-	document.addEventListener("DOMContentLoaded", () => {
-		const contactLoginBtn = document.getElementById("contact-login-btn");
-		if (!contactLoginBtn) return;
-
-		contactLoginBtn.addEventListener("click", (event) => {
-			event.preventDefault();
-
-			if (window.vivelyOpenLoginModal) {
-				window.vivelyOpenLoginModal();
-				return;
-			}
-
-			const loginLink = document.getElementById("login-link");
-			if (loginLink) {
-				loginLink.click();
-			}
-		});
-	});
-</script>
 </body>
 </html>
