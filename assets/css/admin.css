@@ -71,9 +71,14 @@
   color: white;
 }
 
+.nav-item:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+
 .nav-item.logout {
   margin-top: auto;
-  background: rgba(255, 255, 255, 0.08);
+  background: transparent;
 }
 
 .nav-item.logout:hover {

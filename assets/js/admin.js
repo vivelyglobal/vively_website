@@ -84,6 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
         adminSidebar.style.display = "block";
         if (adminHeader) adminHeader.style.display = "flex";
         updateUserInfo();
+        showSection("dashboard");
         loadDashboard();
       } else {
         alert(data.error || "Login failed");
@@ -125,6 +126,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll(".admin-section").forEach((s) => {
       s.classList.remove("active");
+    });
+    document.querySelectorAll(".sidebar-nav .nav-item[data-section]").forEach((item) => {
+      item.classList.toggle("active", item.dataset.section === sectionId);
     });
     const section = document.getElementById(sectionId);
     if (section) {
@@ -280,6 +284,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <td>${escapeHtml(app.creatorName || app.name || "-")}</td>
             <td>${escapeHtml(app.creatorEmail || app.email || "-")}</td>
             <td>${escapeHtml(app.creatorInstagram || app.instagram || "-")}</td>
+            <td>${escapeHtml(app.creatorTiktok || "-")}</td>
+            <td>${escapeHtml(app.creatorPhone || "-")}</td>
             <td>
               <span class="admin-app-status status-${escapeHtml(app.status || "pending")}">
                 ${escapeHtml(app.status || "pending")}
@@ -296,7 +302,7 @@ document.addEventListener("DOMContentLoaded", () => {
         `
           )
           .join("")
-      : `<tr><td colspan="6" class="admin-campaign-empty-cell">No applicants yet.</td></tr>`;
+      : `<tr><td colspan="8" class="admin-campaign-empty-cell">No applicants yet.</td></tr>`;
 
     campaignDetailPanel.innerHTML = `
       <div class="admin-campaign-detail-head">
@@ -335,6 +341,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 <th>Name</th>
                 <th>Email</th>
                 <th>Instagram</th>
+                <th>TikTok</th>
+                <th>Phone</th>
                 <th>Status</th>
                 <th>Applied Date</th>
                 <th>Actions</th>
@@ -446,6 +454,9 @@ document.addEventListener("DOMContentLoaded", () => {
         <tr>
           <td>${app.creatorName || app.name || "-"}</td>
           <td>${app.creatorEmail || app.email || "-"}</td>
+          <td>${app.creatorInstagram || app.instagram ? "@" + (app.creatorInstagram || app.instagram) : "-"}</td>
+          <td>${app.creatorTiktok ? "@" + app.creatorTiktok : "-"}</td>
+          <td>${app.creatorPhone || "-"}</td>
           <td>${app.campaignTitle || app.brandName || app.campaignId || "-"}</td>
           <td>${app.status}</td>
           <td>${new Date(app.createdAt).toLocaleDateString()}</td>

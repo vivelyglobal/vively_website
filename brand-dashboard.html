@@ -399,7 +399,11 @@
           '<div class="applicant-row">' +
             '<div>' +
               '<div class="name">' + escapeHtml(a.creatorName || a.name || 'Unnamed') + '</div>' +
-              '<div class="sub">' + escapeHtml(a.creatorEmail || a.email || '') + (a.creatorInstagram ? ' · @' + escapeHtml(a.creatorInstagram) : '') + '</div>' +
+              '<div class="sub">' + escapeHtml(a.creatorEmail || a.email || '') +
+                (a.creatorPhone ? ' · ' + escapeHtml(a.creatorPhone) : '') +
+                (a.creatorInstagram ? ' · IG @' + escapeHtml(a.creatorInstagram) : '') +
+                (a.creatorTiktok ? ' · TikTok @' + escapeHtml(a.creatorTiktok) : '') +
+              '</div>' +
             '</div>' +
             '<span class="status-badge ' + escapeHtml(a.status || 'pending') + '">' + escapeHtml(a.status || 'pending') + '</span>' +
           '</div>'

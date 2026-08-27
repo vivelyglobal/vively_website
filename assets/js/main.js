@@ -586,16 +586,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  /* Sticky nav shadow on scroll */
-  const nav = document.querySelector(".nav");
-  if (nav) {
-    const onScroll = () => {
-      if (window.scrollY > 8) nav.style.boxShadow = "0 1px 0 rgba(0,0,0,.04)";
-      else nav.style.boxShadow = "none";
-    };
-    document.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-  }
+  /* Floating pill nav — compact height/position once the page has scrolled
+     past the hero a little, so it reads as "settling in" rather than an
+     abrupt style flip at scroll position 0. The nav itself is injected
+     later by component-loader.js's async fetch, which may still be
+     in flight when DOMContentLoaded fires — so it's looked up fresh on
+     every scroll rather than cached once (a null cache here would
+     silently disable the listener for the rest of the page's life). */
+  const onScroll = () => {
+    const nav = document.querySelector(".nav");
+    if (nav) nav.classList.toggle("nav-compact", window.scrollY > 40);
+  };
+  document.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
 
   /* Footer year */
   const yearEl = document.getElementById("year");

@@ -3,6 +3,7 @@ const {
   getApplicationsCollection,
   getCampaignsCollection,
   getUsersCollection,
+  getBrandsCollection,
 } = require("./db");
 const { ObjectId } = require("mongodb");
 const { verifyRequest } = require("./auth");
@@ -105,6 +106,79 @@ async function sendApplicationStatusEmail({ to, applicantName, campaignTitle, st
     return { sent: true, messageId: data.messageId };
   } catch (error) {
     console.error("[email] Status send exception:", error);
+    return { sent: false, reason: "exception", error: error.message };
+  }
+}
+
+function buildNewApplicantEmailHTML({ campaignTitle, applicantName, applicantInstagram }) {
+  return `<!DOCTYPE html>
+<html><body style="margin:0;padding:0;background:#f7f7f5;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f7f7f5;padding:32px 16px;">
+    <tr><td align="center">
+      <table role="presentation" width="520" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);">
+        <tr><td style="padding:30px 32px 6px;text-align:center;">
+          <h1 style="margin:0;font-size:28px;font-weight:800;color:#111;letter-spacing:-0.5px;">Vively</h1>
+        </td></tr>
+        <tr><td style="padding:8px 32px 24px;text-align:center;">
+          <h2 style="margin:8px 0 12px;font-size:20px;color:#111;">New Applicant</h2>
+          <p style="margin:0;color:#666;font-size:14px;line-height:1.6;">
+            <strong>${applicantName || "A creator"}</strong>${applicantInstagram ? ` (@${applicantInstagram})` : ""} just applied to your campaign <strong>${campaignTitle || ""}</strong>.
+          </p>
+        </td></tr>
+        <tr><td style="padding:0 32px 30px;text-align:center;">
+          <a href="https://www.vivelyglobal.com/brand-dashboard.html" style="display:inline-block;padding:12px 24px;border-radius:999px;background:#111;color:#fff;font-size:14px;font-weight:700;text-decoration:none;">Review Applicant</a>
+        </td></tr>
+        <tr><td style="padding:16px 32px 24px;text-align:center;border-top:1px solid #eee;">
+          <p style="margin:0;color:#999;font-size:12px;line-height:1.5;">&copy; ${new Date().getFullYear()} Vively Global</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`;
+}
+
+async function sendNewApplicantBrandEmail({ to, campaignTitle, applicantName, applicantInstagram }) {
+  if (!to) return { sent: false, reason: "no-email" };
+
+  if (IS_DEV) {
+    console.log(
+      `[DEV] New applicant email target=${to} campaign=${campaignTitle || "n/a"} applicant=${applicantName || "n/a"}`
+    );
+  }
+
+  if (!BREVO_API_KEY) {
+    console.warn("[email] BREVO_API_KEY not set. New applicant email skipped.");
+    return { sent: false, reason: "no-api-key" };
+  }
+
+  try {
+    const textContent = `${applicantName || "A creator"} just applied to your campaign "${campaignTitle || ""}". Log in to your brand dashboard to review.`;
+    const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        "api-key": BREVO_API_KEY,
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      body: JSON.stringify({
+        sender: { name: BREVO_SENDER_NAME, email: BREVO_SENDER_EMAIL },
+        to: [{ email: to }],
+        subject: `New applicant for ${campaignTitle || "your campaign"}`,
+        htmlContent: buildNewApplicantEmailHTML({ campaignTitle, applicantName, applicantInstagram }),
+        textContent,
+      }),
+    });
+
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      console.error(`[email] Brevo new-applicant send failed (${res.status}):`, body.slice(0, 500));
+      return { sent: false, reason: "brevo-error", status: res.status, body };
+    }
+
+    const data = await res.json().catch(() => ({}));
+    return { sent: true, messageId: data.messageId };
+  } catch (error) {
+    console.error("[email] New-applicant send exception:", error);
     return { sent: false, reason: "exception", error: error.message };
   }
 }
@@ -213,16 +287,17 @@ exports.handler = async (event) => {
         // Applicant identity — trusted server-side snapshot.
         creatorId: creatorOid,
         creatorEmail: user.email || auth.user.email,
-        creatorName: user.fullName || user.name || user.username || "",
+        creatorName: user.profile?.fullName || user.username || "",
         creatorUsername: user.username || "",
-        creatorInstagram: user.instagram || "",
-        creatorPhone: user.phone
-          ? `${user.countryCode || ""}${user.phone}`.trim()
+        creatorInstagram: user.socials?.instagram || "",
+        creatorTiktok: user.socials?.tiktok || "",
+        creatorPhone: user.contact?.phone
+          ? `${user.contact?.countryCode || ""}${user.contact.phone}`.trim()
           : "",
         // Legacy fields kept for existing admin/brand UIs that read them.
-        name: user.fullName || user.name || user.username || "",
+        name: user.profile?.fullName || user.username || "",
         email: user.email || auth.user.email,
-        instagram: user.instagram || "",
+        instagram: user.socials?.instagram || "",
         message: message || "",
         status: "pending",
         createdAt: new Date(),
@@ -235,6 +310,24 @@ exports.handler = async (event) => {
         { _id: campaignOid },
         { $inc: { applicantCount: 1 } }
       );
+
+      // Notify the owning brand — best-effort, never blocks the response.
+      if (brandOid) {
+        try {
+          const brands = await getBrandsCollection();
+          const brand = await brands.findOne({ _id: brandOid });
+          if (brand) {
+            await sendNewApplicantBrandEmail({
+              to: brand.repEmail || brand.email,
+              campaignTitle: application.campaignTitle,
+              applicantName: application.creatorName,
+              applicantInstagram: application.creatorInstagram,
+            });
+          }
+        } catch (notifyError) {
+          console.error("Error sending new-applicant brand email:", notifyError);
+        }
+      }
 
       return {
         statusCode: 201,

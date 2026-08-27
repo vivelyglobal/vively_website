@@ -7,50 +7,25 @@
 /* --------------------------------------------------------------------------
    1. Black header bar with the white wordmark
    -------------------------------------------------------------------------- */
-.nav{
-  background:#0d0d0c;
-  border-bottom:1px solid rgba(255,255,255,.10);
-  backdrop-filter:none;
-}
-.nav .brand-mark{ height:24px; }
-.nav-links a{ color:rgba(255,255,255,.66); }
-.nav-links a:hover, .nav-links a.active{ color:#fff; }
-.nav-links a.active::after{ background:var(--accent); }
-.nav #login-link,
-.nav #logout-btn{
-  background:transparent;
-  border-color:transparent;
-  color:#fff;
-}
-.nav #login-link:hover,
-.nav #logout-btn:hover{
-  background:transparent;
-  border-color:transparent;
-  color:var(--accent);
-  transform:none;
-}
-.nav #user-name,
-.nav .user-profile,
-.nav .user-profile .btn,
-.nav .auth-container,
-.nav .auth-container a,
-.nav .auth-container button,
-.nav .nav-links a{
-  color:#fff;
-}
-.nav-burger span{ background:#fff; }
-.mobile-menu{ background:#0d0d0c; border-top-color:rgba(255,255,255,.10); }
-.mobile-menu a{ color:#fff; border-bottom-color:rgba(255,255,255,.12); }
+/* Light, translucent floating pill — matches the reference site's real
+   nav (white/85 + blur), not the AI mockup render which hallucinated a
+   black bar. Kept in this file (loads after style.v13.css) so it wins. */
+.nav .brand-mark{ height:22px; }
 
 /* --------------------------------------------------------------------------
    2. Hero — single centred column, headline on one line, visual underneath
    -------------------------------------------------------------------------- */
 .hero-center{
+  position:relative;
   min-height:100svh;
   padding:72px 0 52px;
   display:flex;
   align-items:center;
-  background:#0d0d0c;
+  background:
+    radial-gradient(46% 40% at 82% 18%, rgba(255,87,87,.16) 0%, rgba(255,87,87,0) 70%),
+    radial-gradient(50% 46% at 8% 78%, rgba(160,75,63,.16) 0%, rgba(160,75,63,0) 70%),
+    radial-gradient(120% 90% at 78% 30%, rgba(93,16,34,.42) 0%, rgba(93,16,34,0) 55%),
+    #0d0d0c;
   color:#fff;
 }
 
@@ -76,6 +51,10 @@
   color:#ffffff;
 }
 @media (min-width:1080px){ .hero-oneline{ white-space:nowrap; } }
+.hl-grad{
+  background:linear-gradient(120deg,#ff8a8a 0%, #ff5757 55%, #ff9457 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
 .hero-center .hero-sub{
   margin:26px 0 0;
   max-width:760px;
@@ -99,6 +78,28 @@
 .hero-center .hero-ctas .btn{ height:56px; padding:0 28px; font-size:16px; }
 .hero-center .hero-ctas .btn-ghost{
   color:#fff;
+}
+
+/* Real stats, kept inside the dark hero itself (not split into a separate
+   light section below) so the first viewport reads as one punchy block. */
+.hero-stats-row{
+  display:flex; margin:42px 0 0; padding:20px 0;
+  border-top:1px solid rgba(255,255,255,.15); border-bottom:1px solid rgba(255,255,255,.15);
+}
+.hero-stats-row li{ flex:1; padding:0 20px; text-align:left; }
+.hero-stats-row li:first-child{ padding-left:0; }
+.hero-stats-row li + li{ border-left:1px solid rgba(255,255,255,.15); }
+.hero-stats-row b{
+  display:block; font-size:clamp(22px,2vw,30px); font-weight:800; letter-spacing:-.02em;
+  background:linear-gradient(135deg,#fff,#ffd3ce); -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.hero-stats-row span{ display:block; margin-top:6px; font-size:12px; font-weight:600; letter-spacing:.02em; color:rgba(255,255,255,.6); }
+@media (max-width:900px){
+  .hero-stats-row{ justify-content:center; }
+  .hero-stats-row li{ text-align:center; padding:0 14px; }
+}
+@media (max-width:520px){
+  .hero-stats-row li span{ font-size:10.5px; }
 }
 
 .hero-visual-wide{
@@ -180,7 +181,7 @@ html:not(.js-reveal) .badge-pop{ opacity:1; transform:none; }
    -------------------------------------------------------------------------- */
 .cta-band{
   position:relative;
-  background:#080a0f;
+  background:linear-gradient(160deg, #150609 0%, #080a0f 55%);
   color:#fff;
   padding:110px 0 104px;
   overflow:hidden;
@@ -219,7 +220,7 @@ html:not(.js-reveal) .badge-pop{ opacity:1; transform:none; }
   padding:90px 100px 92px;
   border-radius:42px;
   border:1px solid rgba(255,255,255,.16);
-  background:linear-gradient(135deg, rgba(255,255,255,.055), rgba(255,255,255,.015));
+  background:linear-gradient(135deg, rgba(93,16,34,.5), rgba(93,16,34,.18));
   box-shadow:inset 0 1px 0 rgba(255,255,255,.08), 0 30px 80px rgba(0,0,0,.35);
   backdrop-filter:blur(18px);
   overflow:hidden;
@@ -416,6 +417,8 @@ html:not(.js-reveal) .badge-pop{ opacity:1; transform:none; }
 .work-meta .t{ font-size:15px; font-weight:800; letter-spacing:-.01em; }
 .work-meta .c{ font-size:13px; color:rgba(255,255,255,.5); font-weight:600; }
 .work-item:hover .work-meta .c{ color:rgba(255,255,255,.78); }
+.work-meta .m{ flex-basis:100%; font-size:12px; color:rgba(255,255,255,.4); font-weight:600; letter-spacing:.01em; }
+.work-item:hover .work-meta .m{ color:var(--accent); }
 
 /* Every thumb stays 16:9 — the same ratio the banner files are authored at —
    so nothing is ever cropped. The first and last tiles simply run full width
