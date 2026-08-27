@@ -15,68 +15,126 @@
 <meta property="og:url" content="https://www.vivelyglobal.com/work" />
 <meta property="og:image" content="https://www.vivelyglobal.com/assets/logo/vively-logo-black.png" />
 <meta name="twitter:card" content="summary_large_image" />
-<link rel="stylesheet" href="assets/css/style.v13.css" />
-<link rel="stylesheet" href="assets/css/style.work.css" />
+<link rel="stylesheet" href="assets/css/redesign.v1.css?v=1" />
 <link rel="stylesheet" href="assets/css/user-auth.css" />
-<link rel="stylesheet" href="assets/css/style.mobile.v2.css" />
-<link rel="stylesheet" href="assets/css/style.proj.css" />
 </head>
 <body>
 
 <div id="header-container"></div>
 
-<section class="proj-hero">
+<!-- CASE HERO -->
+<section class="case-hero">
+  <div class="bg" id="case-bg" aria-hidden="true"></div>
   <div class="wrap">
-    <a class="proj-back" href="index.html#work">&#8592; WORK</a>
-    <img class="proj-banner" id="proj-banner" src="" alt="">
-    <div class="proj-head">
-      <span class="c" id="proj-cat"></span>
-      <h1 id="proj-title"></h1>
+    <div class="case-topline">
+      <a class="case-back" href="index.html#work">&#8592; All Work</a>
+      <img class="case-brandlogo" id="case-logo" src="" alt="" hidden>
     </div>
+    <h1 id="case-title"></h1>
+    <p class="kr" id="case-brand"></p>
+    <p class="case-crumb meta-caps"><b id="case-num"></b> &nbsp;/&nbsp; <span id="case-cat"></span> &nbsp;/&nbsp; <span id="case-service-en"></span></p>
   </div>
 </section>
 
-<section class="section" style="border-bottom:none;padding-top:0;">
-  <div class="wrap">
-    <div class="proj-body">
-      <div>
-        <div class="proj-block">
-          <h2>캠페인 개요</h2>
-          <p id="proj-overview"></p>
-        </div>
-        <div class="proj-block">
-          <h2>실행 방식</h2>
-          <p id="proj-approach"></p>
-        </div>
-        <div class="proj-block">
-          <h2>성과</h2>
-          <p id="proj-results"></p>
-        </div>
-        <div class="proj-block">
-          <h2>인사이트</h2>
-          <p id="proj-insight"></p>
-        </div>
-      </div>
+<!-- STATS BAND -->
+<section class="case-stats">
+  <div class="light">
+    <div><div class="n" id="s-views"></div><div class="l">조회수</div></div>
+    <div><div class="n" id="s-shares"></div><div class="l">공유</div></div>
+  </div>
+  <div class="dark">
+    <div><div class="n" id="s-creators"></div><div class="l">참여 크리에이터</div></div>
+    <div><div class="n" id="s-countries"></div><div class="l">도달 국가</div></div>
+  </div>
+</section>
 
-      <aside class="proj-facts">
-        <dl class="proj-figures">
-          <div><dt>조회수</dt><dd id="f-views"></dd></div>
-          <div><dt>공유</dt><dd id="f-shares"></dd></div>
-        </dl>
-        <dl>
-          <dt>브랜드</dt><dd id="f-brand"></dd>
-          <dt>서비스</dt><dd id="f-service"></dd>
-          <dt>참여 크리에이터</dt><dd id="f-creators"></dd>
-          <dt>도달 국가</dt><dd class="small" id="f-reach"></dd>
-          <dt>진행 지점</dt><dd class="small" id="f-branches"></dd>
-        </dl>
-      </aside>
+<!-- BODY -->
+<section class="case-body">
+  <div class="wrap">
+    <div class="case-sections">
+      <div class="case-sec reveal">
+        <div>
+          <div class="head"><span class="num">01</span><h2>캠페인 개요</h2></div>
+          <div class="txt"><p id="t-overview"></p></div>
+        </div>
+        <blockquote id="q-overview"></blockquote>
+      </div>
+      <div class="case-sec reveal">
+        <div>
+          <div class="head"><span class="num">02</span><h2>실행 방식</h2></div>
+          <div class="txt"><p id="t-approach"></p></div>
+        </div>
+        <blockquote id="q-approach"></blockquote>
+      </div>
+      <div class="case-sec reveal">
+        <div>
+          <div class="head"><span class="num">03</span><h2>성과</h2></div>
+          <div class="txt"><p id="t-results"></p></div>
+        </div>
+        <blockquote id="q-results"></blockquote>
+      </div>
+      <div class="case-sec reveal">
+        <div>
+          <div class="head"><span class="num">04</span><h2>인사이트</h2></div>
+          <div class="txt"><p id="t-insight"></p></div>
+        </div>
+        <blockquote id="q-insight"></blockquote>
+      </div>
     </div>
 
-    <div class="proj-clips">
-      <h2>캠페인 콘텐츠</h2>
-      <div class="clip-grid" id="clip-grid"></div>
-      <p class="case-source" style="margin-top:14px">출처: Vively 성과 리포트 · Instagram Reels 기준 · 2026년 8월 집계</p>
+    <aside class="case-facts">
+      <dl>
+        <div class="row"><dt>브랜드</dt><dd id="f-brand"></dd></div>
+        <div class="row"><dt>서비스</dt><dd id="f-service"></dd></div>
+        <div class="row"><dt>참여 크리에이터</dt><dd id="f-creators"></dd></div>
+        <div class="row"><dt>도달 국가</dt><dd class="small" id="f-reach"></dd></div>
+        <div class="row"><dt>진행 지점</dt><dd class="small" id="f-branches"></dd></div>
+      </dl>
+    </aside>
+  </div>
+</section>
+
+<!-- REELS STRIP -->
+<section class="reels">
+  <div class="wrap">
+    <div>
+      <h2>현지 크리에이터의<br>시선으로<br>완성된 캠페인.</h2>
+      <div class="strip-label meta-caps"><span>Reels Film Strip</span></div>
+    </div>
+    <div class="clip-grid" id="clip-grid" role="list"></div>
+  </div>
+</section>
+
+<!-- NOTE QUOTE -->
+<section class="case-note">
+  <div class="wrap">
+    <span class="mark" aria-hidden="true">&#8220;</span>
+    <p class="note-quote" id="case-note-text"></p>
+    <p class="case-source">Source: Vively 성과 리포트 &nbsp;/&nbsp; Instagram Reels 기준 &nbsp;/&nbsp; 2026년 8월 집계</p>
+  </div>
+</section>
+
+<!-- PAGER -->
+<nav class="case-pager" aria-label="다른 캠페인 보기">
+  <div class="all">
+    <a href="index.html#work"><span aria-hidden="true">&#8592;</span> ALL WORK</a>
+  </div>
+  <div class="next">
+    <div class="bg" id="next-bg" aria-hidden="true"></div>
+    <div class="lbl">
+      <span class="meta-caps">Next Case</span>
+      <a id="next-link" href="#"><span id="next-brand"></span> <span aria-hidden="true">&#8594;</span></a>
+    </div>
+  </div>
+</nav>
+
+<!-- CTA -->
+<section class="case-cta">
+  <div class="wrap reveal">
+    <h2>다음 캠페인은 <span class="hl-red">당신의 브랜드</span>가 될 수 있습니다.</h2>
+    <div class="btns">
+      <a class="btn btn-accent" href="contact.html">CONTACT US →</a>
+      <a class="btn btn-ghost" href="index.html#work">ALL WORK →</a>
     </div>
   </div>
 </section>
@@ -85,121 +143,128 @@
 
 <script>
 /* ============================================================================
-   PROJECT DATA — figures taken from the Vively performance report
-   (vivelyglobal.github.io/vively-report-page), captured August 2026.
-
-   These are fixed values, not the report's live-ticking counters: a public
-   page should show the same number to every visitor on the same day.
-   When the report is next updated, refresh `views` and `shares` here.
-
-   Opened as work.html?p=<key>, e.g. work.html?p=juno
+   PROJECT DATA — figures from the Vively performance report, August 2026.
+   Fixed values, not live counters. Opened as work.html?p=<key>.
+   `ORDER` below defines CASE numbering and the NEXT CASE chain.
    ========================================================================== */
 var PROJECTS = {
   juno: {
     title: "First Project of 2026", brand: "준오헤어", cat: "Hair Salon",
-    banner: "assets/banner/juno.png",
-    service: "인플루언서 KOL 시딩",
+    banner: "assets/banner/juno.png", logo: "assets/logos/juno-hair.png",
+    service: "인플루언서 KOL 시딩", serviceEn: "Influencer KOL Seeding",
     goal: "브랜드 인지도 제고 및 외국인 방문객 유치",
     creators: "외국인 인플루언서 14명",
     reach: "6개국 (인도네시아, 우즈베키스탄, 대만, 콜롬비아, 카자흐스탄, 캐나다)",
     branches: "준오 서울 한남 · 준오 안녕인사동 · 준오 강서구청 · 준오 VIP 이벤트",
     views: "355,772", shares: "446",
-    note: "시딩 진행 후 VIVELY 전용 창구를 통해 예약 시 전 시술 20% 할인 프로모션을 연계해 진행했습니다.",
+    note: "시딩 진행 후 VIVELY 전용 창구를 통해 예약 시 전 시술 <b>20% 할인</b> 프로모션을 연계해 진행했습니다.",
+    insightQuote: "예약 전환을 이끈 핵심 인사이트.",
     clips: ["assets/brand/juno-1.mp4","assets/brand/juno-2.mp4","assets/brand/juno-3.mp4","assets/brand/juno-4.mp4"]
   },
   labab: {
     title: "F&B Highlight Project", brand: "라밥", cat: "F&B",
-    banner: "assets/banner/labab.png",
-    service: "인플루언서 KOL 시딩",
+    banner: "assets/banner/labab.png", logo: "assets/logos/labab.png",
+    service: "인플루언서 KOL 시딩", serviceEn: "Influencer KOL Seeding",
     goal: "방한 외국인 관광객 타깃 맛집 인지도 확보 및 방문 유도",
     creators: "외국인 크리에이터 73명",
     reach: "26개국 (동남아, 중동, 아시아, 동유럽, 서유럽, 북미, 남미, 아프리카, 오세아니아)",
     branches: "서울 전역 20여 개 지점",
     views: "805,050", shares: "3,018",
-    note: "서울 전역 20여 개 지점 방문 인증을 진행하며, 단일 캠페인 기준 가장 큰 도달을 기록했습니다.",
+    note: "서울 전역 <b>20여 개 지점</b> 방문 인증을 진행하며, 단일 캠페인 기준 가장 큰 도달을 기록했습니다.",
+    insightQuote: "단일 캠페인 최대 도달을 만든 실행력.",
     clips: ["assets/brand/labab-1.mp4","assets/brand/labab-2.mp4","assets/brand/labab-3.mp4","assets/brand/labab-4.mp4"]
   },
   jaimdang: {
     title: "Korean Traditional Medicine", brand: "자임당한의원", cat: "Health",
-    banner: "assets/banner/jaimdang.png",
-    service: "인플루언서 KOL 시딩, 공동구매",
+    banner: "assets/banner/jaimdang.png", logo: "assets/logos/jaimdang.png",
+    service: "인플루언서 KOL 시딩, 공동구매", serviceEn: "KOL Seeding · Group Buying",
     goal: "글로벌 타깃 브랜드 인지도 형성 및 세일즈 전환 검증",
     creators: "외국인 크리에이터 30명",
     reach: "17개국 (동남아, 동아시아, 남아시아, 중동, 동유럽, 중앙아시아, 서유럽, 아프리카, 남미)",
     branches: "자임당한의원 본점",
     views: "100,136", shares: "1,063",
-    note: "초기 시딩 성과를 바탕으로 공동구매 전환을 완료했고, 현재 신제품 론칭 프로젝트를 진행 중입니다.",
+    note: "초기 시딩 성과를 바탕으로 <b>공동구매 전환</b>을 완료했고, 현재 신제품 론칭 프로젝트를 진행 중입니다.",
+    insightQuote: "시딩을 세일즈로 전환한 캠페인.",
     clips: ["assets/brand/jaimdang-1.mp4","assets/brand/jaimdang-2.mp4","assets/brand/jaimdang-3.mp4","assets/brand/jaimdang-4.mp4"]
   },
   myeondong: {
     title: "K-food", brand: "명동 K-갈비", cat: "F&B",
-    banner: "assets/banner/mkd.png",
-    service: "인플루언서 KOL 시딩",
+    banner: "assets/banner/mkd.png", logo: "assets/logos/myeongdong-kgalbi.png",
+    service: "인플루언서 KOL 시딩", serviceEn: "Influencer KOL Seeding",
     goal: "방한 외국인 관광객 타깃 맛집 인지도 확보 및 방문 유도",
     creators: "외국인 크리에이터 45명",
     reach: "19개국 (동남아, 동아시아, 남아시아, 중동, 동유럽, 중앙아시아, 서유럽, 북미, 남미, 아프리카)",
     branches: "명동 K-갈비 본점",
     views: "103,806", shares: "873",
-    note: "명동을 방문하는 관광객을 대상으로 실질적인 방문과 오프라인 동선까지 연계했습니다.",
+    note: "명동을 방문하는 관광객을 대상으로 <b>실질적인 방문</b>과 오프라인 동선까지 연계했습니다.",
+    insightQuote: "온라인 도달을 오프라인 방문으로.",
     clips: ["assets/brand/myeondong-1.mp4","assets/brand/myeondong-2.mp4","assets/brand/myeondong-3.mp4","assets/brand/myeondong-4.mp4"]
   },
   apgujeong: {
     title: "K-food", brand: "압구정 닭한마리", cat: "F&B",
-    banner: "assets/banner/adm.png",
-    service: "인플루언서 KOL 시딩",
+    banner: "assets/banner/adm.png", logo: "",
+    service: "인플루언서 KOL 시딩", serviceEn: "Influencer KOL Seeding",
     goal: "방한 일본 관광객 타깃 맛집 인지도 확보 및 방문 유도",
     creators: "일본인 크리에이터 45명",
     reach: "1개국 (일본)",
     branches: "압구정 본점",
     views: "30,080", shares: "20",
-    note: "일본 관광객을 타깃으로 한 맞춤형 바이럴로, 현지 선호 타깃을 집중 공략했습니다.",
+    note: "일본 관광객을 타깃으로 한 <b>맞춤형 바이럴</b>로, 현지 선호 타깃을 집중 공략했습니다.",
+    insightQuote: "단일 시장 집중 공략의 정석.",
     clips: ["assets/brand/apgujeong-1.mp4","assets/brand/apgujeong-2.mp4","assets/brand/apgujeong-3.mp4","assets/brand/apgujeong-4.mp4"]
   },
   tonymoly: {
     title: "K-Beauty", brand: "토니모리", cat: "Beauty",
-    banner: "assets/banner/tonymoly.png",
-    service: "인플루언서 KOL 시딩",
+    banner: "assets/banner/tonymoly.png", logo: "assets/logos/tonymoly.png",
+    service: "인플루언서 KOL 시딩", serviceEn: "Influencer KOL Seeding",
     goal: "토니모리 20주년 팝업스토어 현장감 전달 및 인지도 확산",
     creators: "외국인 크리에이터 10명",
     reach: "7개국 (인도네시아, 이집트, 필리핀, 이라크, 스페인, 페루, 이탈리아)",
     branches: "글로벌 온라인 & 명동 팝업스토어",
     views: "47,751", shares: "54",
-    note: "글로벌 팝업스토어 체험형 바이럴 콘텐츠를 생성했습니다.",
+    note: "글로벌 <b>팝업스토어 체험형</b> 바이럴 콘텐츠를 생성했습니다.",
+    insightQuote: "현장감을 글로벌로 전한 콘텐츠.",
     clips: ["assets/brand/tonymoly-1.mp4","assets/brand/tonymoly-2.mp4","assets/brand/tonymoly-3.mp4","assets/brand/tonymoly-4.mp4"]
   },
   parkjun: {
     title: "Hair Salon", brand: "박준 뷰티랩", cat: "Beauty",
-    banner: "assets/banner/parkjun.png",
-    service: "인플루언서 KOL 시딩",
+    banner: "assets/banner/parkjun.png", logo: "assets/logos/parkjun-beauty-lab.png",
+    service: "인플루언서 KOL 시딩", serviceEn: "Influencer KOL Seeding",
     goal: "타깃 시장 검증 및 글로벌 브랜드 인지도 제고",
     creators: "외국인 크리에이터 9명",
     reach: "7개국 (인도네시아, 인도, 우크라이나, 벨라루스, 대만, 코스타리카, 호주)",
     branches: "명동점 · 부산 가야점",
     views: "78,284", shares: "163",
-    note: "방한 관광객 중심의 뷰티 서비스 체험을 통해 다국적 콘텐츠를 확보했습니다.",
+    note: "방한 관광객 중심의 <b>뷰티 서비스 체험</b>을 통해 다국적 콘텐츠를 확보했습니다.",
+    insightQuote: "체험이 콘텐츠가 되는 순간.",
     clips: ["assets/brand/parkjun-1.mp4","assets/brand/parkjun-2.mp4","assets/brand/parkjun-3.mp4","assets/brand/parkjun-4.mp4"]
   },
   verynew: {
     title: "New K-pharmacy", brand: "베리뉴약국", cat: "Pharmacy",
-    banner: "assets/banner/berry.png",
-    service: "인플루언서 KOL 시딩",
+    banner: "assets/banner/berry.png", logo: "assets/logos/berry-new-pharmacy.png",
+    service: "인플루언서 KOL 시딩", serviceEn: "Influencer KOL Seeding",
     goal: "타깃 시장 검증 및 글로벌 브랜드 인지도 제고",
     creators: "외국인 크리에이터 5명",
     reach: "4개국 (인도네시아, 페루, 필리핀, 미국)",
     branches: "성수점 · 홍대점 · 명동점",
     views: "8,161", shares: "14",
-    note: "K-웰니스와 약국 쇼핑 투어를 기반으로 글로벌 확산을 만들었습니다.",
+    note: "K-웰니스와 <b>약국 쇼핑 투어</b>를 기반으로 글로벌 확산을 만들었습니다.",
+    insightQuote: "K-웰니스로 넓힌 새로운 접점.",
     clips: ["assets/brand/verynew-1.mp4","assets/brand/verynew-2.mp4","assets/brand/verynew-3.mp4","assets/brand/verynew-4.mp4"]
   }
 };
+var ORDER = ["juno","labab","jaimdang","myeondong","apgujeong","tonymoly","parkjun","verynew"];
 
 (function () {
   var key = (location.search.match(/[?&]p=([^&]+)/) || [])[1];
   key = key ? decodeURIComponent(key) : "";
-  /* A mistyped key used to fall through to Juno, which made a broken link
-     look like a working one. Send unknown keys back to the index instead. */
   if (key && !PROJECTS[key]) { location.replace("index.html#work"); return; }
-  var p = PROJECTS[key] || PROJECTS.juno;
+  key = key || "juno";
+  var p = PROJECTS[key];
+  var idx = ORDER.indexOf(key);
+  var nextKey = ORDER[(idx + 1) % ORDER.length];
+  var next = PROJECTS[nextKey];
+
   var esc = function (s) {
     return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   };
@@ -207,29 +272,52 @@ var PROJECTS = {
     var el = document.getElementById(id);
     if (el) el.textContent = value;
   };
+  var num = function (s) {
+    var m = String(s).match(/(\d[\d,]*)/);
+    return m ? m[1] : "—";
+  };
 
   document.title = p.brand + " | Vively Work";
-  var banner = document.getElementById("proj-banner");
-  banner.src = p.banner;
-  banner.alt = p.brand + " 캠페인 배너";
 
-  set("proj-cat", p.cat);
-  set("proj-title", p.title + " " + p.brand);
-  set("proj-overview", p.brand + " 캠페인은 " + p.service + " 방식으로 진행했습니다. 목표는 " + p.goal + "이며, " + p.branches + "에서 실행했습니다.");
-  set("proj-approach", p.creators + "이 참여해 각자의 시장을 대상으로 콘텐츠를 제작했고, " + p.reach + "에 도달했습니다.");
-  set("proj-results", "총 조회수 " + p.views + "회, 공유 " + p.shares + "회를 기록했습니다. 조회수의 대부분이 팔로워가 아닌 신규 유입에서 발생해, 기존 팬덤을 넘어선 도달을 확인했습니다.");
-  set("proj-insight", p.note);
+  /* hero */
+  document.getElementById("case-bg").style.backgroundImage = "url('" + p.banner + "')";
+  var logo = document.getElementById("case-logo");
+  if (p.logo) { logo.src = p.logo; logo.alt = p.brand + " 로고"; logo.hidden = false; }
+  set("case-title", p.title);
+  set("case-brand", p.brand);
+  set("case-num", "Case " + String(idx + 1).padStart(2, "0"));
+  set("case-cat", p.cat);
+  set("case-service-en", p.serviceEn || p.service);
 
-  set("f-views", p.views);
-  set("f-shares", p.shares);
+  /* stats */
+  set("s-views", p.views);
+  set("s-shares", p.shares);
+  set("s-creators", num(p.creators));
+  set("s-countries", num(p.reach));
+
+  /* sections */
+  set("t-overview", p.brand + " 캠페인은 " + p.service + " 방식으로 진행했습니다. 목표는 " + p.goal + "이며, " + p.branches + "에서 실행했습니다.");
+  set("t-approach", p.creators + "이 참여해 각자의 시장을 대상으로 콘텐츠를 제작했고, " + p.reach + "에 도달했습니다.");
+  set("t-results", "총 조회수 " + p.views + "회, 공유 " + p.shares + "회를 기록했습니다. 조회수의 대부분이 팔로워가 아닌 신규 유입에서 발생해, 기존 팬덤을 넘어선 도달을 확인했습니다.");
+  var insightPlain = p.note.replace(/<[^>]+>/g, "");
+  set("t-insight", insightPlain);
+
+  set("q-overview", p.creators + "의 시선이 " + p.brand + "를 만났습니다.");
+  set("q-approach", num(p.reach) + "개국에서 전해진 진짜 경험의 콘텐츠.");
+  set("q-results", "조회수 " + p.views + "회, 공유 " + p.shares + "회 달성.");
+  set("q-insight", p.insightQuote || "다음 캠페인으로 이어진 핵심 인사이트.");
+
+  /* facts */
   set("f-brand", p.brand);
   set("f-service", p.service);
   set("f-creators", p.creators);
   set("f-reach", p.reach);
   set("f-branches", p.branches);
 
-  /* Clips: .mp4 renders as a hover-to-play video, .gif as a looping image.
-     Everything is lazy so a page with four clips isn't a cold-start download. */
+  /* note quote — trusted local strings only (may contain <b>) */
+  document.getElementById("case-note-text").innerHTML = p.note;
+
+  /* clips: lazy videos wired up by main.js via data-src + data-autoloop */
   var grid = document.getElementById("clip-grid");
   if (grid) {
     if (!p.clips || !p.clips.length) {
@@ -237,21 +325,23 @@ var PROJECTS = {
     } else {
       grid.innerHTML = p.clips.map(function (src, i) {
         var label = esc(p.brand + " 캠페인 콘텐츠 " + (i + 1));
+        var idxTag = '<span class="idx">' + String(i + 1).padStart(2, "0") + "</span>";
         if (/\.mp4$/i.test(src)) {
-          // data-autoloop: starts playing by itself as the grid comes into
-          // view, rather than waiting for a hover
-          return '<div class="clip video-card" role="listitem" tabindex="0" aria-label="' + label + '">' +
+          return '<div class="clip video-card" role="listitem" tabindex="0" aria-label="' + label + '">' + idxTag +
                  '<video data-src="' + esc(src) + '" muted loop playsinline preload="none" data-autoloop></video></div>';
         }
-        return '<div class="clip"><img src="' + esc(src) + '" alt="' + label + '" loading="lazy"></div>';
+        return '<div class="clip" role="listitem">' + idxTag + '<img src="' + esc(src) + '" alt="' + label + '" loading="lazy"></div>';
       }).join("");
-      // This runs during parsing, so the clips are in the DOM before main.js
-      // fires on DOMContentLoaded and wires up lazy-loading and hover-play.
     }
   }
+
+  /* pager */
+  document.getElementById("next-bg").style.backgroundImage = "url('" + next.banner + "')";
+  set("next-brand", next.brand);
+  document.getElementById("next-link").href = "work.html?p=" + encodeURIComponent(nextKey);
 })();
 </script>
 <script src="assets/js/component-loader.js"></script>
-<script src="assets/js/main.js?v=20"></script>
+<script src="assets/js/main.js?v=22"></script>
 </body>
 </html>

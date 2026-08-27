@@ -1,0 +1,102 @@
+/* ============================================================================
+   Restyles ONLY the shared header (.nav) and footer (.site-footer) components
+   to match the redesign v1 look, for pages that keep their own existing
+   layout/CSS otherwise (campaigns.html and similar legacy pages).
+   Load this AFTER the page's other stylesheets. Every value below is
+   hardcoded (not shared :root tokens) so nothing outside .nav/.mobile-menu/
+   .site-footer is affected.
+   ========================================================================== */
+
+/* ---- NAV — floating white pill -------------------------------------------- */
+.nav{
+  position:fixed; top:16px; left:0; right:0; z-index:60;
+  background:transparent; pointer-events:none;
+  transform:none; width:auto; max-width:none; /* reset legacy .nav positioning */
+  border:none; border-radius:0; box-shadow:none; backdrop-filter:none; /* reset legacy .nav pill outline */
+}
+.nav .wrap{
+  pointer-events:auto; max-width:920px;
+  display:flex; align-items:center; justify-content:space-between; gap:18px;
+  background:#ffffff; border:1px solid rgba(14,10,11,.12); border-radius:999px;
+  padding:8px 10px 8px 22px; box-shadow:0 10px 30px rgba(14,10,11,.10);
+  height:auto; margin:0 auto;
+}
+.nav .brand .brand-mark{ height:20px; width:auto; }
+.nav-links{ display:flex; align-items:center; gap:4px; }
+.nav-links a{
+  font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:#0e0a0b; padding:9px 12px; border-radius:999px;
+  transition:color .15s ease, background .15s ease;
+}
+.nav-links a:hover, .nav-links a.active{ color:#e0362c; background:none; }
+.nav-links a.active::after{ display:none; }
+.nav-links a[href="contact.html"]{ background:#e0362c; color:#fff; padding:10px 18px; margin-left:6px; }
+.nav-links a[href="contact.html"]:hover{ background:#b3221a; color:#fff; }
+.nav-right{ display:flex; align-items:center; gap:8px; }
+.nav .btn, .nav #login-link{
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:9px 16px; border-radius:999px; font-size:12px; font-weight:700;
+  background:#e0362c; color:#fff; border:1px solid transparent;
+  transition:background .15s ease; transform:none;
+}
+.nav .btn:hover, .nav #login-link:hover{ background:#b3221a; color:#fff; transform:none; }
+.nav .btn-ghost{ background:transparent; color:#0e0a0b; border-color:rgba(14,10,11,.12); }
+.user-profile{ display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; }
+.nav-burger{ display:none; background:none; border:0; cursor:pointer; padding:10px; border-radius:999px; }
+.nav-burger span{ display:block; width:20px; height:2px; background:#0e0a0b; margin:4px 0; border-radius:2px; }
+
+.mobile-menu{
+  display:none; position:fixed; top:76px; left:16px; right:16px; bottom:auto; inset:auto 16px auto 16px;
+  z-index:59; background:#ffffff; border:1px solid rgba(14,10,11,.12); border-radius:22px;
+  padding:14px; box-shadow:0 24px 60px rgba(14,10,11,.18);
+  flex-direction:column; gap:2px;
+}
+.mobile-menu.open{ display:flex; }
+.mobile-menu a{
+  padding:13px 14px; border-radius:12px; font-size:12px; font-weight:700;
+  letter-spacing:.14em; text-transform:uppercase; border-bottom:none;
+}
+.mobile-menu a:hover{ background:#f2eee8; }
+.mobile-menu .btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:11px 16px; border-radius:999px; font-size:13px; font-weight:700;
+  background:#e0362c; color:#fff; border:1px solid transparent;
+}
+#mobile-auth{ margin-top:8px; padding-top:12px; border-top:1px solid rgba(14,10,11,.12); }
+
+@media (max-width:880px){
+  .nav-links{ display:none; }
+  .nav-right #auth-state{ display:none; }
+  .nav-burger{ display:block; }
+}
+@media (max-width:640px){
+  .nav{ top:10px; }
+  .nav .wrap{ margin:0 12px; }
+}
+
+/* ---- FOOTER — black, columned --------------------------------------------- */
+.site-footer{ background:#0e0a0b; color:#fff; padding:64px 0 28px; margin-top:0; }
+.site-footer a{ color:#fff; }
+.site-footer a:hover{ color:#e0362c; }
+.footer-top{
+  display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:40px;
+  padding-bottom:36px; border-bottom:1px solid rgba(255,255,255,.14);
+}
+.footer-brand .brand-mark{ height:22px; width:auto; filter:invert(1) brightness(1.6); }
+.footer-brand p{ margin-top:16px; font-size:13.5px; color:rgba(255,255,255,.62); max-width:280px; }
+.footer-col h5{
+  font-size:10px; font-weight:700; letter-spacing:.24em; text-transform:uppercase;
+  color:rgba(255,255,255,.62); margin-bottom:16px;
+}
+.footer-col a, .footer-col p{ display:block; font-size:13.5px; margin:0 0 10px; color:rgba(255,255,255,.85); }
+.footer-legal{
+  display:flex; flex-wrap:wrap; gap:8px 22px; padding:20px 0;
+  font-size:12px; color:rgba(255,255,255,.62); border-bottom:1px solid rgba(255,255,255,.14);
+}
+.footer-bottom{
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  padding-top:20px; font-size:12px; color:rgba(255,255,255,.62);
+}
+@media (max-width:880px){
+  .footer-top{ grid-template-columns:1fr; gap:32px; }
+}
