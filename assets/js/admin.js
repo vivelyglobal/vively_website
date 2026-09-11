@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (authToken && currentUser) {
       loginSection.style.display = "none";
-      adminSidebar.style.display = "block";
+      adminSidebar.style.display = "flex";
       if (adminHeader) adminHeader.style.display = "flex";
       updateUserInfo();
       // showSection marks #dashboard .active — without it the section (and
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("adminUser", JSON.stringify(currentUser));
 
         loginSection.style.display = "none";
-        adminSidebar.style.display = "block";
+        adminSidebar.style.display = "flex";
         if (adminHeader) adminHeader.style.display = "flex";
         updateUserInfo();
         showSection("dashboard");
@@ -113,6 +113,11 @@ document.addEventListener("DOMContentLoaded", () => {
         showSection(section);
       }
     });
+  });
+
+  // Dashboard quick links
+  document.querySelectorAll(".admin-quicklink[data-goto]").forEach((item) => {
+    item.addEventListener("click", () => showSection(item.dataset.goto));
   });
 
   function showSection(sectionId) {
@@ -169,9 +174,20 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("stat-applications").textContent = applications.length || 0;
       const usersStat = document.getElementById("stat-users");
       if (usersStat) usersStat.textContent = users.length || 0;
+
+      const pendingCount = applications.filter((a) => (a.status || "pending") === "pending").length;
+      setText("ql-campaigns-note", `${campaigns.length || 0} live`);
+      setText("ql-applications-note", `${pendingCount} pending`);
+      setText("ql-users-note", `${users.length || 0} creators`);
+      setText("ql-profile-note", currentUser ? currentUser.email : "");
     } catch (error) {
       console.error("Error loading dashboard:", error);
     }
+  }
+
+  function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
   }
 
   async function loadCampaigns() {
@@ -186,6 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const campaigns = await response.json();
       campaignsCache = Array.isArray(campaigns) ? campaigns : [];
       renderCampaignCards(campaignsCache);
+      setText("campaigns-kicker", `Campaign studio  /  ${campaignsCache.length} live`);
       if (campaignDetailPanel) campaignDetailPanel.style.display = "none";
     } catch (error) {
       console.error("Error loading campaigns:", error);
@@ -231,11 +248,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     campaignsGrid.innerHTML = campaigns
       .map(
-        (campaign) => `
+        (campaign, i) => `
       <article class="admin-campaign-card">
         <div class="admin-campaign-image">
           <img src="${campaign.imageUrl || "assets/img/content-04.jpeg"}" alt="${escapeHtml(campaign.title || "Campaign")}" loading="lazy" />
-          <span class="admin-campaign-category">${escapeHtml(campaign.category || "Campaign")}</span>
+          <span class="admin-campaign-category">Case ${String(i + 1).padStart(2, "0")} / ${escapeHtml(campaign.category || "Campaign")}</span>
           <span class="admin-campaign-status ${campaign.isActive ? "is-active" : "is-inactive"}">
             ${campaign.isActive ? "Active" : "Inactive"}
           </span>
@@ -245,12 +262,12 @@ document.addEventListener("DOMContentLoaded", () => {
           <h3>${escapeHtml(campaign.title || "Untitled campaign")}</h3>
           <p>${escapeHtml(String(campaign.description || "").slice(0, 110))}${campaign.description && campaign.description.length > 110 ? "..." : ""}</p>
           <div class="admin-campaign-meta">
-            <span><strong>Budget:</strong> ${escapeHtml(formatMoney(campaign.budget))}</span>
-            <span><strong>Deadline:</strong> ${escapeHtml(campaign.deadline || "TBD")}</span>
-            <span><strong>Applicants:</strong> ${Number(campaign.applicantCount || 0)}</span>
+            <span><strong>${escapeHtml(formatMoney(campaign.budget))}</strong>Budget</span>
+            <span><strong>${escapeHtml(campaign.deadline || "TBD")}</strong>Deadline</span>
+            <span><strong>${Number(campaign.applicantCount || 0)}</strong>Applicants</span>
           </div>
           <div class="admin-campaign-actions">
-            <button class="btn-view" onclick="viewCampaignDetails('${campaign._id}')">Details</button>
+            <button class="btn-view" onclick="viewCampaignDetails('${campaign._id}')">Case study →</button>
             <button class="btn-edit" onclick="editCampaign('${campaign._id}')">Edit</button>
             <button class="btn-delete" onclick="deleteCampaign('${campaign._id}')">Delete</button>
           </div>
@@ -476,6 +493,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (currentUser) {
       document.getElementById("profile-email").textContent = currentUser.email;
       document.getElementById("profile-role").textContent = currentUser.role;
+      setText("profile-headline", currentUser.email);
     }
   }
 
@@ -865,6 +883,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       allUsersCache = await res.json();
       renderUsersTable(allUsersCache);
+      setText("users-kicker", `User directory  /  ${allUsersCache.length} creators`);
     } catch (error) {
       console.error("Error loading users:", error);
       usersTbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:24px; color:#c92a2a;">Error loading users</td></tr>`;

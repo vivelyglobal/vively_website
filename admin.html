@@ -6,30 +6,27 @@
   <title>Admin Panel | Vively</title>
   <meta name="robots" content="noindex, nofollow" />
   <link rel="icon" type="image/png" href="assets/logo/favicon.png" />
-  <link rel="stylesheet" href="assets/css/style.v13.css" />
-  <link rel="stylesheet" href="assets/css/admin.css" />
+  <link rel="stylesheet" href="assets/css/admin-redesign.css" />
 </head>
 <body class="admin-page">
 
 <div class="admin-container">
-  <aside class="admin-sidebar">
-    <div class="sidebar-brand">
-      <img src="assets/logo/vively-logo-white.png" alt="Vively" />
-    </div>
+  <header class="admin-sidebar">
+    <div class="sidebar-brand"></div>
     <nav class="sidebar-nav">
       <a href="#dashboard" class="nav-item active" data-section="dashboard">Dashboard</a>
       <a href="#campaigns" class="nav-item" data-section="campaigns">Campaigns</a>
       <a href="#applications" class="nav-item" data-section="applications">Applications</a>
       <a href="#users" class="nav-item" data-section="users">Users</a>
       <a href="#profile" class="nav-item" data-section="profile">Profile</a>
-      <a href="#" id="logout-btn" class="nav-item logout">Logout</a>
     </nav>
-  </aside>
+    <div id="user-info" class="user-info"></div>
+    <a href="#" id="logout-btn" class="nav-item logout">Log out</a>
+  </header>
 
   <main class="admin-main">
     <header class="admin-header" id="admin-header">
       <h1 id="section-title">Dashboard</h1>
-      <div id="user-info" class="user-info"></div>
     </header>
 
     <!-- Login Section -->
@@ -63,6 +60,10 @@
 
     <!-- Dashboard Section -->
     <section id="dashboard" class="admin-section">
+      <div class="admin-section-hero">
+        <span class="kicker">Overview &nbsp;/&nbsp; Real campaigns, real results</span>
+        <h1>Creator experience,<br>measured daily.</h1>
+      </div>
       <div class="dashboard-stats">
         <div class="stat-card">
           <h3 id="stat-campaigns">0</h3>
@@ -77,12 +78,34 @@
           <p>Registered Users</p>
         </div>
       </div>
+      <div class="admin-quicklinks">
+        <button type="button" class="admin-quicklink" data-goto="campaigns">
+          <span class="ql-num">01</span><span class="ql-label">Campaign Studio</span>
+          <span class="ql-note" id="ql-campaigns-note"></span><span class="ql-arrow">→</span>
+        </button>
+        <button type="button" class="admin-quicklink" data-goto="applications">
+          <span class="ql-num">02</span><span class="ql-label">Applications Hub</span>
+          <span class="ql-note" id="ql-applications-note"></span><span class="ql-arrow">→</span>
+        </button>
+        <button type="button" class="admin-quicklink" data-goto="users">
+          <span class="ql-num">03</span><span class="ql-label">User Directory</span>
+          <span class="ql-note" id="ql-users-note"></span><span class="ql-arrow">→</span>
+        </button>
+        <button type="button" class="admin-quicklink" data-goto="profile">
+          <span class="ql-num">04</span><span class="ql-label">Admin Profile</span>
+          <span class="ql-note" id="ql-profile-note"></span><span class="ql-arrow">→</span>
+        </button>
+      </div>
     </section>
 
     <!-- Campaigns Management Section -->
     <section id="campaigns" class="admin-section">
-      <div class="section-header">
-        <button id="new-campaign-btn" class="btn btn-primary">+ New Campaign</button>
+      <div class="admin-section-hero admin-section-hero-row">
+        <div>
+          <span class="kicker" id="campaigns-kicker">Campaign studio</span>
+          <h1>Campaigns that<br>speak for themselves.</h1>
+        </div>
+        <button id="new-campaign-btn" class="btn btn-primary">+ New campaign</button>
       </div>
 
       <div id="campaigns-grid" class="admin-campaign-grid">
@@ -195,6 +218,10 @@
 
     <!-- Applications Section -->
     <section id="applications" class="admin-section">
+      <div class="admin-section-hero">
+        <span class="kicker">Applications hub</span>
+        <h1>Every submission,<br>one pipeline.</h1>
+      </div>
       <table id="applications-table" class="admin-table">
         <thead>
           <tr>
@@ -217,8 +244,12 @@
 
     <!-- Users Management Section -->
     <section id="users" class="admin-section">
-      <div class="section-header">
-        <input type="search" id="users-search" placeholder="Search by name, email, username, IG…" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; min-width: 260px;" />
+      <div class="admin-section-hero admin-section-hero-row">
+        <div>
+          <span class="kicker" id="users-kicker">User directory</span>
+          <h1>The creators<br>behind the work.</h1>
+        </div>
+        <input type="search" id="users-search" placeholder="Search by name, email, username, IG…" />
       </div>
 
       <table id="users-table" class="admin-table">
@@ -255,12 +286,21 @@
 
     <!-- Profile Section -->
     <section id="profile" class="admin-section">
+      <div class="admin-section-hero">
+        <span class="kicker">Admin profile &nbsp;/&nbsp; Signed in</span>
+        <h1 id="profile-headline">admin@vively.com</h1>
+      </div>
       <div class="profile-info">
-        <p><strong>Email:</strong> <span id="profile-email"></span></p>
-        <p><strong>Role:</strong> <span id="profile-role"></span></p>
+        <p><strong>Email</strong><span id="profile-email"></span></p>
+        <p><strong>Role</strong><span id="profile-role"></span></p>
       </div>
     </section>
   </main>
+
+  <footer class="admin-footer">
+    <span class="footer-brand">vively</span>
+    <span class="footer-copy">© 2026 Vively Global — Admin</span>
+  </footer>
 </div>
 
 <script src="assets/js/admin.js"></script>

@@ -222,6 +222,11 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
   display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;
   padding-bottom:76px;
 }
+/* temporary: hero-visual (image collage + stat badges) removed until
+   frame-free source images are ready — collapse back to a single centered
+   column instead of leaving an empty grid track. */
+.home-hero.no-visual > .wrap{grid-template-columns:1fr;padding-bottom:96px}
+.home-hero.no-visual .hero-copy{max-width:720px}
 .home-hero h1{
   font-size:clamp(30px,4.2vw,46px);
   letter-spacing:-.015em;line-height:1.28;
@@ -234,19 +239,15 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
 
 .hero-visual{position:relative;justify-self:center}
 .hero-loop{
-  position:relative;width:min(330px,78vw);aspect-ratio:1080/1495;
-  border-radius:34px;overflow:hidden;
-  border:1px solid rgba(255,255,255,.16);
-  box-shadow:0 40px 90px rgba(0,0,0,.5);
+  position:relative;width:min(540px,92vw);aspect-ratio:1700/2078;
 }
 .hero-loop-frame{
-  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  opacity:0;animation:heroLoop 16s infinite;
+  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+  opacity:0;animation:heroLoop 12s infinite;
 }
 .hero-loop-frame:nth-child(1){animation-delay:0s}
 .hero-loop-frame:nth-child(2){animation-delay:4s}
 .hero-loop-frame:nth-child(3){animation-delay:8s}
-.hero-loop-frame:nth-child(4){animation-delay:12s}
 @keyframes heroLoop{
   0%{opacity:0}3%{opacity:1}25%{opacity:1}31%{opacity:0}100%{opacity:0}
 }
@@ -256,18 +257,21 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
 }
 .float-badge{
   position:absolute;display:flex;align-items:center;gap:10px;
-  background:var(--white);color:var(--ink);
+  background:rgba(255,255,255,.16);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.28);
+  color:#fff;
   border-radius:14px;padding:10px 14px;
   font-size:14px;font-weight:800;line-height:1.15;
   box-shadow:0 14px 34px rgba(0,0,0,.35);
   white-space:nowrap;
 }
-.float-badge .sub{display:block;font-size:10.5px;font-weight:600;color:var(--mut);letter-spacing:.02em}
-.float-badge .ic{display:flex;width:30px;height:30px;align-items:center;justify-content:center;background:var(--paper);border-radius:9px}
+.float-badge .sub{display:block;font-size:10.5px;font-weight:600;color:rgba(255,255,255,.68);letter-spacing:.02em}
+.float-badge .ic{display:flex;width:30px;height:30px;align-items:center;justify-content:center;background:rgba(255,255,255,.14);border-radius:9px;color:#fff}
 .float-badge .ic svg{width:17px;height:17px}
-.fb-a{top:6%;right:-14%}
-.fb-b{bottom:26%;left:-18%}
-.fb-c{bottom:-4%;right:-8%}
+.fb-a{top:-2%;right:-16%}
+.fb-b{bottom:24%;left:-21%}
+.fb-c{bottom:-7%;right:-10%}
 
 .hero-statbar{border-top:1px solid var(--line-dark)}
 .hero-statbar .wrap{
@@ -618,6 +622,8 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
 .case-hero{
   position:relative;color:#fff;overflow:hidden;
   background:var(--ink);
+  min-height:100vh;
+  display:flex;flex-direction:column;justify-content:flex-end;
   padding:150px 0 90px;
 }
 .case-hero .bg{
@@ -636,11 +642,11 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
 .case-back:hover{color:#fff}
 .case-brandlogo{height:30px;width:auto;filter:invert(1) brightness(2);opacity:.95}
 .case-hero h1{
-  font-family:var(--serif);font-weight:500;font-size:clamp(42px,7vw,84px);
-  line-height:1.04;letter-spacing:-.01em;max-width:11ch;
+  font-family:var(--sans);font-weight:800;font-size:clamp(38px,6vw,72px);
+  line-height:1.08;letter-spacing:-.01em;max-width:11ch;
 }
 .case-hero .kr{
-  font-family:var(--serif-kr);font-weight:600;font-size:clamp(22px,3vw,34px);
+  font-family:var(--sans);font-weight:700;font-size:clamp(20px,2.6vw,30px);
   margin-top:18px;
 }
 .case-crumb{margin-top:30px;color:var(--mut-dark)}
@@ -813,7 +819,7 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
   .nav-links{display:none}
   .nav-right #auth-state{display:none}
   .nav-burger{display:block}
-  .home-hero .wrap{grid-template-columns:1fr;gap:64px}
+  .home-hero > .wrap{grid-template-columns:1fr;gap:64px}
   .hero-visual{margin-top:8px}
   .fb-b{left:-6%}
   .fb-a{right:-4%}
@@ -889,14 +895,13 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
 .fb-a{bottom:auto}
 .fb-b{top:auto}
 .fb-c{top:auto}
-.float-badge{border:none}
-.float-badge span.sub{font-size:10.5px;font-weight:600;color:rgba(53,53,53,.7);margin-top:0}
+.float-badge span.sub{font-size:10.5px;font-weight:600;color:rgba(255,255,255,.68);margin-top:0}
 
 /* The legacy stylesheets define several of the same selectors for the old
    layout. Where a rule above doesn't touch every property the old one set,
    the old value otherwise keeps showing through (CSS cascades per-property,
    not per-rule). These reset exactly the leftover properties: */
 .nav{transform:none;width:auto;max-width:none;border:none;border-radius:0;box-shadow:none;backdrop-filter:none}
-.hero-loop{transform:none}
+.hero-loop{transform:none;border:none;background:none}
 .mobile-menu{bottom:auto}
 .cta-band::before,.cta-band::after{content:none}

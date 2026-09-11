@@ -36,18 +36,6 @@
   </div>
 </section>
 
-<!-- STATS BAND -->
-<section class="case-stats">
-  <div class="light">
-    <div><div class="n" id="s-views"></div><div class="l">조회수</div></div>
-    <div><div class="n" id="s-shares"></div><div class="l">공유</div></div>
-  </div>
-  <div class="dark">
-    <div><div class="n" id="s-creators"></div><div class="l">참여 크리에이터</div></div>
-    <div><div class="n" id="s-countries"></div><div class="l">도달 국가</div></div>
-  </div>
-</section>
-
 <!-- BODY -->
 <section class="case-body">
   <div class="wrap">
@@ -288,12 +276,6 @@ var ORDER = ["juno","labab","jaimdang","myeondong","apgujeong","tonymoly","parkj
   set("case-num", "Case " + String(idx + 1).padStart(2, "0"));
   set("case-cat", p.cat);
   set("case-service-en", p.serviceEn || p.service);
-
-  /* stats */
-  set("s-views", p.views);
-  set("s-shares", p.shares);
-  set("s-creators", num(p.creators));
-  set("s-countries", num(p.reach));
 
   /* sections */
   set("t-overview", p.brand + " 캠페인은 " + p.service + " 방식으로 진행했습니다. 목표는 " + p.goal + "이며, " + p.branches + "에서 실행했습니다.");
