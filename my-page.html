@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+<title>My Page | Vively</title>
+<meta name="robots" content="noindex" />
+<link rel="icon" type="image/png" href="assets/logo/favicon.png" />
+<link rel="stylesheet" href="assets/css/style.v13.css" />
+<link rel="stylesheet" href="assets/css/style.work.css" />
+<link rel="stylesheet" href="assets/css/style.mobile.v2.css" />
+<link rel="stylesheet" href="assets/css/redesign.v1.css?v=14" />
+<link rel="stylesheet" href="assets/css/user-auth.css" />
+<link rel="stylesheet" href="assets/css/my-page.css?v=1" />
+</head>
+<body>
+
+<div id="header-container"></div>
+
+<!-- Logged-out gate -->
+<section class="mp-gate" id="mp-gate" hidden>
+  <div class="wrap">
+    <span class="kicker slash">MY PAGE</span>
+    <h1 style="margin-top:14px">로그인하면 내 레퍼럴 코드를<br>확인할 수 있어요.</h1>
+    <p>친구가 내 코드로 가입하면 알림을 받고, 누가 가입했는지 여기서 볼 수 있습니다.</p>
+    <button type="button" class="mp-btn accent" id="mp-login-btn">로그인 / 회원가입 →</button>
+  </div>
+</section>
+
+<div id="mp-app" hidden>
+  <section class="mp-hero">
+    <div class="wrap">
+      <div class="mp-id">
+        <div class="mp-avatar" id="mp-avatar">V</div>
+        <div>
+          <span class="kicker slash">MY PAGE</span>
+          <h1 id="mp-username">@…</h1>
+          <div class="meta" id="mp-meta"></div>
+        </div>
+      </div>
+      <div id="mp-welcome" hidden style="font-size:14px;color:var(--mut)">🎉 가입을 환영합니다! 아래 코드를 친구에게 공유해 보세요.</div>
+    </div>
+  </section>
+
+  <section class="mp-body">
+    <div class="wrap mp-grid">
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <div class="mp-card mp-ref">
+          <span class="kicker slash">REFERRAL CODE</span>
+          <p>이 코드로 가입하는 사람이 생기면 이메일과 아래 알림으로 알려드려요.</p>
+          <div class="mp-code-row">
+            <div class="mp-code" id="mp-code">••••••••</div>
+            <button type="button" class="mp-btn accent" id="mp-copy-code">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+              코드 복사
+            </button>
+          </div>
+          <div class="mp-link-row">
+            <div class="mp-link" id="mp-link">…</div>
+            <button type="button" class="mp-btn" id="mp-copy-link">링크 복사</button>
+            <button type="button" class="mp-btn" id="mp-share" hidden>공유</button>
+          </div>
+          <div class="mp-stats">
+            <div><b id="mp-count">0</b><small>내 코드로 가입한 사람</small></div>
+            <div><b id="mp-unread">0</b><small>읽지 않은 알림</small></div>
+          </div>
+        </div>
+
+        <div class="mp-card">
+          <div class="mp-card-head">
+            <h2>내 코드를 사용한 사람</h2>
+            <span class="count" id="mp-referred-count">0 people</span>
+          </div>
+          <ul class="mp-list" id="mp-referred"></ul>
+          <div class="mp-empty" id="mp-referred-empty" hidden><b>아직 아무도 없어요</b>코드나 링크를 공유하면 여기에 표시됩니다.</div>
+        </div>
+      </div>
+
+      <div class="mp-card">
+        <div class="mp-card-head">
+          <h2>알림</h2>
+          <button type="button" class="mp-btn" id="mp-mark-read" style="height:36px;font-size:12.5px" hidden>모두 읽음</button>
+        </div>
+        <ul class="mp-list" id="mp-notifs"></ul>
+        <div class="mp-empty" id="mp-notifs-empty" hidden><b>새 알림이 없어요</b>누군가 내 코드로 가입하면 여기에 알림이 와요.</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="mp-toast" id="mp-toast" role="status" aria-live="polite"></div>
+
+<div id="footer-container"></div>
+
+<script src="assets/js/component-loader.js?v=3"></script>
+<script src="assets/js/main.js?v=23"></script>
+<script src="assets/js/my-page.js?v=1"></script>
+</body>
+</html>

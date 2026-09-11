@@ -50,7 +50,7 @@ async function loadPageComponents() {
   // Load header at the beginning of body
   const headerContainer = document.querySelector('body');
   if (headerContainer) {
-    const headerHtml = await fetch('/assets/components/header.html').then(r => r.text());
+    const headerHtml = await fetch('/assets/components/header.html?v=2').then(r => r.text());
     headerContainer.insertAdjacentHTML('afterbegin', headerHtml);
     initHeaderScripts();
   }
@@ -106,7 +106,7 @@ async function loadSignupModal() {
     const container = document.getElementById("signup-modal-container");
     if (!container) return;
     
-    const html = await fetch('/assets/components/signup-modal.html').then(r => r.text());
+    const html = await fetch('/assets/components/signup-modal.html?v=2').then(r => r.text());
     container.innerHTML = html;
   } catch (error) {
     console.error('Error loading signup modal:', error);
@@ -120,7 +120,7 @@ function initUserAuthUI() {
   // Dynamically load user-auth.js script
   const script = document.createElement('script');
   script.id = 'vively-user-auth-script';
-  script.src = '/assets/js/user-auth.js';
+  script.src = '/assets/js/user-auth.js?v=2';
   script.defer = true;
   document.body.appendChild(script);
 }
@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const footerContainer = document.getElementById("footer-container");
   
   if (headerContainer) {
-    const headerHtml = await fetch('/assets/components/header.html').then(r => r.text()).catch(() => '');
+    const headerHtml = await fetch('/assets/components/header.html?v=2').then(r => r.text()).catch(() => '');
     if (headerHtml) headerContainer.innerHTML = headerHtml;
     initHeaderScripts();
   }
