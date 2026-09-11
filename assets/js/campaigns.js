@@ -3,6 +3,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const campaignsList = document.getElementById("campaigns-list");
   const searchFilter = document.getElementById("search-filter");
   const heroBadge = document.getElementById("campaign-hero-badge");
+  const totalLabel = document.getElementById("campaign-total");
+  const emptyState = document.getElementById("campaign-empty");
+  const emptyTitle = document.getElementById("campaign-empty-title");
+  const emptyBody = document.getElementById("campaign-empty-body");
+  const resetButton = document.getElementById("campaign-reset");
   const categoryButtons = Array.from(
     document.querySelectorAll("[data-category-filter]")
   );
@@ -133,6 +138,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderCampaigns();
   }
 
+  // Local preview only: static file servers have no /api, so fall back to sample data.
+  const isLocalPreview = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+  const SAMPLE_CAMPAIGNS = [
+    { _id: "s1", brand: "Juno Hair", category: "Beauty & Care", title: "Seoul Hair Makeover Experience", description: "Visit Juno Hair Gangnam for a full styling session and share your transformation with your audience.", imageUrl: "assets/banner/juno.png", budget: "150000", deadline: "2026-10-05", spots: 10, applicantCount: 6 },
+    { _id: "s2", brand: "LA BAB", category: "Dining", title: "Korean Rice Bowl Tasting Reel", description: "Try LA BAB's signature bowls in Hongdae and film a short-form review for your followers.", imageUrl: "assets/banner/labab.png", budget: "80000", deadline: "2026-09-28", spots: 15, applicantCount: 4 },
+    { _id: "s3", brand: "TONYMOLY", category: "Product", title: "K-Beauty Skincare Unboxing", description: "Receive a curated TONYMOLY skincare set and create an honest first-impression video.", imageUrl: "assets/banner/tonymoly.png", budget: "120000", deadline: "2026-10-12", spots: 30, applicantCount: 21 },
+    { _id: "s4", brand: "Jaimdang", category: "Life Service", title: "Korean Medicine Wellness Visit", description: "Experience a traditional wellness consultation at Jaimdang clinic and document your visit.", imageUrl: "assets/banner/jaimdang.png", budget: "100000", deadline: "2026-10-20", spots: 8, applicantCount: 5 },
+    { _id: "s5", brand: "Myeongdong K-Galbi", category: "Dining", title: "Late-Night Galbi Mukbang", description: "Film a mukbang-style dinner at Myeongdong K-Galbi and highlight the tabletop grilling experience.", imageUrl: "assets/banner/mkd.png", budget: "90000", deadline: "2026-09-30", spots: 12, applicantCount: 9 },
+    { _id: "s6", brand: "Park Jun Beauty Lab", category: "Beauty & Care", title: "Scalp Care & Perm Session", description: "Get a professional perm and scalp treatment, then share before-and-after content.", imageUrl: "assets/banner/parkjun.png", budget: "130000", deadline: "2026-10-08", spots: 6, applicantCount: 2 },
+    { _id: "s7", brand: "Berry Stay", category: "Stay & Travel", title: "Hanok Weekend Getaway", description: "Stay two nights in a traditional hanok in Bukchon and capture the neighborhood at golden hour.", imageUrl: "assets/banner/berry.png", budget: "200000", deadline: "2026-11-02", spots: 4, applicantCount: 1 },
+    { _id: "s8", brand: "Seoul Kimbap Class", category: "Class & Activity", title: "Hands-On Kimbap Workshop", description: "Join a 2-hour kimbap making class in Seongsu and vlog the process from start to finish.", imageUrl: "assets/img/content-05.jpeg", budget: "60000", deadline: "2026-10-15", spots: 20, applicantCount: 11 },
+    { _id: "s9", brand: "ADM Studio", category: "Casting", title: "Global Creator Casting Call", description: "Open casting for a K-brand commercial shoot; we're looking for creators from 5+ countries.", imageUrl: "assets/banner/adm.png", budget: "300000", deadline: "2026-10-25", spots: 5, applicantCount: 5 },
+  ];
+
   async function loadCampaigns() {
     try {
       const response = await fetch("/api/campaigns");
@@ -146,66 +165,89 @@ document.addEventListener("DOMContentLoaded", async () => {
       renderCampaigns();
     } catch (error) {
       console.error("Error loading campaigns:", error);
+      if (isLocalPreview) {
+        allCampaigns = SAMPLE_CAMPAIGNS;
+        updateHeroBadge();
+        updateCategoryCounts();
+        renderCampaigns();
+        return;
+      }
       campaignsList.innerHTML =
         '<p class="campaign-empty">Failed to load campaigns. Please try again.</p>';
     }
   }
 
+  function showEmptyState(searchValue) {
+    if (!emptyState) {
+      campaignsList.innerHTML = '<p class="cp-empty show">No campaigns found.</p>';
+      return;
+    }
+    const activeLabel = (categoryButtons.find((b) => b.dataset.categoryFilter === activeCategory) || {}).textContent || activeCategory;
+    if (searchValue) {
+      emptyTitle.textContent = `\u201c${searchValue}\u201d 검색 결과가 없어요`;
+      emptyBody.textContent = "철자를 확인하거나 다른 키워드로 검색해 보세요.";
+    } else if (activeCategory !== "all") {
+      emptyTitle.textContent = `${activeLabel.replace(/\s*\d+\s*$/, "").trim()} 카테고리에 등록된 캠페인이 없어요`;
+      emptyBody.textContent = "다른 카테고리를 둘러보거나 브랜드 캠페인을 먼저 제안해 보세요.";
+    } else {
+      emptyTitle.textContent = "아직 등록된 캠페인이 없어요";
+      emptyBody.textContent = "새로운 캠페인이 곧 열립니다. 브랜드 캠페인을 먼저 제안해 보세요.";
+    }
+    emptyState.classList.add("show");
+  }
+
   function renderCampaigns() {
     const campaigns = getFilteredCampaigns();
+    const searchValue = searchFilter ? searchFilter.value.trim() : "";
+
+    if (totalLabel) {
+      totalLabel.textContent = `${campaigns.length} campaigns`;
+    }
+    if (emptyState) emptyState.classList.remove("show");
 
     if (!campaigns.length) {
-      campaignsList.innerHTML =
-        '<p class="campaign-empty">No campaigns found.</p>';
+      campaignsList.innerHTML = "";
+      showEmptyState(searchValue);
       return;
     }
 
     campaignsList.innerHTML = campaigns
       .map((campaign) => {
         const spotsLeft = getSpotsLeft(campaign);
-        const spotsClass =
-          typeof spotsLeft === "number" && spotsLeft <= 5 ? " is-urgent" : "";
+        const isOpen = typeof spotsLeft !== "number" || spotsLeft > 0;
+        const isUrgent = typeof spotsLeft === "number" && spotsLeft > 0 && spotsLeft <= 5;
         const campaignTitle = escapeHtml(campaign.title || "Untitled campaign");
         const campaignBrand = escapeHtml(campaign.brand || "Unknown brand");
         const campaignCategory = escapeHtml(campaign.category || "Campaign");
         const campaignImage = escapeHtml(campaign.imageUrl || "assets/img/content-04.jpeg");
         const rawDescription = String(campaign.description || "");
-        const shortDescription = escapeHtml(rawDescription.slice(0, 110));
-        const hasMoreDescription = rawDescription.length > 110;
+        const shortDescription = escapeHtml(rawDescription.slice(0, 90));
+        const hasMoreDescription = rawDescription.length > 90;
         const deadlineText = formatDeadline(campaign.deadline);
         const detailsHref = `campaign-detail.html?id=${encodeURIComponent(String(campaign._id || ""))}`;
+        const spotsText = typeof spotsLeft === "number" ? `${spotsLeft} spots left` : "Spots TBD";
 
         return `
-          <article class="campaign-card">
-            <div class="campaign-image">
+          <a class="cp-card" href="${detailsHref}">
+            <div class="cp-thumb">
               <img src="${campaignImage}" alt="${campaignTitle}" loading="lazy" />
-              <span class="campaign-category">${campaignCategory}</span>
-              <span class="campaign-save" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M6 3.75h12a.75.75 0 0 1 .75.75v16.5l-6.75-3.75-6.75 3.75V4.5a.75.75 0 0 1 .75-.75Z"></path>
-                </svg>
-              </span>
+              <span class="badge${isOpen ? " live" : ""}">${isOpen ? "모집 중" : "마감"}</span>
             </div>
-            <div class="campaign-content">
-              <div class="campaign-brand">${campaignBrand}</div>
+            <div class="cp-body">
+              <span class="cp-tag">${campaignCategory}</span>
               <h3>${campaignTitle}</h3>
-              <p class="campaign-description">${shortDescription}${hasMoreDescription ? "..." : ""}</p>
-              <div class="campaign-meta">
-                <div class="campaign-meta-item">
-                  <span class="campaign-meta-label">Budget</span>
-                  <strong>${escapeHtml(formatMoney(campaign.budget))}</strong>
-                </div>
-                <div class="campaign-meta-item">
-                  <span class="campaign-meta-label">Deadline</span>
-                  <strong>${deadlineText}</strong>
-                </div>
+              <span class="brand">${campaignBrand}</span>
+              <p class="desc">${shortDescription}${hasMoreDescription ? "..." : ""}</p>
+              <div class="cp-meta">
+                <span>리워드 <b>₩${escapeHtml(formatMoney(campaign.budget))}</b></span>
+                <span>~${deadlineText}</span>
               </div>
-              <div class="campaign-card-footer">
-                <span class="campaign-spots${spotsClass}">${spotsLeft} spots left</span>
-                <a href="${detailsHref}" class="btn btn-accent btn-sm">See details</a>
+              <div class="cp-meta" style="border-top:0;padding-top:6px">
+                <span class="spots${isUrgent ? " urgent" : ""}">${spotsText}</span>
+                <b>See details →</b>
               </div>
             </div>
-          </article>
+          </a>
         `;
       })
       .join("");
@@ -219,6 +261,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (searchFilter) {
     searchFilter.addEventListener("input", renderCampaigns);
+  }
+
+  if (resetButton) {
+    resetButton.addEventListener("click", () => {
+      if (searchFilter) searchFilter.value = "";
+      setActiveCategory("all");
+    });
   }
 
   await loadCampaigns();

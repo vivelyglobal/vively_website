@@ -15,9 +15,8 @@
   <meta property="og:url" content="https://www.vivelyglobal.com/brand-login" />
   <meta property="og:image" content="https://www.vivelyglobal.com/assets/logo/vively-logo-black.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link href="assets/css/style.v13.css" rel="stylesheet" />
-  <link href="assets/css/style.mobile.v2.css" rel="stylesheet" />
   <link href="brand-shell.css" rel="stylesheet" />
+  <link href="assets/css/redesign.v1.css?v=14" rel="stylesheet" />
   <style>
     .brand-login-card {
       width: min(100%, 520px);
@@ -119,57 +118,46 @@
         grid-template-columns: 1fr;
       }
     }
+    .brand-auth-page{
+      min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:140px 24px 64px;
+    }
   </style>
 </head>
 <body class="shell-page">
-  <div class="shell-layout">
-    <aside class="shell-sidebar">
-      <div class="shell-brand">
-        <img src="assets/logo/vively-logo-white.png" alt="Vively" />
-        <div class="shell-brand-text">
-          <h2>Brand Portal</h2>
-          <p>Company login</p>
+  <div id="header-container"></div>
+
+  <main class="brand-auth-page">
+    <div class="shell-auth-card brand-login-card">
+      <h2>Sign in</h2>
+      <p class="muted">Use your business email and password.</p>
+
+      <div id="brand-login-banner" class="banner"></div>
+
+      <form id="brand-login-form">
+        <div class="form-group">
+          <label for="brand-login-email">Business Email</label>
+          <input type="email" id="brand-login-email" required autocomplete="email" />
         </div>
+        <div class="form-group">
+          <label for="brand-login-password">Password</label>
+          <input type="password" id="brand-login-password" required autocomplete="current-password" />
+        </div>
+        <button type="submit" id="brand-login-submit" class="btn btn-accent" style="width:100%;">Login</button>
+      </form>
+      <p class="form-footer" style="margin-top:14px;"><a href="forgot-password.html?type=brand">Forgot your password?</a></p>
+
+      <div class="shell-auth-link-row">
+        <a class="shell-btn secondary" href="brand-signup.html">Create Brand Account</a>
+        <a class="shell-btn" href="for-brand.html">Back to Main Site</a>
       </div>
+    </div>
+  </main>
 
-      <nav class="shell-nav" aria-label="Brand Navigation">
-        <a class="active" href="brand-login.html">Login</a>
-        <a href="brand-signup.html">Sign Up</a>
-        <a href="/">Main Website</a>
-        <a href="/admin.html">Admin Login</a>
-      </nav>
-    </aside>
+  <div id="footer-container"></div>
 
-    <main class="shell-main">
-      <section class="shell-content">
-        <div class="shell-auth-card brand-login-card">
-          <h2>Sign in</h2>
-          <p class="muted">Use your business email and password.</p>
-
-          <div id="brand-login-banner" class="banner"></div>
-
-          <form id="brand-login-form">
-            <div class="form-group">
-              <label for="brand-login-email">Business Email</label>
-              <input type="email" id="brand-login-email" required autocomplete="email" />
-            </div>
-            <div class="form-group">
-              <label for="brand-login-password">Password</label>
-              <input type="password" id="brand-login-password" required autocomplete="current-password" />
-            </div>
-            <button type="submit" id="brand-login-submit" class="btn btn-accent" style="width:100%;">Login</button>
-          </form>
-          <p class="form-footer" style="margin-top:14px;"><a href="forgot-password.html?type=brand">Forgot your password?</a></p>
-
-          <div class="shell-auth-link-row">
-            <a class="shell-btn secondary" href="brand-signup.html">Create Brand Account</a>
-            <a class="shell-btn" href="/">Back to Main Site</a>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
-
+  <script src="assets/js/component-loader.js?v=2"></script>
+  <script src="assets/js/main.js?v=23"></script>
   <script>
   (function () {
     const form = document.getElementById('brand-login-form');

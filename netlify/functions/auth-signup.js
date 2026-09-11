@@ -1,7 +1,29 @@
 // Signup handler: send verification code, verify code, create account
 const bcrypt = require("bcryptjs");
-const { getUsersCollection, getVerificationCodesCollection } = require("./db");
+const {
+  getUsersCollection,
+  getVerificationCodesCollection,
+  getReferralsCollection,
+  getNotificationsCollection,
+} = require("./db");
 const { generateToken } = require("./auth");
+const {
+  normalizeCode,
+  isValidCodeFormat,
+  allocateReferralCode,
+  sendReferralEmail,
+} = require("./_shared/referral");
+
+async function findReferrer(users, rawCode) {
+  const code = normalizeCode(rawCode);
+  if (!code) return { code: "", referrer: null };
+  if (!isValidCodeFormat(code)) return { code, referrer: null };
+  const referrer = await users.findOne(
+    { referralCode: code, isActive: { $ne: false } },
+    { projection: { _id: 1, username: 1, email: 1, profile: 1 } }
+  );
+  return { code, referrer };
+}
 
 // NOTE: verification codes are persisted in MongoDB (see ./db.js
 // getVerificationCodesCollection). An in-memory Map does NOT work on
@@ -130,6 +152,21 @@ exports.handler = async (event) => {
     const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
 
     const users = await getUsersCollection();
+
+    // ========== CHECK REFERRAL CODE (public, read-only) ==========
+    if (action === "check-referral") {
+      const { code: normalized, referrer } = await findReferrer(users, body.referralCode);
+      if (!normalized) return { statusCode: 400, body: JSON.stringify({ error: "Referral code required" }) };
+      return {
+        statusCode: 200,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          valid: !!referrer,
+          code: normalized,
+          referrerUsername: referrer ? referrer.username : null,
+        }),
+      };
+    }
 
     // ========== SEND VERIFICATION CODE ==========
     if (action === "send-code") {
@@ -284,6 +321,7 @@ exports.handler = async (event) => {
         bio,
         portfolioUrl,
         inviterUsername,
+        referralCode: submittedReferralCode,
         marketingOptIn,
       } = userData;
 
@@ -344,8 +382,26 @@ exports.handler = async (event) => {
         };
       }
 
+      // Resolve the referral code (optional). A code that was typed but
+      // doesn't exist is rejected so the user can fix a typo instead of
+      // silently losing the credit.
+      let referrer = null;
+      let usedReferralCode = null;
+      if (submittedReferralCode && String(submittedReferralCode).trim()) {
+        const found = await findReferrer(users, submittedReferralCode);
+        if (!found.referrer) {
+          return {
+            statusCode: 400,
+            body: JSON.stringify({ error: "Invalid referral code", field: "referralCode" }),
+          };
+        }
+        referrer = found.referrer;
+        usedReferralCode = found.code;
+      }
+
       // Create new user
       const passwordHash = await bcrypt.hash(password, 10);
+      const ownReferralCode = await allocateReferralCode(users);
 
       // If this signup started via Google Sign-In, auth-google stashed
       // the verified googleId + picture on the verification code record.
@@ -380,6 +436,10 @@ exports.handler = async (event) => {
         },
         contentCategories: categories || [],
         inviterUsername: inviterUsername ? inviterUsername.toLowerCase().replace(/^@/, "") : null,
+        referralCode: ownReferralCode,
+        referralCount: 0,
+        referredBy: referrer ? referrer._id : null,
+        referralCodeUsed: usedReferralCode,
         role: "creator", // Default role
         authProvider: linkedGoogleId ? "google" : "email",
         googleId: linkedGoogleId,
@@ -393,6 +453,39 @@ exports.handler = async (event) => {
 
       // Clean up the used verification record now that the account exists.
       await codes.deleteOne({ email }).catch(() => {});
+
+      if (referrer) {
+        const now = new Date();
+        try {
+          const referrals = await getReferralsCollection();
+          await referrals.insertOne({
+            referrerId: referrer._id,
+            referredUserId: result.insertedId,
+            referredUsername: newUser.username,
+            code: usedReferralCode,
+            createdAt: now,
+          });
+          await users.updateOne({ _id: referrer._id }, { $inc: { referralCount: 1 } });
+          const notifications = await getNotificationsCollection();
+          await notifications.insertOne({
+            userId: referrer._id,
+            type: "referral",
+            message: `@${newUser.username} joined Vively with your referral code.`,
+            data: { referredUsername: newUser.username, code: usedReferralCode },
+            read: false,
+            createdAt: now,
+          });
+        } catch (error) {
+          console.error("Referral record error:", error);
+        }
+        // Email is best-effort; the account is already created.
+        sendReferralEmail({
+          to: referrer.email,
+          referrerName: referrer.profile?.fullName || referrer.username,
+          newUsername: newUser.username,
+          code: usedReferralCode,
+        }).catch(() => {});
+      }
 
       // Generate JWT token
       const token = generateToken(
@@ -412,6 +505,7 @@ exports.handler = async (event) => {
             email: newUser.email,
             username: newUser.username,
             profile: newUser.profile,
+            referralCode: newUser.referralCode,
           },
         }),
       };

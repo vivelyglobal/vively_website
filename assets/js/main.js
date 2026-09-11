@@ -593,9 +593,18 @@ document.addEventListener("DOMContentLoaded", async () => {
      in flight when DOMContentLoaded fires — so it's looked up fresh on
      every scroll rather than cached once (a null cache here would
      silently disable the listener for the rest of the page's life). */
+  let lastScrollY = window.scrollY;
   const onScroll = () => {
     const nav = document.querySelector(".nav");
-    if (nav) nav.classList.toggle("nav-compact", window.scrollY > 40);
+    const y = window.scrollY;
+    if (nav) {
+      nav.classList.toggle("nav-compact", y > 40);
+      // Hide while scrolling down past the top area; reveal on any scroll up.
+      // The 6px dead zone ignores sub-pixel jitter from trackpads.
+      if (y > 120 && y > lastScrollY + 6) nav.classList.add("nav-hidden");
+      else if (y < lastScrollY - 6 || y <= 120) nav.classList.remove("nav-hidden");
+    }
+    lastScrollY = y;
   };
   document.addEventListener("scroll", onScroll, { passive: true });
   onScroll();

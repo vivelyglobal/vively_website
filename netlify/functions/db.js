@@ -43,7 +43,27 @@ async function getCampaignsCollection() {
 
 async function getUsersCollection() {
   const { db } = await connectToDatabase();
-  return db.collection("users");
+  const col = db.collection("users");
+  // sparse: legacy accounts without a code must not collide on null
+  await col
+    .createIndex({ referralCode: 1 }, { unique: true, sparse: true })
+    .catch(() => {});
+  return col;
+}
+
+async function getReferralsCollection() {
+  const { db } = await connectToDatabase();
+  const col = db.collection("referrals");
+  await col.createIndex({ referrerId: 1, createdAt: -1 }).catch(() => {});
+  await col.createIndex({ referredUserId: 1 }, { unique: true }).catch(() => {});
+  return col;
+}
+
+async function getNotificationsCollection() {
+  const { db } = await connectToDatabase();
+  const col = db.collection("notifications");
+  await col.createIndex({ userId: 1, read: 1, createdAt: -1 }).catch(() => {});
+  return col;
 }
 
 async function getApplicationsCollection() {
@@ -93,6 +113,8 @@ module.exports = {
   connectToDatabase,
   getCampaignsCollection,
   getUsersCollection,
+  getReferralsCollection,
+  getNotificationsCollection,
   getApplicationsCollection,
   getVerificationCodesCollection,
   getBrandsCollection,

@@ -19,24 +19,32 @@
 <link rel="stylesheet" href="assets/css/style.brand.css" />
 <link rel="stylesheet" href="assets/css/style.brand2.css" />
 <link rel="stylesheet" href="assets/css/style.mobile.v2.css" />
-<link rel="stylesheet" href="assets/css/redesign.v1.css?v=1" />
+<link rel="stylesheet" href="assets/css/redesign.v1.css?v=14" />
 <link rel="stylesheet" href="assets/css/user-auth.css" />
 </head>
 <body>
 
 <div id="header-container"></div>
 
-<!-- HERO -->
-<section class="story-hero">
-  <div class="wrap">
+<!-- HERO + WHY VIVELY ring — one section, page background -->
+<section class="story-hero" id="story">
+  <div class="story-top">
     <span class="kicker">OUR STORY</span>
     <h1>글로벌 크리에이터의 영향력을,<br><span class="hl-red">브랜드의 성장</span>으로 연결합니다.</h1>
-    <div class="scroll-cue" aria-hidden="true"><span class="meta-caps">Scroll</span></div>
+    <p class="story-sub">우리가 다르게 일하는 이유</p>
   </div>
+
+  <div class="ring-wrap" aria-hidden="true">
+    <div class="ring" id="ring"></div>
+    <div class="ring-shadow"></div>
+  </div>
+  <p class="sr-only">외국인이 이끄는 해외 진출 전문 팀. 글로벌 KOL 네트워크 10,000+. 서울 거주 크리에이터 200+. 감이 아닌 현지 반응으로 먼저 검증. 콘텐츠·캠페인·커머스까지 연결.</p>
+
+  <div class="scroll-cue" aria-hidden="true"><span class="meta-caps">Scroll</span></div>
 </section>
 
-<!-- 01 VIVELY -->
-<section class="sec" style="padding-top:64px">
+<!-- 01 VIVELY + DIFFERENCE — merged into one section -->
+<section class="sec">
   <div class="wrap reveal">
     <div class="about-grid">
       <div>
@@ -50,40 +58,8 @@
       <figure class="photo-cell"><img src="assets/office/Office (2).jpg" alt="Vively 산업 전문성" loading="lazy"><figcaption>산업 전문성</figcaption></figure>
       <figure class="photo-cell"><img src="assets/office/Office (3).jpg" alt="Vively 시장 이해도" loading="lazy"><figcaption>시장 이해도</figcaption></figure>
     </div>
-  </div>
-</section>
 
-<!-- "Why Vively" — original rotating 3D text ribbon, kept intact -->
-<section class="ribbon-banner">
-  <div class="wrap">
-    <span class="ribbon-kicker">Why Vively</span>
-    <h2>우리가 다르게 일하는 이유.</h2>
-  </div>
-
-  <!-- The band is built from data-text: JS measures every glyph and places
-       each one at its true angle on the cylinder. Edit the string below and
-       the ribbon re-flows itself; nothing else needs changing. -->
-  <div class="ribbon-stage"
-       data-text="외국인이 이끄는 해외 진출 전문 팀 / 글로벌 KOL 네트워크 10,000+ / 서울 거주 크리에이터 200+ / 감이 아닌 현지 반응으로 먼저 검증 / 콘텐츠·캠페인·커머스까지 연결 / ">
-    <div class="ribbon-tilt">
-      <!-- three stacked bands. Same string in each row so the radius and
-           letter spacing match exactly; each row starts at a different
-           angle so the lines read staggered, as in the reference. -->
-      <div class="ribbon-row ghost" style="--ym:0;     --rot:137deg" aria-hidden="true"><div class="ribbon"></div></div>
-      <div class="ribbon-row"       style="--ym:-1.15; --rot:0deg"   aria-hidden="true"><div class="ribbon"></div></div>
-      <div class="ribbon-row"       style="--ym:0;     --rot:137deg" aria-hidden="true"><div class="ribbon"></div></div>
-      <div class="ribbon-row"       style="--ym:1.15;  --rot:259deg" aria-hidden="true"><div class="ribbon"></div></div>
-    </div>
-  </div>
-  <p class="sr-only">외국인이 이끄는 해외 진출 전문 팀. 글로벌 KOL 네트워크 10,000+. 서울 거주 크리에이터 200+. 감이 아닌 현지 반응으로 먼저 검증. 콘텐츠·캠페인·커머스까지 연결.</p>
-</section>
-
-<!-- 02 DIFFERENCE -->
-<section class="sec" style="padding-top:0">
-  <div class="wrap reveal">
-    <div class="sec-head">
-      <span class="kicker slash">02 &nbsp;DIFFERENCE</span>
-      <h2>숫자로 보는 Vively.</h2>
+    <div class="sec-head" style="margin-top:64px">
     </div>
     <div class="diff-row">
       <div class="diff-cell">
@@ -110,10 +86,10 @@
   </div>
 </section>
 
-<!-- 03 FOUNDERS — original clickable carousel preserved -->
-<section class="on-dark sec" id="founders" style="padding-top:0">
+<!-- 02 FOUNDERS — original clickable carousel preserved -->
+<section class="on-dark sec" id="founders">
   <div class="wrap reveal">
-    <span class="kicker slash">03 &nbsp;FOUNDERS</span>
+    <span class="kicker slash">02 &nbsp;FOUNDERS</span>
     <h2 style="margin-top:12px">Vively Founders</h2>
 
     <div class="f-stage">
@@ -168,12 +144,12 @@
   </div>
 </section>
 
-<!-- 04 FOREIGNER-LED -->
-<section class="sec" style="padding-top:0">
+<!-- 03 FOREIGNER-LED -->
+<section class="sec">
   <div class="wrap reveal">
     <div class="led-grid">
       <div>
-        <span class="kicker slash">04 &nbsp;FOREIGNER-LED</span>
+        <span class="kicker slash">03 &nbsp;FOREIGNER-LED</span>
         <h2>왜 의도적으로<br>외국인이 이끄는 팀인가.</h2>
       </div>
       <div class="led-list">
@@ -203,7 +179,7 @@
   </div>
 </section>
 
-<!-- 05 NUMBERS + PARTNERS — .n counters keep the original count-up animation -->
+<!-- 06 NUMBERS + PARTNERS — .n counters keep the original count-up animation -->
 <section class="sec" style="padding-top:0">
   <div class="wrap reveal">
     <div class="stat-band">
@@ -224,12 +200,12 @@
   </div>
 </section>
 
-<!-- 06 MARKET CONTEXT -->
-<section class="sec" style="padding-top:0">
+<!-- 04 MARKET CONTEXT -->
+<section class="sec mkt-dark">
   <div class="wrap reveal">
     <div class="mkt-grid">
       <div>
-        <span class="kicker slash">05 &nbsp;MARKET CONTEXT</span>
+        <span class="kicker slash">04 &nbsp;MARKET CONTEXT</span>
         <h2>커머스의 중심축이<br>이동하고 있습니다.</h2>
         <p class="lede" style="margin-top:16px">브랜드 성장의 방식이 바뀌고 있습니다. Vively는 크리에이터 이코노미의 신호를 바탕으로 새로운 기회를 빠르게 브랜드와 연결해 실행합니다.</p>
       </div>
@@ -260,13 +236,9 @@
         </div>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- CTA -->
-<section class="sec" style="padding-top:0">
-  <div class="wrap reveal">
-    <div class="cta-band on-dark">
+    <!-- CTA — same section, no seam -->
+    <div class="cta-band on-dark" style="margin-top:64px">
       <div>
         <h2>다음 시장에 대한 외부인의 시선이 필요하신가요?</h2>
         <p>그게 우리 본업입니다. 어디로 향하고 있는지 알려주세요.</p>
@@ -281,7 +253,61 @@
 
 <div id="footer-container"></div>
 
-<script src="assets/js/component-loader.js"></script>
-<script src="assets/js/main.js?v=22"></script>
+<script src="assets/js/component-loader.js?v=2"></script>
+<script src="assets/js/main.js?v=23"></script>
+<script>
+(function(){
+  var ring = document.getElementById('ring');
+  if (!ring) return;
+  var items = [
+    '서울 거주 크리에이터 <span class="num">200+</span>',
+    '감이 아닌 현지 반응으로 먼저 검증',
+    '콘텐츠·캠페인·커머스까지 연결',
+    '글로벌 KOL 네트워크 <span class="num">10,000+</span>',
+    '외국인이 이끄는 해외 진출 전문 팀'
+  ];
+  var n = items.length, step = 360 / n, segs = [];
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function build(){
+    ring.innerHTML = '';
+    segs = [];
+    var total = 0, els = [];
+    for (var i = 0; i < n; i++){
+      var e = document.createElement('div');
+      e.className = 'seg';
+      e.innerHTML = items[i] + '<span class="slash">/</span>';
+      ring.appendChild(e);
+      total += e.offsetWidth + 36;
+      els.push(e);
+    }
+    var radius = total / (2 * Math.PI);
+    for (var j = 0; j < n; j++){
+      var el = els[j], w = el.offsetWidth, h = el.offsetHeight;
+      el.dataset.angle = j * step;
+      el.style.transform = 'rotateY(' + (j * step) + 'deg) translateZ(' + radius + 'px) translate(' + (-w/2) + 'px,' + (-h/2) + 'px)';
+      segs.push(el);
+    }
+  }
+
+  var start = null, period = 42000;
+  function tick(t){
+    if (start === null) start = t;
+    var rot = reduce ? -20 : -((t - start) / period * 360) % 360;
+    for (var i = 0; i < segs.length; i++){
+      var a = ((parseFloat(segs[i].dataset.angle) + rot) % 360 + 360) % 360;
+      var c = Math.cos(a * Math.PI / 180);
+      segs[i].style.opacity = (0.10 + 0.90 * Math.max(0, (c + 0.35) / 1.35)).toFixed(3);
+    }
+    if (!reduce) requestAnimationFrame(tick);
+  }
+
+  build();
+  requestAnimationFrame(tick);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(build).catch(function(){});
+  var rt;
+  window.addEventListener('resize', function(){ clearTimeout(rt); rt = setTimeout(build, 150); });
+})();
+</script>
 </body>
 </html>

@@ -15,8 +15,8 @@
   <meta property="og:url" content="https://www.vivelyglobal.com/brand-signup" />
   <meta property="og:image" content="https://www.vivelyglobal.com/assets/logo/vively-logo-black.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link href="assets/css/style.v13.css" rel="stylesheet" />
   <link href="brand-shell.css" rel="stylesheet" />
+  <link href="assets/css/redesign.v1.css?v=14" rel="stylesheet" />
   <style>
     .brand-form-card {
       padding: clamp(22px, 3vw, 34px);
@@ -198,28 +198,15 @@
         grid-template-columns: 1fr;
       }
     }
+    .brand-page-main{ padding:140px 24px 64px; }
+    .brand-page-main .shell-header{ position:static; max-width:900px; margin:0 auto 24px; background:transparent; backdrop-filter:none; border-bottom:none; padding:0; }
+    .brand-page-main .shell-card{ max-width:900px; margin:0 auto; }
   </style>
 </head>
 <body class="shell-page">
-  <div class="shell-layout">
-    <aside class="shell-sidebar">
-      <div class="shell-brand">
-        <img src="assets/logo/vively-logo-white.png" alt="Vively" />
-        <div class="shell-brand-text">
-          <h2>Brand Portal</h2>
-          <p>Company signup</p>
-        </div>
-      </div>
+  <div id="header-container"></div>
 
-      <nav class="shell-nav" aria-label="Brand Navigation">
-        <a href="brand-login.html">Login</a>
-        <a class="active" href="brand-signup.html">Sign Up</a>
-        <a href="/">Main Website</a>
-        <a href="/admin.html">Admin Login</a>
-      </nav>
-    </aside>
-
-    <main class="shell-main">
+  <main class="brand-page-main">
       <header class="shell-header">
         <div>
           <h1>Brand Signup</h1>
@@ -405,9 +392,12 @@
           </form>
         </div>
       </section>
-    </main>
-  </div>
+  </main>
 
+  <div id="footer-container"></div>
+
+  <script src="assets/js/component-loader.js?v=2"></script>
+  <script src="assets/js/main.js?v=23"></script>
   <script>
     (function () {
       const form = document.getElementById("brand-signup-form");

@@ -13,11 +13,17 @@
   background:transparent; pointer-events:none;
   transform:none; width:auto; max-width:none; /* reset legacy .nav positioning */
   border:none; border-radius:0; box-shadow:none; backdrop-filter:none; /* reset legacy .nav pill outline */
+  transition:transform .32s ease;
 }
+/* main.js adds .nav-hidden while scrolling down, removes it on scroll up */
+.nav.nav-hidden{ transform:translateY(-140%); }
+/* legacy .nav-compact shadow on the full-width bar reads as a line across the page */
+.nav.nav-compact{ box-shadow:none; top:16px; }
+.nav.nav-compact .wrap{ height:auto; }
 .nav .wrap{
   pointer-events:auto; max-width:920px;
   display:flex; align-items:center; justify-content:space-between; gap:18px;
-  background:#ffffff; border:1px solid rgba(14,10,11,.12); border-radius:999px;
+  background:#ffffff; border-radius:999px;
   padding:8px 10px 8px 22px; box-shadow:0 10px 30px rgba(14,10,11,.10);
   height:auto; margin:0 auto;
 }

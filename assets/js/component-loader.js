@@ -94,17 +94,6 @@ function initHeaderScripts() {
     mobileMenu.querySelectorAll("a").forEach((a) => a.addEventListener("click", syncBurger));
   }
   
-  // Sticky nav shadow on scroll
-  const nav = document.querySelector(".nav");
-  if (nav) {
-    const onScroll = () => {
-      if (window.scrollY > 8) nav.style.boxShadow = "0 1px 0 rgba(0,0,0,.04)";
-      else nav.style.boxShadow = "none";
-    };
-    document.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-  }
-
   // Load signup modal FIRST, then load user-auth.js so the auth script
   // never runs before its DOM (signup steps) exists. This eliminates the
   // race that made the "Sign up" link do nothing.

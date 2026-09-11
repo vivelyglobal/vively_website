@@ -15,7 +15,7 @@
 <meta property="og:url" content="https://www.vivelyglobal.com/work" />
 <meta property="og:image" content="https://www.vivelyglobal.com/assets/logo/vively-logo-black.png" />
 <meta name="twitter:card" content="summary_large_image" />
-<link rel="stylesheet" href="assets/css/redesign.v1.css?v=1" />
+<link rel="stylesheet" href="assets/css/redesign.v1.css?v=14" />
 <link rel="stylesheet" href="assets/css/user-auth.css" />
 </head>
 <body>
@@ -33,8 +33,32 @@
     <h1 id="case-title"></h1>
     <p class="kr" id="case-brand"></p>
     <p class="case-crumb meta-caps"><b id="case-num"></b> &nbsp;/&nbsp; <span id="case-cat"></span> &nbsp;/&nbsp; <span id="case-service-en"></span></p>
+
+    <aside class="case-facts case-facts-hero">
+      <dl>
+        <div class="row"><dt>브랜드</dt><dd id="f-brand"></dd></div>
+        <div class="row"><dt>서비스</dt><dd id="f-service"></dd></div>
+        <div class="row"><dt>참여 크리에이터</dt><dd id="f-creators"></dd></div>
+        <div class="row"><dt>도달 국가</dt><dd class="small" id="f-reach"></dd></div>
+        <div class="row"><dt>진행 지점</dt><dd class="small" id="f-branches"></dd></div>
+      </dl>
+    </aside>
   </div>
 </section>
+
+<!-- PAGER -->
+<nav class="case-pager" aria-label="다른 캠페인 보기">
+  <div class="all">
+    <a href="index.html#work"><span aria-hidden="true">&#8592;</span> ALL WORK</a>
+  </div>
+  <div class="next">
+    <div class="bg" id="next-bg" aria-hidden="true"></div>
+    <div class="lbl">
+      <span class="meta-caps">Next Case</span>
+      <a id="next-link" href="#"><span id="next-brand"></span> <span aria-hidden="true">&#8594;</span></a>
+    </div>
+  </div>
+</nav>
 
 <!-- BODY -->
 <section class="case-body">
@@ -69,20 +93,10 @@
         <blockquote id="q-insight"></blockquote>
       </div>
     </div>
-
-    <aside class="case-facts">
-      <dl>
-        <div class="row"><dt>브랜드</dt><dd id="f-brand"></dd></div>
-        <div class="row"><dt>서비스</dt><dd id="f-service"></dd></div>
-        <div class="row"><dt>참여 크리에이터</dt><dd id="f-creators"></dd></div>
-        <div class="row"><dt>도달 국가</dt><dd class="small" id="f-reach"></dd></div>
-        <div class="row"><dt>진행 지점</dt><dd class="small" id="f-branches"></dd></div>
-      </dl>
-    </aside>
   </div>
 </section>
 
-<!-- REELS STRIP -->
+<!-- REELS STRIP + CTA — merged into one dark/red section -->
 <section class="reels">
   <div class="wrap">
     <div>
@@ -90,42 +104,17 @@
       <div class="strip-label meta-caps"><span>Reels Film Strip</span></div>
     </div>
     <div class="clip-grid" id="clip-grid" role="list"></div>
-  </div>
-</section>
-
-<!-- NOTE QUOTE -->
-<section class="case-note">
-  <div class="wrap">
-    <span class="mark" aria-hidden="true">&#8220;</span>
-    <p class="note-quote" id="case-note-text"></p>
-    <p class="case-source">Source: Vively 성과 리포트 &nbsp;/&nbsp; Instagram Reels 기준 &nbsp;/&nbsp; 2026년 8월 집계</p>
-  </div>
-</section>
-
-<!-- PAGER -->
-<nav class="case-pager" aria-label="다른 캠페인 보기">
-  <div class="all">
-    <a href="index.html#work"><span aria-hidden="true">&#8592;</span> ALL WORK</a>
-  </div>
-  <div class="next">
-    <div class="bg" id="next-bg" aria-hidden="true"></div>
-    <div class="lbl">
-      <span class="meta-caps">Next Case</span>
-      <a id="next-link" href="#"><span id="next-brand"></span> <span aria-hidden="true">&#8594;</span></a>
-    </div>
-  </div>
-</nav>
-
-<!-- CTA -->
-<section class="case-cta">
-  <div class="wrap reveal">
-    <h2>다음 캠페인은 <span class="hl-red">당신의 브랜드</span>가 될 수 있습니다.</h2>
-    <div class="btns">
-      <a class="btn btn-accent" href="contact.html">CONTACT US →</a>
-      <a class="btn btn-ghost" href="index.html#work">ALL WORK →</a>
+    <div class="reels-cta">
+      <h2>다음 캠페인은 <span class="hl-red">당신의 브랜드</span>가 될 수 있습니다.</h2>
+      <div class="btns">
+        <a class="btn btn-accent" href="contact.html">CONTACT US →</a>
+        <a class="btn btn-ghost" href="index.html#work">ALL WORK →</a>
+      </div>
     </div>
   </div>
 </section>
+
+
 
 <div id="footer-container"></div>
 
@@ -296,9 +285,6 @@ var ORDER = ["juno","labab","jaimdang","myeondong","apgujeong","tonymoly","parkj
   set("f-reach", p.reach);
   set("f-branches", p.branches);
 
-  /* note quote — trusted local strings only (may contain <b>) */
-  document.getElementById("case-note-text").innerHTML = p.note;
-
   /* clips: lazy videos wired up by main.js via data-src + data-autoloop */
   var grid = document.getElementById("clip-grid");
   if (grid) {
@@ -323,7 +309,7 @@ var ORDER = ["juno","labab","jaimdang","myeondong","apgujeong","tonymoly","parkj
   document.getElementById("next-link").href = "work.html?p=" + encodeURIComponent(nextKey);
 })();
 </script>
-<script src="assets/js/component-loader.js"></script>
-<script src="assets/js/main.js?v=22"></script>
+<script src="assets/js/component-loader.js?v=2"></script>
+<script src="assets/js/main.js?v=23"></script>
 </body>
 </html>

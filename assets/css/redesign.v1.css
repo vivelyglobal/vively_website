@@ -112,13 +112,15 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
 .nav{
   position:fixed;top:16px;left:0;right:0;z-index:60;
   background:transparent;pointer-events:none;
+  transition:transform .32s ease;
 }
+/* main.js adds .nav-hidden while scrolling down, removes it on scroll up */
+.nav.nav-hidden{transform:translateY(-140%)}
 .nav .wrap{
   pointer-events:auto;
   max-width:920px;
   display:flex;align-items:center;justify-content:space-between;gap:18px;
   background:var(--white);
-  border:1px solid var(--line);
   border-radius:999px;
   padding:8px 10px 8px 22px;
   box-shadow:0 10px 30px rgba(14,10,11,.10);
@@ -191,7 +193,7 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
 /* ============================================================================
    SHARED SECTION SCAFFOLD — numbered editorial sections
    ========================================================================== */
-.sec{padding:96px 0;position:relative}
+.sec{padding:50px 0;position:relative}
 .sec-head{max-width:720px;margin-bottom:48px}
 .sec-head h2{font-size:clamp(26px,3.4vw,38px);letter-spacing:-.01em;margin-top:14px}
 .sec-head .lede{margin-top:16px;color:var(--mut);font-size:16px}
@@ -225,8 +227,61 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
 /* temporary: hero-visual (image collage + stat badges) removed until
    frame-free source images are ready — collapse back to a single centered
    column instead of leaving an empty grid track. */
-.home-hero.no-visual > .wrap{grid-template-columns:1fr;padding-bottom:96px}
-.home-hero.no-visual .hero-copy{max-width:720px}
+.home-hero.no-visual{
+  min-height:100vh;display:flex;flex-direction:column;
+  padding-top:110px;padding-bottom:0;
+}
+.home-hero.no-visual > .wrap{
+  display:flex;align-items:center;flex:1;
+  grid-template-columns:1fr;padding-bottom:0;
+}
+.home-hero.no-visual .hero-copy{max-width:720px;width:100%}
+.home-hero.no-visual .hero-statbar{margin-top:auto}
+
+/* full-viewport variant that keeps the two-column copy + rotating collage */
+.home-hero.hero-full{
+  min-height:100vh;display:flex;flex-direction:column;
+  padding-top:110px;padding-bottom:0;
+}
+.home-hero.hero-full > .wrap{flex:1;width:100%;padding-bottom:40px}
+.home-hero.hero-full .hero-statbar{margin-top:auto}
+/* collage scales with viewport height so the whole hero stays within 100vh */
+.home-hero.hero-full .hero-loop{
+  width:min(540px,92vw,calc((100vh - 320px) * .818));aspect-ratio:1700/2078;
+}
+/* the collage is narrower here, so push the left badge further out */
+.home-hero.hero-full .fb-b{left:-38%}
+
+/* ---- hero panel: frosted "how it works" card (for-brand hero, no imagery) -- */
+.hero-panel{
+  width:min(460px,88vw);
+  background:rgba(255,255,255,.06);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:var(--r-lg);
+  padding:26px 28px 14px;
+  box-shadow:0 30px 70px rgba(0,0,0,.45);
+}
+.hero-panel-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:16px;border-bottom:1px solid var(--line-dark);
+}
+.hero-panel-meta{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--mut-dark)}
+.hero-panel-steps{list-style:none;margin:0;padding:0}
+.hero-panel-steps li{
+  display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:start;
+  padding:15px 0;border-bottom:1px solid var(--line-dark);
+}
+.hero-panel-steps li:last-child{border-bottom:none}
+.hero-panel-steps .num{font-size:15px;font-weight:800;letter-spacing:-.02em;color:var(--red);padding-top:2px}
+.hero-panel-steps b{display:block;font-size:15.5px;font-weight:700;color:#fff}
+.hero-panel-steps li > div > span{display:block;margin-top:3px;font-size:12.5px;line-height:1.55;color:var(--mut-dark)}
+.fb-d{top:-8%;right:-10%}
+.fb-e{bottom:-7%;left:-12%}
+@media (max-width:880px){
+  .hero-panel{width:min(460px,100%)}
+  .fb-d{right:0}.fb-e{left:0}
+}
 .home-hero h1{
   font-size:clamp(30px,4.2vw,46px);
   letter-spacing:-.015em;line-height:1.28;
@@ -243,11 +298,12 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
 }
 .hero-loop-frame{
   position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
-  opacity:0;animation:heroLoop 12s infinite;
+  opacity:0;animation:heroLoop 16s infinite;
 }
 .hero-loop-frame:nth-child(1){animation-delay:0s}
 .hero-loop-frame:nth-child(2){animation-delay:4s}
 .hero-loop-frame:nth-child(3){animation-delay:8s}
+.hero-loop-frame:nth-child(4){animation-delay:12s}
 @keyframes heroLoop{
   0%{opacity:0}3%{opacity:1}25%{opacity:1}31%{opacity:0}100%{opacity:0}
 }
@@ -283,7 +339,7 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
   border-left:1px solid var(--line-dark);
 }
 .hero-statbar .cell:first-child{border-left:0}
-.hero-statbar .n{font-family:var(--serif);font-size:clamp(22px,2.6vw,30px);font-weight:600}
+.hero-statbar .n{font-family:var(--sans);font-size:clamp(22px,2.6vw,30px);font-weight:800;letter-spacing:-.02em}
 .hero-statbar .l{font-size:12px;color:var(--mut-dark);margin-top:4px;letter-spacing:.06em}
 
 /* WHY */
@@ -335,7 +391,7 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
   background:var(--ink);color:#fff;border-radius:var(--r-md);
   padding:20px 22px;display:flex;align-items:baseline;justify-content:space-between;gap:10px;
 }
-.proc-metric .n{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--red);white-space:nowrap}
+.proc-metric .n{font-family:var(--sans);font-size:24px;font-weight:800;letter-spacing:-.02em;color:var(--red);white-space:nowrap}
 .proc-metric .l{font-size:12px;color:var(--mut-dark);text-align:right;line-height:1.4}
 
 /* WORK cards */
@@ -391,27 +447,71 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
    STORY
    ========================================================================== */
 .story-hero{
-  padding:170px 0 90px;text-align:center;
+  position:relative;min-height:100vh;min-height:100dvh;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:space-between;
+  padding:150px 24px 36px;text-align:center;
   background:
-    radial-gradient(640px 380px at 82% 8%, rgba(224,54,44,.14), transparent 65%),
-    radial-gradient(520px 320px at 8% 30%, rgba(224,54,44,.08), transparent 60%),
+    radial-gradient(52% 44% at 8% 10%, rgba(224,54,44,.13), transparent 70%),
+    radial-gradient(46% 40% at 92% 12%, rgba(224,54,44,.10), transparent 70%),
+    radial-gradient(60% 30% at 50% 100%, rgba(224,54,44,.06), transparent 70%),
     var(--paper-2);
 }
+.story-top{display:flex;flex-direction:column;align-items:center}
 .story-hero h1{
-  font-size:clamp(28px,4vw,44px);letter-spacing:-.01em;line-height:1.32;
-  max-width:760px;margin:18px auto 0;
+  font-size:clamp(28px,3.8vw,52px);letter-spacing:-.02em;line-height:1.28;
+  max-width:18em;margin:20px auto 0;word-break:keep-all;
+}
+.story-top h1{white-space:nowrap}
+.story-top .hl-red{display:inline}
+.story-sub{margin-top:16px;font-size:clamp(14px,1.2vw,17px);font-weight:500;color:var(--mut);letter-spacing:-.01em}
+
+.ring-wrap{
+  position:relative;width:100%;max-width:1100px;flex:1 1 auto;min-height:160px;
+  perspective:3200px;perspective-origin:50% 50%;
+}
+.ring{
+  position:absolute;left:50%;top:50%;width:0;height:0;
+  transform-style:preserve-3d;
+  transform:translate(-50%,-50%) rotateX(-16deg) rotateY(0deg);
+  animation:ringSpin 42s linear infinite;
+}
+@keyframes ringSpin{
+  from{transform:translate(-50%,-50%) rotateX(-16deg) rotateY(0deg)}
+  to{transform:translate(-50%,-50%) rotateX(-16deg) rotateY(-360deg)}
+}
+.ring .seg{
+  position:absolute;left:0;top:0;transform-style:preserve-3d;white-space:nowrap;
+  font-size:clamp(15px,1.6vw,22px);font-weight:700;letter-spacing:-.02em;
+  color:var(--ink);line-height:1;will-change:opacity;
+}
+.ring .seg .slash{color:var(--red);margin:0 .35em;font-weight:600}
+.ring .seg .num{color:var(--red)}
+.ring-shadow{
+  position:absolute;left:50%;top:calc(50% + 70px);width:min(70vw,780px);height:60px;
+  transform:translateX(-50%);border-radius:50%;pointer-events:none;
+  background:radial-gradient(closest-side, rgba(224,54,44,.10), rgba(224,54,44,0));
 }
 .scroll-cue{
-  margin:56px auto 0;width:26px;height:44px;border:1.5px solid var(--line);border-radius:999px;
-  position:relative;
+  margin:0 auto;width:26px;height:44px;border:1.5px solid var(--line);border-radius:999px;
+  position:relative;flex:0 0 auto;
 }
 .scroll-cue::after{
   content:"";position:absolute;top:9px;left:50%;width:4px;height:9px;margin-left:-2px;
   border-radius:4px;background:var(--red);animation:cue 1.8s infinite;
 }
 @keyframes cue{0%{transform:translateY(0);opacity:1}70%{transform:translateY(12px);opacity:0}100%{opacity:0}}
-@media (prefers-reduced-motion:reduce){.scroll-cue::after{animation:none}}
-.scroll-cue .meta-caps{position:absolute;top:52px;left:50%;transform:translateX(-50%);color:var(--mut);font-size:9px}
+.scroll-cue .meta-caps{position:absolute;top:52px;left:50%;transform:translateX(-50%);color:var(--mut);font-size:9px;white-space:nowrap}
+@media (prefers-reduced-motion:reduce){
+  .scroll-cue::after{animation:none}
+  .ring{animation:none;transform:translate(-50%,-50%) rotateX(-16deg) rotateY(-20deg)}
+}
+@media (max-width:640px){
+  .story-hero{padding:120px 16px 28px}
+  .story-hero h1{font-size:25px}
+  .ring .seg{font-size:13px}
+  .ring-wrap{min-height:140px;perspective:1600px}
+  .ring-shadow{top:calc(50% + 40px)}
+}
 
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
 .about-grid h2{font-size:clamp(24px,3vw,34px);margin-top:14px}
@@ -501,6 +601,24 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
 .mkt-item p{margin-top:6px;font-size:13.5px;color:var(--mut)}
 .mkt-item .src{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);text-align:right}
 .mkt-item .src b{display:block;letter-spacing:.14em;color:var(--red);margin-bottom:6px;font-size:10px}
+
+/* dark variant: black ground with the same red glow used on the top hero,
+   just inverted (white text instead of white ground). */
+.mkt-dark{
+  background:
+    radial-gradient(900px 520px at 82% 10%, rgba(224,54,44,.22), transparent 62%),
+    radial-gradient(700px 480px at 10% 92%, rgba(224,54,44,.12), transparent 60%),
+    var(--ink);
+  color:#fff;
+}
+.mkt-dark .lede{color:var(--mut-dark)}
+.mkt-dark .mkt-item{
+  background:rgba(255,255,255,.05);border-color:var(--line-dark);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+}
+.mkt-dark .mkt-item h3{color:#fff}
+.mkt-dark .mkt-item p{color:var(--mut-dark)}
+.mkt-dark .mkt-item .src{color:var(--mut-dark)}
 
 /* ============================================================================
    CONTACT
@@ -622,13 +740,13 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
 .case-hero{
   position:relative;color:#fff;overflow:hidden;
   background:var(--ink);
-  min-height:100vh;
+  min-height:56vh;
   display:flex;flex-direction:column;justify-content:flex-end;
-  padding:150px 0 90px;
+  padding:130px 0 56px;
 }
 .case-hero .bg{
   position:absolute;inset:0;
-  background-size:cover;background-position:center right;
+  background-size:cover;background-position:right 68%;
   opacity:.5;
 }
 .case-hero .bg::after{
@@ -636,7 +754,7 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
   background:linear-gradient(90deg, var(--ink) 22%, rgba(14,10,11,.55) 60%, rgba(14,10,11,.25) 100%),
              linear-gradient(0deg, var(--ink) 0%, transparent 32%);
 }
-.case-hero .wrap{position:relative;z-index:1}
+.case-hero .wrap{position:relative;z-index:1;width:100%}
 .case-topline{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:52px}
 .case-back{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--mut-dark)}
 .case-back:hover{color:#fff}
@@ -655,13 +773,13 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
 .case-stats{display:grid;grid-template-columns:1.15fr .85fr}
 .case-stats .light{
   background:var(--paper);display:grid;grid-template-columns:1fr 1fr;
-  padding-left:max(28px, calc((100% - 1180px) / 2));
+  padding-left:max(28px, calc((100vw - 1180px) / 2));
 }
 .case-stats .light > div{padding:52px 44px;border-left:1px solid var(--line)}
 .case-stats .light > div:first-child{border-left:0}
 .case-stats .dark{
   background:var(--ink);color:#fff;display:grid;grid-template-columns:1fr 1fr;
-  padding-right:max(28px, calc((100% - 1180px) / 2));
+  padding-right:max(28px, calc((100vw - 1180px) / 2));
 }
 .case-stats .dark > div{padding:52px 44px;border-left:1px solid var(--line-dark)}
 .case-stats .dark > div:first-child{border-left:0}
@@ -674,9 +792,35 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
 .case-stats .light .l{color:var(--red)}
 .case-stats .dark .l{color:var(--mut-dark)}
 
+/* quick facts, embedded in the (dark) case-hero itself, below the crumb line.
+   Compound .case-facts.case-facts-hero selectors (not bare .case-facts-hero)
+   so this out-specifies the base .case-facts card rule below regardless of
+   source order — the element carries both classes. */
+.case-facts.case-facts-hero{
+  position:static;background:none;border:none;border-radius:0;
+  margin:40px 0 0;padding:28px 0 0;border-top:1px solid var(--line-dark);
+}
+.case-facts.case-facts-hero dl{display:grid;grid-template-columns:repeat(5,1fr);gap:0}
+.case-facts.case-facts-hero .row{
+  padding:0 22px;border-top:0;border-left:1px solid var(--line-dark);
+}
+.case-facts.case-facts-hero .row:first-child{padding-left:0;border-left:0}
+.case-facts.case-facts-hero dt{color:var(--red)}
+.case-facts.case-facts-hero dd{color:#fff}
+.case-facts.case-facts-hero dd.small{color:var(--mut-dark)}
+@media (max-width:900px){
+  .case-facts.case-facts-hero dl{grid-template-columns:repeat(2,1fr);row-gap:20px}
+  .case-facts.case-facts-hero .row:nth-child(2n+1){padding-left:0;border-left:0}
+  .case-facts.case-facts-hero .row:nth-child(2n){padding-left:22px}
+}
+@media (max-width:560px){
+  .case-facts.case-facts-hero dl{grid-template-columns:1fr;row-gap:16px}
+  .case-facts.case-facts-hero .row{padding-left:0!important;border-left:0!important}
+}
+
 .case-body{background:var(--paper-2)}
 .case-body .wrap{
-  display:grid;grid-template-columns:1fr 300px;gap:56px;align-items:start;
+  display:grid;grid-template-columns:1fr;gap:56px;align-items:start;
   padding-top:0;padding-bottom:0;
 }
 .case-sections{display:grid}
@@ -723,6 +867,12 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
 .reels .wrap{display:grid;grid-template-columns:280px 1fr;gap:48px;align-items:center}
 .reels h2{font-size:clamp(22px,2.6vw,30px);line-height:1.4}
 .reels .strip-label{margin-top:26px;display:flex;align-items:center;gap:14px;color:var(--mut-dark)}
+.reels-cta{
+  grid-column:1/-1;margin-top:56px;padding-top:40px;border-top:1px solid var(--line-dark);
+  display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;
+}
+.reels-cta h2{font-size:clamp(20px,2.4vw,28px);line-height:1.4;max-width:520px}
+.reels-cta .btns{display:flex;gap:12px;flex-wrap:wrap}
 .clip-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .clip{
   position:relative;border-radius:14px;overflow:hidden;background:#000;
@@ -764,6 +914,7 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
     radial-gradient(560px 300px at 20% 100%, rgba(224,54,44,.18), transparent 60%),
     var(--ink);
   color:#fff;display:flex;align-items:center;padding:48px 56px;
+  padding-left:max(56px, calc((100vw - 1180px) / 2 + 28px));
 }
 .case-pager .all a{
   font-family:var(--serif);font-weight:500;font-size:clamp(24px,3vw,36px);
@@ -773,6 +924,7 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
 .case-pager .next{
   position:relative;display:flex;align-items:center;justify-content:flex-end;
   padding:48px 56px;background:var(--gold);color:var(--ink);overflow:hidden;
+  padding-right:max(56px, calc((100vw - 1180px) / 2 + 28px));
 }
 .case-pager .next .bg{
   position:absolute;inset:0;background-size:cover;background-position:center;opacity:.9;
@@ -824,7 +976,7 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
   .fb-b{left:-6%}
   .fb-a{right:-4%}
   .fb-c{right:-2%}
-  .sec{padding:72px 0}
+  .sec{padding:44px 0}
   .sec-grid{grid-template-columns:1fr;gap:20px}
   .sec-num{font-size:56px}
   .about-grid,.led-grid,.mkt-grid{grid-template-columns:1fr;gap:28px}
@@ -895,6 +1047,11 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
 .fb-a{bottom:auto}
 .fb-b{top:auto}
 .fb-c{top:auto}
+/* vertical rhythm: keep legacy sections in the same height range as the
+   new .sec blocks (they shipped with much larger gaps/padding) */
+.process-timeline{row-gap:80px}
+.work-dark{padding:88px 0 80px}
+.ticker{margin-top:44px}
 .float-badge span.sub{font-size:10.5px;font-weight:600;color:rgba(255,255,255,.68);margin-top:0}
 
 /* The legacy stylesheets define several of the same selectors for the old
@@ -902,6 +1059,10 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
    the old value otherwise keeps showing through (CSS cascades per-property,
    not per-rule). These reset exactly the leftover properties: */
 .nav{transform:none;width:auto;max-width:none;border:none;border-radius:0;box-shadow:none;backdrop-filter:none}
+/* legacy .nav-compact (toggled by main.js on scroll) put a shadow on the
+   full-width .nav bar, which reads as a thin line across the page */
+.nav.nav-compact{box-shadow:none;top:16px}
+.nav.nav-compact .wrap{height:auto}
 .hero-loop{transform:none;border:none;background:none}
 .mobile-menu{bottom:auto}
 .cta-band::before,.cta-band::after{content:none}

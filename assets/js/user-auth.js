@@ -13,7 +13,52 @@
   // =========================
   // INITIALIZATION
   // =========================
+  const REF_KEY = 'vively_ref_code';
+
+  // A share link (/?ref=CODE) can land on any page; remember the code so
+  // the signup modal can prefill it later, then strip it from the URL.
+  function captureReferralParam() {
+    try {
+      const url = new URL(window.location.href);
+      const ref = (url.searchParams.get('ref') || '').trim();
+      if (!ref) return false;
+      localStorage.setItem(REF_KEY, ref.toUpperCase());
+      url.searchParams.delete('ref');
+      window.history.replaceState({}, '', url.pathname + (url.search || '') + url.hash);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async function refreshNotifBadge() {
+    const token = localStorage.getItem(TOKEN_KEY);
+    const badges = [document.getElementById('notif-badge'), document.getElementById('mobile-notif-badge')].filter(Boolean);
+    if (!token || !badges.length) return;
+    try {
+      const res = await fetch(`${API_BASE}/me?section=summary`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.status === 401 || res.status === 404) {
+        localStorage.removeItem(TOKEN_KEY);
+        localStorage.removeItem(USER_KEY);
+        updateAuthUI(false);
+        return;
+      }
+      if (!res.ok) return;
+      const data = await res.json();
+      const n = Number(data.unreadCount) || 0;
+      badges.forEach((b) => {
+        b.textContent = n > 99 ? '99+' : String(n);
+        b.hidden = n === 0;
+      });
+    } catch {
+      /* offline / static preview: badge just stays hidden */
+    }
+  }
+
   async function init() {
+    const hadRef = captureReferralParam();
     checkAuthStatus();
     // Wait for signup modal to load first
     await loadSignupModalComponent();
@@ -43,6 +88,11 @@
       if (loginContainer) loginContainer.style.display = 'none';
       showSignupStep(1);
     };
+
+    if (hadRef && !localStorage.getItem(TOKEN_KEY)) {
+      window.vivelyOpenSignupModal();
+    }
+    refreshNotifBadge();
   }
 
   function checkAuthStatus() {
@@ -677,7 +727,7 @@
       const youtube = document.getElementById('signup-youtube')?.value;
       const bio = document.getElementById('signup-bio')?.value;
       const portfolioUrl = document.getElementById('signup-portfolio')?.value;
-      const inviterUsername = document.getElementById('signup-inviter')?.value;
+      const referralCode = (document.getElementById('signup-referral')?.value || '').trim().toUpperCase();
 
       // Validate required
       if (!phone || !instagram) {
@@ -694,6 +744,17 @@
         return;
       }
 
+      if (referralCode) {
+        btn.disabled = true;
+        const check = await checkReferralCode(referralCode);
+        btn.disabled = false;
+        if (!check.valid) {
+          alert('That referral code is not valid. Check it or leave the field empty.');
+          document.getElementById('signup-referral')?.focus();
+          return;
+        }
+      }
+
       signupState.userData = {
         ...signupState.userData,
         phone,
@@ -703,12 +764,67 @@
         youtube,
         bio,
         portfolioUrl: portfolioUrl || null,
-        inviterUsername: inviterUsername || null,
+        referralCode: referralCode || null,
         categories,
       };
 
       showSignupStep(4);
     });
+
+    setupReferralField();
+  }
+
+  async function checkReferralCode(code) {
+    try {
+      const res = await fetch(`${API_BASE}/auth-signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'check-referral', referralCode: code }),
+      });
+      if (!res.ok) return { valid: false };
+      return await res.json();
+    } catch {
+      return { valid: false };
+    }
+  }
+
+  function setupReferralField() {
+    const input = document.getElementById('signup-referral');
+    const status = document.getElementById('signup-referral-status');
+    if (!input || input.dataset.wired === '1') return;
+    input.dataset.wired = '1';
+    const defaultText = status ? status.textContent : '';
+
+    const saved = localStorage.getItem(REF_KEY);
+    if (saved && !input.value) input.value = saved;
+
+    let timer;
+    const verify = async () => {
+      const code = input.value.trim().toUpperCase();
+      if (!status) return;
+      if (!code) {
+        status.textContent = defaultText;
+        status.style.color = '#666';
+        return;
+      }
+      status.textContent = 'Checking code…';
+      status.style.color = '#666';
+      const result = await checkReferralCode(code);
+      if (input.value.trim().toUpperCase() !== code) return;
+      if (result.valid) {
+        status.textContent = `Code found — invited by @${result.referrerUsername}`;
+        status.style.color = '#1f8a4c';
+        if (result.code) input.value = result.code;
+      } else {
+        status.textContent = 'Code not found. Double-check it or leave empty.';
+        status.style.color = '#b13a3a';
+      }
+    };
+    input.addEventListener('input', () => {
+      clearTimeout(timer);
+      timer = setTimeout(verify, 450);
+    });
+    if (input.value) verify();
   }
 
   // === STEP 4: Terms & Create ===
@@ -788,6 +904,8 @@
 
         // Reset signup state
         signupState = { email: null, userData: {} };
+        localStorage.removeItem(REF_KEY);
+        window.location.href = 'my-page.html?welcome=1';
       } catch (error) {
         console.error('Account creation error:', error);
         alert('Failed to create account');
@@ -850,7 +968,7 @@
       const mobileUserName = document.getElementById('mobile-user-name');
 
       if (userName) userName.textContent = `Hi, ${user.username || user.email}`;
-      if (mobileUserName) mobileUserName.textContent = `${user.username || user.email}`;
+      if (mobileUserName) mobileUserName.textContent = `@${user.username || user.email}`;
     } else {
       if (userProfile) userProfile.style.display = 'none';
       if (loginLink) loginLink.style.display = 'inline-flex';
