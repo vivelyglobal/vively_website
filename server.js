@@ -80,4 +80,19 @@ app.use(express.static(ROOT_DIR));
 
 app.listen(PORT, () => {
   console.log(`Vively server running on port ${PORT}`);
+
+  const { ensureAdminAccount } = require("./netlify/functions/_shared/ensure-admin");
+  ensureAdminAccount()
+    .then((r) => console.log("[admin]", JSON.stringify(r)))
+    .catch((err) => {
+      const msg = String(err && err.message);
+      if (/bad auth|authentication failed/i.test(msg)) {
+        console.error(
+          "[db] MongoDB Atlas rejected MONGODB_URI credentials (bad auth). " +
+            "Fix the database user/password in Atlas → Database Access and update MONGODB_URI."
+        );
+      } else {
+        console.error("[admin] ensureAdminAccount failed:", msg);
+      }
+    });
 });

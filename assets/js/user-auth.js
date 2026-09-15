@@ -125,6 +125,7 @@
       if (loginContainer) loginContainer.style.display = 'block';
       if (signupContainer) signupContainer.style.display = 'none';
       if (loginModal) loginModal.style.display = 'flex';
+      initGoogleSignIn();
     };
 
     if (loginLink) loginLink.addEventListener('click', (e) => {
@@ -247,8 +248,71 @@
   }
 
   // Renders the official Google Sign-In button (guaranteed popup, no FedCM issues).
-  // Waits for the gsi/client script to load before rendering.
+  // Waits for the gsi/client script's real load/error event (see
+  // component-loader.js) rather than a fixed timer, so a slow connection
+  // doesn't produce a false "could not load" error.
   let googleInitialized = false;
+  let gsiListenerBound = false;
+  const GSI_TIMEOUT_MS = 20000;
+
+  function gsiReady() {
+    return typeof google !== 'undefined' && google.accounts && google.accounts.id;
+  }
+
+  function renderGoogleButton() {
+    const clientId = document.querySelector('[data-google-client-id]')?.dataset.googleClientId;
+    const container = document.getElementById('google-signin-container');
+    const fallbackBtn = document.getElementById('google-login-btn');
+    if (!clientId || !container || !gsiReady()) return false;
+    if (container.childElementCount > 0) return true;
+    try {
+      if (!googleInitialized) {
+        google.accounts.id.initialize({
+          client_id: clientId,
+          callback: handleGoogleCredential,
+          auto_select: false,
+          ux_mode: 'popup',
+          // Disable FedCM — it's flaky on localhost and causes silent failures.
+          use_fedcm_for_prompt: false,
+        });
+        googleInitialized = true;
+      }
+      google.accounts.id.renderButton(container, {
+        theme: 'outline',
+        size: 'large',
+        type: 'standard',
+        text: 'continue_with',
+        shape: 'rectangular',
+        logo_alignment: 'left',
+        width: 320,
+      });
+      clearAuthError();
+      if (fallbackBtn) fallbackBtn.style.display = 'none';
+      console.log('[Google] Sign-In button rendered');
+      return true;
+    } catch (err) {
+      console.error('[Google] renderButton failed:', err);
+      showAuthError(
+        'Google Sign-In failed to initialize. Make sure ' +
+          location.origin +
+          ' is added to your OAuth client "Authorized JavaScript origins" in Google Cloud Console.'
+      );
+      if (fallbackBtn) fallbackBtn.style.display = 'inline-flex';
+      return false;
+    }
+  }
+
+  function showGsiBlockedError() {
+    const fallbackBtn = document.getElementById('google-login-btn');
+    showAuthError(
+      'Could not load Google Sign-In (accounts.google.com is blocked or unreachable). ' +
+        'Disable ad-blocker / Brave Shields for this site, check your network, then retry. ' +
+        'You can still log in with email and password.',
+      { retry: true }
+    );
+    if (fallbackBtn) fallbackBtn.style.display = 'inline-flex';
+  }
+
   function initGoogleSignIn() {
     const clientId = document.querySelector('[data-google-client-id]')?.dataset.googleClientId;
     const container = document.getElementById('google-signin-container');
@@ -260,63 +324,49 @@
       return;
     }
 
-    // Already rendered on a previous setupLoginModal() pass — don't stack buttons.
-    if (container.childElementCount > 0) return;
+    if (renderGoogleButton()) return;
 
-    let attempts = 0;
-    const maxAttempts = 60; // ~6s total
+    if (window.__vivelyGsiState === 'error') {
+      showGsiBlockedError();
+      return;
+    }
 
-    const tryRender = () => {
-      if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
-        try {
-          if (!googleInitialized) {
-            google.accounts.id.initialize({
-              client_id: clientId,
-              callback: handleGoogleCredential,
-              auto_select: false,
-              ux_mode: 'popup',
-              // Disable FedCM — it's flaky on localhost and causes silent failures.
-              use_fedcm_for_prompt: false,
-            });
-            googleInitialized = true;
-          }
-          google.accounts.id.renderButton(container, {
-            theme: 'outline',
-            size: 'large',
-            type: 'standard',
-            text: 'continue_with',
-            shape: 'rectangular',
-            logo_alignment: 'left',
-            width: 320,
-          });
-          console.log('[Google] Sign-In button rendered');
-        } catch (err) {
-          console.error('[Google] renderButton failed:', err);
-          showAuthError(
-            'Google Sign-In failed to initialize. Make sure ' +
-              location.origin +
-              ' is added to your OAuth client "Authorized JavaScript origins" in Google Cloud Console.'
-          );
-          if (fallbackBtn) fallbackBtn.style.display = 'inline-flex';
-        }
-        return;
+    // Script tag missing (e.g. loader ran before this page's DOM) — inject it.
+    if (!document.getElementById('vively-gsi-script') && window.vivelyEnsureGoogleSignInScript) {
+      window.vivelyEnsureGoogleSignInScript();
+    }
+
+    if (gsiListenerBound) return;
+    gsiListenerBound = true;
+
+    const timer = setTimeout(() => {
+      if (renderGoogleButton()) return;
+      console.warn('[Google] gsi/client still not loaded after ' + GSI_TIMEOUT_MS / 1000 + 's');
+      showGsiBlockedError();
+    }, GSI_TIMEOUT_MS);
+
+    window.addEventListener('vively:gsi', (e) => {
+      clearTimeout(timer);
+      gsiListenerBound = false;
+      if (e.detail === 'loaded') {
+        // give the script a tick to define window.google
+        setTimeout(() => { if (!renderGoogleButton()) showGsiBlockedError(); }, 0);
+      } else {
+        showGsiBlockedError();
       }
-      if (++attempts >= maxAttempts) {
-        console.warn('[Google] gsi/client script did not load, showing fallback button');
-        showAuthError(
-          'Could not load Google Sign-In script (https://accounts.google.com/gsi/client). ' +
-            'Check your network / ad-blocker and reload.'
-        );
-        if (fallbackBtn) fallbackBtn.style.display = 'inline-flex';
-        return;
-      }
-      setTimeout(tryRender, 100);
-    };
-    tryRender();
+    }, { once: true });
+  }
+
+  function retryGoogleSignIn() {
+    clearAuthError();
+    googleInitialized = false;
+    gsiListenerBound = false;
+    if (window.vivelyEnsureGoogleSignInScript) window.vivelyEnsureGoogleSignInScript(true);
+    initGoogleSignIn();
   }
 
   // Shows a small red error line inside the login form (non-blocking).
-  function showAuthError(message) {
+  function showAuthError(message, opts = {}) {
     const host = document.querySelector('.login-form-container');
     if (!host) return;
     let box = host.querySelector('.auth-error-inline');
@@ -328,6 +378,19 @@
       host.insertBefore(box, host.firstChild);
     }
     box.textContent = message;
+    if (opts.retry) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = 'Retry';
+      btn.style.cssText =
+        'margin-left:8px;padding:2px 10px;border-radius:999px;border:1px solid #c53030;background:#fff;color:#c53030;font:inherit;font-size:12px;font-weight:700;cursor:pointer;';
+      btn.addEventListener('click', retryGoogleSignIn);
+      box.appendChild(btn);
+    }
+  }
+
+  function clearAuthError() {
+    document.querySelector('.login-form-container .auth-error-inline')?.remove();
   }
 
   // Receives Google ID token, exchanges for Vively JWT

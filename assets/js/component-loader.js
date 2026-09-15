@@ -6,16 +6,35 @@
 // <script> tags, which is why the GSI script inside header.html
 // was silently ignored — that's the "Could not load Google Sign-In
 // script" error users saw.
-function ensureGoogleSignInScript() {
-  if (document.getElementById('vively-gsi-script')) return;
-  if (window.google && window.google.accounts && window.google.accounts.id) return;
+// State is exposed on window so user-auth.js can wait for the real
+// load/error events instead of guessing with a timer.
+function ensureGoogleSignInScript(force) {
+  if (window.google && window.google.accounts && window.google.accounts.id) {
+    window.__vivelyGsiState = 'loaded';
+    return;
+  }
+  const existing = document.getElementById('vively-gsi-script');
+  if (existing) {
+    if (!force) return;
+    existing.remove();
+  }
+  window.__vivelyGsiState = 'loading';
   const s = document.createElement('script');
   s.id = 'vively-gsi-script';
-  s.src = 'https://accounts.google.com/gsi/client';
+  s.src = 'https://accounts.google.com/gsi/client' + (force ? '?retry=' + Date.now() : '');
   s.async = true;
   s.defer = true;
+  s.onload = () => {
+    window.__vivelyGsiState = 'loaded';
+    window.dispatchEvent(new CustomEvent('vively:gsi', { detail: 'loaded' }));
+  };
+  s.onerror = () => {
+    window.__vivelyGsiState = 'error';
+    window.dispatchEvent(new CustomEvent('vively:gsi', { detail: 'error' }));
+  };
   document.head.appendChild(s);
 }
+window.vivelyEnsureGoogleSignInScript = ensureGoogleSignInScript;
 
 async function loadComponent(componentName, targetSelector) {
   try {
@@ -120,7 +139,7 @@ function initUserAuthUI() {
   // Dynamically load user-auth.js script
   const script = document.createElement('script');
   script.id = 'vively-user-auth-script';
-  script.src = '/assets/js/user-auth.js?v=2';
+  script.src = '/assets/js/user-auth.js?v=3';
   script.defer = true;
   document.body.appendChild(script);
 }
