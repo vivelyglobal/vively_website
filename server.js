@@ -82,7 +82,7 @@ app.listen(PORT, () => {
   console.log(`Vively server running on port ${PORT}`);
 
   const { connectToDatabase } = require("./netlify/functions/db");
-  const { ensureAdminAccount } = require("./netlify/functions/_shared/ensure-admin");
+  const { ensureAdminAccount, ensureDemoBrand } = require("./netlify/functions/_shared/ensure-admin");
   const missing = ["MONGODB_URI", "JWT_SECRET", "ADMIN_EMAIL", "ADMIN_PASSWORD", "NODE_ENV"]
     .filter((k) => !process.env[k]);
   if (missing.length) console.warn("[env] not set:", missing.join(", "));
@@ -90,7 +90,10 @@ app.listen(PORT, () => {
   connectToDatabase()
     .then(() => {
       console.log("[db] connected to MongoDB Atlas");
-      return ensureAdminAccount().then((r) => console.log("[admin]", JSON.stringify(r)));
+      return ensureAdminAccount()
+        .then((r) => console.log("[admin]", JSON.stringify(r)))
+        .then(() => ensureDemoBrand())
+        .then((r) => console.log("[demo-brand]", JSON.stringify(r)));
     })
     .catch((err) => {
       const msg = String(err && err.message);

@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="assets/css/style.mobile.v2.css" />
 <link rel="stylesheet" href="assets/css/redesign.v1.css?v=14" />
 <link rel="stylesheet" href="assets/css/user-auth.css" />
-<link rel="stylesheet" href="assets/css/my-page.css?v=1" />
+<link rel="stylesheet" href="assets/css/my-page.css?v=3" />
 </head>
 <body>
 
@@ -76,6 +76,7 @@
         </div>
       </div>
 
+      <div style="display:flex;flex-direction:column;gap:20px">
       <div class="mp-card">
         <div class="mp-card-head">
           <h2>알림</h2>
@@ -84,8 +85,129 @@
         <ul class="mp-list" id="mp-notifs"></ul>
         <div class="mp-empty" id="mp-notifs-empty" hidden><b>새 알림이 없어요</b>누군가 내 코드로 가입하면 여기에 알림이 와요.</div>
       </div>
+
+      <div class="mp-card" id="mp-settings">
+        <div class="mp-card-head">
+          <h2>계정 설정</h2>
+          <span class="count">이메일 인증 필요</span>
+        </div>
+        <p class="mp-note">변경 사항을 저장하려면 가입한 이메일(<b id="mp-settings-email"></b>)로 보내는 인증 코드를 입력해야 해요.</p>
+        <form id="mp-profile-form" class="mp-form" novalidate>
+          <div class="mp-field">
+            <label for="mp-f-username">사용자 이름</label>
+            <div class="mp-input-wrap"><span class="mp-prefix">@</span><input type="text" id="mp-f-username" name="username" autocomplete="username" maxlength="30" spellcheck="false"></div>
+            <small>영문 소문자, 숫자, 점, 밑줄 · 3~30자</small>
+          </div>
+          <div class="mp-field">
+            <label for="mp-f-fullName">이름</label>
+            <input type="text" id="mp-f-fullName" name="fullName" autocomplete="name" maxlength="80">
+          </div>
+          <div class="mp-field">
+            <label for="mp-f-phone">전화번호</label>
+            <div class="mp-phone-row">
+              <select id="mp-f-countryCode" name="countryCode">
+                <option value="+82">🇰🇷 +82</option>
+                <option value="+1">🇺🇸 +1</option>
+                <option value="+62">🇮🇩 +62</option>
+                <option value="+81">🇯🇵 +81</option>
+                <option value="+65">🇸🇬 +65</option>
+                <option value="+60">🇲🇾 +60</option>
+                <option value="+66">🇹🇭 +66</option>
+                <option value="+84">🇻🇳 +84</option>
+                <option value="+63">🇵🇭 +63</option>
+                <option value="+44">🇬🇧 +44</option>
+              </select>
+              <input type="tel" id="mp-f-phone" name="phone" inputmode="numeric" placeholder="01012345678" maxlength="20">
+            </div>
+            <small>숫자만 입력</small>
+          </div>
+          <div class="mp-field">
+            <label for="mp-f-instagram">Instagram <span class="req">*</span></label>
+            <div class="mp-input-wrap"><span class="mp-prefix">@</span><input type="text" id="mp-f-instagram" name="instagram" maxlength="60" spellcheck="false"></div>
+          </div>
+          <div class="mp-field-row">
+            <div class="mp-field">
+              <label for="mp-f-tiktok">TikTok</label>
+              <div class="mp-input-wrap"><span class="mp-prefix">@</span><input type="text" id="mp-f-tiktok" name="tiktok" maxlength="60" spellcheck="false"></div>
+            </div>
+            <div class="mp-field">
+              <label for="mp-f-youtube">YouTube</label>
+              <div class="mp-input-wrap"><span class="mp-prefix">@</span><input type="text" id="mp-f-youtube" name="youtube" maxlength="60" spellcheck="false"></div>
+            </div>
+          </div>
+          <div class="mp-field-row three">
+            <div class="mp-field">
+              <label for="mp-f-instagramFollowers">IG 팔로워</label>
+              <input type="text" id="mp-f-instagramFollowers" name="instagramFollowers" inputmode="numeric" placeholder="예: 12000">
+            </div>
+            <div class="mp-field">
+              <label for="mp-f-tiktokFollowers">TikTok 팔로워</label>
+              <input type="text" id="mp-f-tiktokFollowers" name="tiktokFollowers" inputmode="numeric" placeholder="예: 5000">
+            </div>
+            <div class="mp-field">
+              <label for="mp-f-youtubeSubscribers">YouTube 구독자</label>
+              <input type="text" id="mp-f-youtubeSubscribers" name="youtubeSubscribers" inputmode="numeric" placeholder="예: 800">
+            </div>
+          </div>
+          <small class="mp-field-note">팔로워 수는 브랜드가 크리에이터를 찾을 때 참고돼요. 나중에 계정을 연결하면 자동으로 갱신됩니다.</small>
+          <div class="mp-field">
+            <label for="mp-f-portfolioUrl">포트폴리오 URL</label>
+            <input type="url" id="mp-f-portfolioUrl" name="portfolioUrl" placeholder="https://" maxlength="300">
+          </div>
+          <div class="mp-field">
+            <label for="mp-f-bio">소개</label>
+            <textarea id="mp-f-bio" name="bio" rows="3" maxlength="500"></textarea>
+          </div>
+          <div class="mp-form-actions">
+            <span class="mp-form-hint" id="mp-form-hint">변경된 항목이 없어요</span>
+            <button type="submit" class="mp-btn accent" id="mp-save" disabled>변경 사항 저장 →</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="mp-card mp-danger" id="mp-danger">
+        <div class="mp-card-head">
+          <h2>계정 삭제</h2>
+        </div>
+        <p class="mp-note">계정과 프로필, 지원 내역, 알림이 영구적으로 삭제돼요. 이 작업은 되돌릴 수 없어요. 삭제하려면 이메일 인증이 필요해요.</p>
+        <button type="button" class="mp-btn danger" id="mp-delete-btn">계정 삭제…</button>
+      </div>
+      </div>
     </div>
   </section>
+
+  <!-- Email verification modal -->
+  <div class="mp-modal" id="mp-verify" hidden role="dialog" aria-modal="true" aria-labelledby="mp-verify-title">
+    <div class="mp-modal-card">
+      <button type="button" class="mp-modal-close" id="mp-verify-close" aria-label="닫기">&times;</button>
+      <span class="kicker slash" id="mp-verify-kicker">이메일 인증</span>
+      <h3 id="mp-verify-title">변경 사항 확인</h3>
+      <p id="mp-verify-desc"></p>
+
+      <div id="mp-verify-step-send">
+        <button type="button" class="mp-btn accent" id="mp-verify-send" style="width:100%;justify-content:center">인증 코드 보내기</button>
+      </div>
+
+      <form id="mp-verify-form" hidden novalidate>
+        <p class="mp-verify-sent"><b id="mp-verify-email"></b>로 6자리 코드를 보냈어요. 10분 안에 입력해 주세요.</p>
+        <div class="mp-code-inputs" id="mp-code-inputs">
+          <input type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="코드 1번째 자리">
+          <input type="text" inputmode="numeric" maxlength="1" aria-label="코드 2번째 자리">
+          <input type="text" inputmode="numeric" maxlength="1" aria-label="코드 3번째 자리">
+          <input type="text" inputmode="numeric" maxlength="1" aria-label="코드 4번째 자리">
+          <input type="text" inputmode="numeric" maxlength="1" aria-label="코드 5번째 자리">
+          <input type="text" inputmode="numeric" maxlength="1" aria-label="코드 6번째 자리">
+        </div>
+        <div class="mp-field" id="mp-verify-confirm-wrap" hidden>
+          <label for="mp-verify-confirm">확인을 위해 <b>DELETE</b>를 입력하세요</label>
+          <input type="text" id="mp-verify-confirm" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="DELETE">
+        </div>
+        <div class="mp-verify-error" id="mp-verify-error" hidden></div>
+        <button type="submit" class="mp-btn accent" id="mp-verify-submit" style="width:100%;justify-content:center">확인</button>
+        <p class="mp-verify-resend">코드를 못 받았나요? <button type="button" id="mp-verify-resend">다시 보내기</button></p>
+      </form>
+    </div>
+  </div>
 </div>
 
 <div class="mp-toast" id="mp-toast" role="status" aria-live="polite"></div>
@@ -94,6 +216,6 @@
 
 <script src="assets/js/component-loader.js?v=4"></script>
 <script src="assets/js/main.js?v=23"></script>
-<script src="assets/js/my-page.js?v=1"></script>
+<script src="assets/js/my-page.js?v=3"></script>
 </body>
 </html>

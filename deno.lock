@@ -11,8 +11,10 @@
   "workspace": {
     "packageJson": {
       "dependencies": [
+        "npm:@anthropic-ai/sdk@0.125",
         "npm:axios@^1.19.0",
         "npm:bcryptjs@^3.0.3",
+        "npm:cloudinary@^2.10.1",
         "npm:cors@^2.8.6",
         "npm:dotenv@^17.4.2",
         "npm:express@^5.2.1",

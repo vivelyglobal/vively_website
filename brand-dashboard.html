@@ -124,9 +124,71 @@
     .brand-banner.error { background: #f7e9e6; color: #7d2d24; border: 1px solid #e2c0b9; }
     .brand-banner.success { background: #efe8de; color: #2c261f; border: 1px solid #d9d0c5; }
 
+    /* ---- Find Creators (AI matching) ---- */
+    .nav-ai { display:inline-block; margin-left:8px; padding:2px 7px; border-radius:999px; background:#e0362c; color:#fff; font-size:10px; font-weight:800; letter-spacing:.06em; vertical-align:middle; }
+    .fc-panel { display:grid; gap:18px; }
+    .fc-search { padding: clamp(20px, 3vw, 28px); }
+    .fc-search textarea { width:100%; min-height:88px; padding:14px 16px; border:1px solid var(--shell-line); border-radius:14px; font:inherit; font-size:15px; resize:vertical; box-sizing:border-box; background:#fff; color:var(--shell-ink); outline:none; }
+    .fc-search textarea:focus { border-color:#e0362c; box-shadow:0 0 0 3px rgba(224,54,44,.12); }
+    .fc-examples { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .fc-examples button { border:1px solid var(--shell-line); background:#fff; border-radius:999px; padding:6px 12px; font:inherit; font-size:12.5px; color:var(--shell-muted); cursor:pointer; }
+    .fc-examples button:hover { border-color:var(--shell-ink); color:var(--shell-ink); }
+    .fc-row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:16px; }
+    .fc-row .or { color:var(--shell-muted); font-size:13px; }
+    .fc-row select, .fc-filters select, .fc-filters input { min-height:44px; padding:0 12px; border:1px solid var(--shell-line); border-radius:12px; font:inherit; font-size:13.5px; background:#fff; color:var(--shell-ink); box-sizing:border-box; }
+    .fc-filters { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin-top:14px; padding-top:14px; border-top:1px dashed var(--shell-line); }
+    .fc-filters label { display:block; font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--shell-muted); margin-bottom:5px; }
+    .fc-filters .chips { display:flex; flex-wrap:wrap; gap:6px; }
+    .fc-filters .chips label { display:inline-flex; align-items:center; gap:5px; padding:6px 10px; border:1px solid var(--shell-line); border-radius:999px; font-size:12px; font-weight:600; text-transform:none; letter-spacing:0; margin:0; cursor:pointer; background:#fff; color:var(--shell-ink); }
+    .fc-filters .chips input { display:none; }
+    .fc-filters .chips label:has(input:checked) { background:var(--shell-ink); border-color:var(--shell-ink); color:#fff; }
+    .fc-filters .span-all { grid-column:1 / -1; }
+    .fc-toggle { background:none; border:0; font:inherit; font-size:13px; font-weight:700; color:var(--shell-muted); cursor:pointer; padding:0; margin-top:12px; }
+    .fc-summary { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .fc-summary h2 { margin:0; font-size:18px; }
+    .fc-summary .sub { color:var(--shell-muted); font-size:13px; margin-top:4px; }
+    .fc-crit { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+    .fc-crit span { padding:4px 10px; border-radius:999px; background:var(--shell-soft); font-size:12px; font-weight:600; color:var(--shell-ink); }
+    .fc-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:14px; }
+    .fc-card { position:relative; display:flex; flex-direction:column; gap:10px; background:#fff; border:1px solid var(--shell-line); border-radius:18px; padding:18px; transition:border-color .15s, box-shadow .15s; }
+    .fc-card.selected { border-color:var(--shell-ink); box-shadow:0 0 0 2px var(--shell-ink); }
+    .fc-card .top { display:flex; align-items:center; gap:12px; padding-right:34px; }
+    .fc-card .avatar { width:48px; height:48px; border-radius:50%; background:var(--shell-ink); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:18px; overflow:hidden; flex-shrink:0; }
+    .fc-card .avatar img { width:100%; height:100%; object-fit:cover; }
+    .fc-card .who { min-width:0; flex:1; }
+    .fc-card .who b { display:block; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .fc-card .who span { display:block; font-size:12.5px; color:var(--shell-muted); margin-top:2px; }
+    .fc-score { text-align:center; flex-shrink:0; }
+    .fc-score b { display:block; font-size:22px; letter-spacing:-.03em; line-height:1; }
+    .fc-score small { display:block; font-size:10px; font-weight:800; letter-spacing:.08em; color:var(--shell-muted); margin-top:2px; }
+    .fc-score.hi b { color:#1f7a37; } .fc-score.mid b { color:#8a6a1f; } .fc-score.lo b { color:var(--shell-muted); }
+    .fc-bar { height:5px; border-radius:999px; background:var(--shell-soft); overflow:hidden; }
+    .fc-bar i { display:block; height:100%; background:linear-gradient(90deg,#e0362c,#111); border-radius:999px; }
+    .fc-tags { display:flex; flex-wrap:wrap; gap:5px; }
+    .fc-tags span { padding:3px 9px; border-radius:999px; background:var(--shell-soft); font-size:11.5px; font-weight:600; }
+    .fc-reasons { margin:0; padding-left:18px; font-size:13px; line-height:1.5; color:var(--shell-ink); }
+    .fc-reasons li { margin-bottom:3px; }
+    .fc-links { display:flex; flex-wrap:wrap; gap:10px; font-size:12.5px; }
+    .fc-links a { color:var(--shell-ink); font-weight:600; text-decoration:none; }
+    .fc-links a:hover { text-decoration:underline; }
+    .fc-links .fol { color:var(--shell-muted); font-weight:600; }
+    .fc-card .pick { position:absolute; top:14px; right:14px; width:22px; height:22px; accent-color:#111; cursor:pointer; }
+    .fc-card .invited { position:absolute; top:-9px; left:16px; padding:3px 8px; border-radius:999px; background:#e3f2e6; color:#1f7a37; font-size:10.5px; font-weight:800; letter-spacing:.04em; }
+    .fc-invite-bar { position:sticky; bottom:16px; display:none; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; background:var(--shell-ink); color:#fff; padding:14px 18px; border-radius:16px; box-shadow:var(--shell-shadow); z-index:5; }
+    .fc-invite-bar.show { display:flex; }
+    .fc-invite-bar select { min-height:40px; border-radius:10px; border:1px solid rgba(255,255,255,.25); background:rgba(255,255,255,.08); color:#fff; padding:0 10px; font:inherit; font-size:13px; }
+    .fc-invite-bar select option { color:#111; }
+    .fc-invite-bar .shell-btn { background:#e0362c; color:#fff; border-color:#e0362c; }
+    .fc-invite-bar .shell-btn.ghost { background:transparent; color:#fff; border-color:rgba(255,255,255,.3); }
+    .fc-invite-msg { width:100%; min-height:44px; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.25); background:rgba(255,255,255,.08); color:#fff; font:inherit; font-size:13px; resize:vertical; box-sizing:border-box; }
+    .fc-invite-msg::placeholder { color:rgba(255,255,255,.5); }
+    .fc-badge-ai { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:800; letter-spacing:.05em; }
+    .fc-badge-ai.on { background:#e3f2e6; color:#1f7a37; } .fc-badge-ai.off { background:var(--shell-soft); color:var(--shell-muted); }
+
     @media (max-width: 700px) {
       .brand-form-grid.two { grid-template-columns: 1fr; }
       .campaign-card { flex-wrap: wrap; }
+      .fc-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -142,7 +204,8 @@
       </div>
 
       <nav class="shell-nav" aria-label="Brand Navigation">
-        <a class="active" href="brand-dashboard.html">Dashboard</a>
+        <a class="active" href="brand-dashboard.html" id="nav-dashboard">Dashboard</a>
+        <a href="#find-creators" id="nav-find-creators">Find Creators <span class="nav-ai">AI</span></a>
         <a href="/">Main Website</a>
         <a href="#" id="logout-link" class="danger">Log Out</a>
       </nav>
@@ -152,6 +215,7 @@
       <section class="shell-content">
         <div id="page-banner" class="brand-banner"></div>
 
+        <div id="dashboard-view">
         <div class="dash-header-row">
           <div>
             <h1>My Campaigns</h1>
@@ -162,6 +226,90 @@
 
         <div id="campaign-list" class="campaign-list">
           <div class="empty-state">Loading your campaigns…</div>
+        </div>
+        </div>
+
+        <!-- Find Creators (AI matching) -->
+        <div id="find-creators" style="display:none;">
+          <div class="dash-header-row">
+            <div>
+              <h1>Find Creators <span class="nav-ai" style="font-size:12px;vertical-align:middle">AI</span></h1>
+              <p class="shell-subtitle">Describe who you're looking for, or pick one of your campaigns — we rank Vively creators by fit and explain why.</p>
+            </div>
+            <span id="fc-ai-badge" class="fc-badge-ai off">RULE-BASED MATCHING</span>
+          </div>
+
+          <div class="fc-panel">
+            <div class="shell-card fc-search">
+              <div id="fc-banner" class="brand-banner"></div>
+              <textarea id="fc-query" placeholder="e.g. Indonesian creators living in Seoul who make skincare content, 20s, 5k+ Instagram followers"></textarea>
+              <div class="fc-examples">
+                <button type="button" data-q="Indonesian female creators in Seoul for a skincare campaign, 20-29, 5k+ followers">Skincare · Indonesia · 20s</button>
+                <button type="button" data-q="서울 거주 외국인 크리에이터, 맛집 브이로그, 인스타그램 1만 팔로워 이상">서울 맛집 · IG 1만+</button>
+                <button type="button" data-q="Travel vloggers from Japan or Vietnam for a hanok stay experience, YouTube">Travel · YouTube</button>
+              </div>
+              <div class="fc-row">
+                <span class="or">Or match by campaign:</span>
+                <select id="fc-campaign"><option value="">— Select a campaign —</option></select>
+                <button type="button" class="shell-btn primary" id="fc-search-btn">Search creators →</button>
+                <button type="button" class="fc-toggle" id="fc-filters-toggle" style="margin-top:0">+ Filters</button>
+              </div>
+              <div class="fc-filters" id="fc-filters" style="display:none;">
+                <div class="span-all">
+                  <label>Content categories</label>
+                  <div class="chips" id="fc-cats">
+                    <label><input type="checkbox" value="Food">Food</label>
+                    <label><input type="checkbox" value="Beauty">Beauty</label>
+                    <label><input type="checkbox" value="Travel">Travel</label>
+                    <label><input type="checkbox" value="Fitness">Fitness</label>
+                    <label><input type="checkbox" value="Fashion">Fashion</label>
+                    <label><input type="checkbox" value="Lifestyle">Lifestyle</label>
+                    <label><input type="checkbox" value="Tech">Tech</label>
+                    <label><input type="checkbox" value="Entertainment">Entertainment</label>
+                  </div>
+                </div>
+                <div><label>Nationality</label><input type="text" id="fc-nationality" placeholder="e.g. Indonesia" list="fc-countries"></div>
+                <div><label>Lives in</label><input type="text" id="fc-residence" placeholder="e.g. South Korea" list="fc-countries"></div>
+                <div><label>Gender</label><select id="fc-gender"><option value="">Any</option><option>Female</option><option>Male</option><option>Non-binary</option></select></div>
+                <div><label>Age min</label><input type="number" id="fc-agemin" min="17" max="80" placeholder="17"></div>
+                <div><label>Age max</label><input type="number" id="fc-agemax" min="17" max="80" placeholder="45"></div>
+                <div><label>Min followers</label><input type="number" id="fc-minfol" min="0" step="100" placeholder="e.g. 5000"></div>
+                <div class="span-all">
+                  <label>Platform</label>
+                  <div class="chips" id="fc-platforms">
+                    <label><input type="checkbox" value="instagram">Instagram</label>
+                    <label><input type="checkbox" value="tiktok">TikTok</label>
+                    <label><input type="checkbox" value="youtube">YouTube</label>
+                  </div>
+                </div>
+                <datalist id="fc-countries"><option value="South Korea"><option value="Indonesia"><option value="United States"><option value="Japan"><option value="Vietnam"><option value="Thailand"><option value="Philippines"><option value="Malaysia"><option value="United Kingdom"><option value="Canada"><option value="Australia"><option value="India"><option value="China"></datalist>
+              </div>
+            </div>
+
+            <div id="fc-results-wrap" style="display:none;">
+              <div class="shell-card" style="padding:18px 22px;margin-bottom:14px;">
+                <div class="fc-summary">
+                  <div>
+                    <h2 id="fc-results-title">Results</h2>
+                    <div class="sub" id="fc-results-sub"></div>
+                    <div class="fc-crit" id="fc-crit"></div>
+                  </div>
+                  <button type="button" class="shell-btn" id="fc-select-all">Select all</button>
+                </div>
+              </div>
+              <div class="fc-grid" id="fc-results"></div>
+            </div>
+
+            <div class="fc-invite-bar" id="fc-invite-bar">
+              <div><b id="fc-selected-count">0</b> selected</div>
+              <select id="fc-invite-campaign"><option value="">Invite to campaign…</option></select>
+              <div style="display:flex;gap:8px;">
+                <button type="button" class="shell-btn ghost" id="fc-clear-sel">Clear</button>
+                <button type="button" class="shell-btn" id="fc-invite-btn">Send invitations</button>
+              </div>
+              <textarea class="fc-invite-msg" id="fc-invite-msg" placeholder="Optional message to the creators (max 600 characters)" maxlength="600"></textarea>
+            </div>
+          </div>
         </div>
 
         <!-- New campaign form -->
@@ -457,8 +605,8 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ file: dataUrl, filename: file.name, contentType: file.type }),
           });
-          const uploadData = await uploadRes.json();
-          if (!uploadRes.ok) throw new Error(uploadData.error || 'Image upload failed');
+          const uploadData = await uploadRes.json().catch(() => ({}));
+          if (!uploadRes.ok) throw new Error([uploadData.error || 'Image upload failed', uploadData.details].filter(Boolean).join(': '));
           imageUrl = uploadData.imageUrl;
         }
 
@@ -510,6 +658,190 @@
       localStorage.removeItem('brandData');
       window.location.href = 'brand-login.html';
     });
+
+    // ================= Find Creators (AI matching) =================
+    (function () {
+      const view = document.getElementById('find-creators');
+      const dash = document.getElementById('dashboard-view');
+      const navFind = document.getElementById('nav-find-creators');
+      const navDash = document.getElementById('nav-dashboard');
+      const banner = document.getElementById('fc-banner');
+      const resultsWrap = document.getElementById('fc-results-wrap');
+      const resultsEl = document.getElementById('fc-results');
+      const inviteBar = document.getElementById('fc-invite-bar');
+      const selected = new Set();
+      let lastResults = [];
+      let myCampaigns = [];
+
+      function showView(find) {
+        view.style.display = find ? 'block' : 'none';
+        dash.style.display = find ? 'none' : 'block';
+        document.getElementById('new-campaign-section').style.display = 'none';
+        document.getElementById('applicants-section').style.display = 'none';
+        navFind.classList.toggle('active', find);
+        navDash.classList.toggle('active', !find);
+        if (find) { history.replaceState(null, '', '#find-creators'); loadCampaignOptions(); }
+        else history.replaceState(null, '', 'brand-dashboard.html');
+      }
+      navFind.addEventListener('click', (e) => { e.preventDefault(); showView(true); });
+      navDash.addEventListener('click', (e) => { e.preventDefault(); showView(false); });
+      if (location.hash === '#find-creators') showView(true);
+
+      async function loadCampaignOptions() {
+        if (myCampaigns.length) return;
+        try {
+          const res = await apiFetch('/api/brand-campaigns');
+          const data = await res.json();
+          myCampaigns = Array.isArray(data) ? data.filter((c) => !['rejected', 'archived', 'completed'].includes(c.status)) : [];
+          const opts = myCampaigns.map((c) => '<option value="' + c._id + '">' + escapeHtml(c.title) + ' (' + escapeHtml(statusLabel(c.status)) + ')</option>').join('');
+          document.getElementById('fc-campaign').insertAdjacentHTML('beforeend', opts);
+          document.getElementById('fc-invite-campaign').insertAdjacentHTML('beforeend', opts);
+        } catch (_) { /* ignore */ }
+      }
+
+      document.querySelectorAll('.fc-examples button').forEach((b) => b.addEventListener('click', () => {
+        document.getElementById('fc-query').value = b.dataset.q;
+        document.getElementById('fc-campaign').value = '';
+      }));
+      document.getElementById('fc-filters-toggle').addEventListener('click', (e) => {
+        const f = document.getElementById('fc-filters');
+        const open = f.style.display === 'none';
+        f.style.display = open ? 'grid' : 'none';
+        e.target.textContent = open ? '− Filters' : '+ Filters';
+      });
+
+      function readFilters() {
+        const checked = (id) => [...document.querySelectorAll('#' + id + ' input:checked')].map((i) => i.value);
+        return {
+          categories: checked('fc-cats'),
+          nationality: document.getElementById('fc-nationality').value.trim(),
+          residence: document.getElementById('fc-residence').value.trim(),
+          gender: document.getElementById('fc-gender').value,
+          ageMin: document.getElementById('fc-agemin').value,
+          ageMax: document.getElementById('fc-agemax').value,
+          minFollowers: document.getElementById('fc-minfol').value,
+          platforms: checked('fc-platforms'),
+        };
+      }
+
+      function critChips(c) {
+        const out = [];
+        if (c.categories && c.categories.length) out.push(c.categories.join(' · '));
+        if (c.nationality) out.push('From ' + c.nationality);
+        if (c.residence) out.push('Lives in ' + c.residence);
+        if (c.gender) out.push(c.gender);
+        if (c.ageMin || c.ageMax) out.push('Age ' + (c.ageMin || '') + '–' + (c.ageMax || ''));
+        if (c.minFollowers) out.push(Number(c.minFollowers).toLocaleString() + '+ followers');
+        if (c.platforms && c.platforms.length) out.push(c.platforms.join(' / '));
+        return out.map((t) => '<span>' + escapeHtml(t) + '</span>').join('');
+      }
+
+      function initials(u) { return (u || '?').slice(0, 2).toUpperCase(); }
+
+      function renderResults(data) {
+        lastResults = data.results;
+        selected.clear();
+        updateInviteBar();
+        const badge = document.getElementById('fc-ai-badge');
+        badge.className = 'fc-badge-ai ' + (data.ai ? 'on' : 'off');
+        badge.textContent = data.ai ? 'AI MATCHING' : 'RULE-BASED MATCHING';
+        document.getElementById('fc-results-title').textContent = data.results.length + ' matching creator' + (data.results.length === 1 ? '' : 's');
+        document.getElementById('fc-results-sub').textContent = (data.campaign ? 'Matched to "' + data.campaign.title + '" · ' : '') + 'from ' + data.total + ' creators on Vively';
+        document.getElementById('fc-crit').innerHTML = critChips(data.criteria);
+        resultsWrap.style.display = 'block';
+        if (data.campaign) document.getElementById('fc-invite-campaign').value = data.campaign.id;
+        if (!data.results.length) {
+          resultsEl.innerHTML = '<div class="empty-state" style="grid-column:1/-1">No creators match yet. Try fewer filters or a broader description.</div>';
+          return;
+        }
+        resultsEl.innerHTML = data.results.map((r) => {
+          const cls = r.score >= 70 ? 'hi' : r.score >= 45 ? 'mid' : 'lo';
+          const avatar = r.picture ? '<img src="' + escapeHtml(r.picture) + '" alt="" referrerpolicy="no-referrer">' : escapeHtml(initials(r.username));
+          const where = [r.nationality, r.residence && r.residence !== r.nationality ? 'in ' + r.residence : null].filter(Boolean).join(' · ');
+          const meta = [where, r.gender, r.age ? r.age + 'y' : null].filter(Boolean).join(' · ');
+          const links = [];
+          if (r.socials.instagram) links.push('<a href="https://instagram.com/' + encodeURIComponent(r.socials.instagram.replace(/^@/, '')) + '" target="_blank" rel="noopener">IG @' + escapeHtml(r.socials.instagram.replace(/^@/, '')) + '</a>');
+          if (r.socials.tiktok) links.push('<a href="https://tiktok.com/@' + encodeURIComponent(r.socials.tiktok.replace(/^@/, '')) + '" target="_blank" rel="noopener">TikTok @' + escapeHtml(r.socials.tiktok.replace(/^@/, '')) + '</a>');
+          if (r.socials.youtube) links.push('<a href="https://youtube.com/@' + encodeURIComponent(r.socials.youtube.replace(/^@/, '')) + '" target="_blank" rel="noopener">YouTube</a>');
+          if (r.followers.label) links.push('<span class="fol">' + escapeHtml(r.followers.label) + ' followers</span>');
+          return (
+            '<div class="fc-card" data-id="' + r.id + '">' +
+              (r.invited ? '<span class="invited">INVITED</span>' : '') +
+              '<input type="checkbox" class="pick" aria-label="Select ' + escapeHtml(r.username) + '">' +
+              '<div class="top"><div class="avatar">' + avatar + '</div><div class="who"><b>@' + escapeHtml(r.username) + '</b><span>' + escapeHtml(meta) + '</span></div>' +
+              '<div class="fc-score ' + cls + '"><b>' + r.score + '</b><small>MATCH</small></div></div>' +
+              '<div class="fc-bar"><i style="width:' + r.score + '%"></i></div>' +
+              (r.categories.length ? '<div class="fc-tags">' + r.categories.map((c) => '<span>' + escapeHtml(c) + '</span>').join('') + '</div>' : '') +
+              (r.reasons.length ? '<ul class="fc-reasons">' + r.reasons.map((x) => '<li>' + escapeHtml(x) + '</li>').join('') + '</ul>' : '') +
+              (links.length ? '<div class="fc-links">' + links.join('') + '</div>' : '') +
+            '</div>'
+          );
+        }).join('');
+        resultsEl.querySelectorAll('.fc-card').forEach((card) => {
+          const box = card.querySelector('.pick');
+          const toggle = (on) => { box.checked = on; card.classList.toggle('selected', on); if (on) selected.add(card.dataset.id); else selected.delete(card.dataset.id); updateInviteBar(); };
+          box.addEventListener('change', () => toggle(box.checked));
+          card.addEventListener('click', (e) => { if (e.target.closest('a, input')) return; toggle(!box.checked); });
+        });
+      }
+
+      function updateInviteBar() {
+        document.getElementById('fc-selected-count').textContent = selected.size;
+        inviteBar.classList.toggle('show', selected.size > 0);
+      }
+      document.getElementById('fc-select-all').addEventListener('click', () => {
+        const all = resultsEl.querySelectorAll('.fc-card');
+        const allOn = selected.size === all.length && all.length > 0;
+        all.forEach((card) => { const box = card.querySelector('.pick'); box.checked = !allOn; card.classList.toggle('selected', !allOn); if (!allOn) selected.add(card.dataset.id); });
+        if (allOn) selected.clear();
+        updateInviteBar();
+      });
+      document.getElementById('fc-clear-sel').addEventListener('click', () => {
+        resultsEl.querySelectorAll('.fc-card').forEach((card) => { card.querySelector('.pick').checked = false; card.classList.remove('selected'); });
+        selected.clear(); updateInviteBar();
+      });
+
+      document.getElementById('fc-search-btn').addEventListener('click', async () => {
+        const btn = document.getElementById('fc-search-btn');
+        const query = document.getElementById('fc-query').value.trim();
+        const campaignId = document.getElementById('fc-campaign').value;
+        banner.style.display = 'none';
+        if (!query && !campaignId) { showBanner(banner, 'error', 'Describe who you are looking for, or select a campaign.'); return; }
+        btn.disabled = true; btn.textContent = 'Searching…';
+        try {
+          const res = await apiFetch('/api/creator-match', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'search', query, campaignId: campaignId || undefined, filters: readFilters(), limit: 24 }) });
+          const data = await res.json();
+          if (!res.ok) { showBanner(banner, 'error', data.error || 'Search failed.'); return; }
+          renderResults(data);
+          resultsWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } catch (err) {
+          showBanner(banner, 'error', err.message || 'Search failed.');
+        } finally { btn.disabled = false; btn.textContent = 'Search creators →'; }
+      });
+
+      document.getElementById('fc-invite-btn').addEventListener('click', async () => {
+        const campaignId = document.getElementById('fc-invite-campaign').value;
+        if (!campaignId) { showBanner(pageBanner, 'error', 'Choose which campaign to invite them to.'); pageBanner.scrollIntoView({ behavior: 'smooth' }); return; }
+        if (!selected.size) return;
+        const btn = document.getElementById('fc-invite-btn');
+        btn.disabled = true; btn.textContent = 'Sending…';
+        try {
+          const res = await apiFetch('/api/creator-match', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'invite', campaignId, creatorIds: [...selected], message: document.getElementById('fc-invite-msg').value.trim() }) });
+          const data = await res.json();
+          if (!res.ok) { showBanner(banner, 'error', data.error || 'Could not send invitations.'); banner.scrollIntoView({ behavior: 'smooth' }); return; }
+          showBanner(banner, 'success', 'Invited ' + data.sent + ' creator' + (data.sent === 1 ? '' : 's') + ' to "' + data.campaign.title + '"' + (data.skipped ? ' (' + data.skipped + ' already invited)' : '') + '.');
+          resultsEl.querySelectorAll('.fc-card.selected').forEach((card) => {
+            if (!card.querySelector('.invited')) card.insertAdjacentHTML('afterbegin', '<span class="invited">INVITED</span>');
+            card.querySelector('.pick').checked = false; card.classList.remove('selected');
+          });
+          selected.clear(); updateInviteBar();
+          document.getElementById('fc-invite-msg').value = '';
+          banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } catch (err) {
+          showBanner(banner, 'error', err.message || 'Could not send invitations.');
+        } finally { btn.disabled = false; btn.textContent = 'Send invitations'; }
+      });
+    })();
 
     loadCampaigns();
   })();

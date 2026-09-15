@@ -69,3 +69,59 @@
   .mp-code{font-size:24px;letter-spacing:.1em}
   .mp-stats{gap:20px}
 }
+
+/* ---- account settings ---- */
+.mp-note{font-size:13.5px;color:var(--mut);line-height:1.55;margin-bottom:18px}
+.mp-note b{color:var(--ink);font-weight:600}
+.mp-form{display:flex;flex-direction:column;gap:14px}
+.mp-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.mp-field label{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
+.mp-field label .req{color:var(--red)}
+.mp-field small{font-size:12px;color:var(--mut)}
+.mp-field input,.mp-field select,.mp-field textarea{width:100%;height:44px;padding:0 14px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font:inherit;font-size:14px;outline:none;transition:border-color .15s,box-shadow .15s}
+.mp-field textarea{height:auto;padding:12px 14px;resize:vertical;line-height:1.5}
+.mp-field input:focus,.mp-field select:focus,.mp-field textarea:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(224,54,44,.14)}
+.mp-field input.is-changed,.mp-field select.is-changed,.mp-field textarea.is-changed{border-color:var(--ink)}
+.mp-field input.is-error,.mp-field select.is-error{border-color:var(--red);box-shadow:0 0 0 3px rgba(224,54,44,.14)}
+.mp-input-wrap{position:relative}
+.mp-input-wrap .mp-prefix{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--mut);font-weight:600;pointer-events:none}
+.mp-input-wrap input{padding-left:30px}
+.mp-phone-row{display:grid;grid-template-columns:120px 1fr;gap:8px}
+.mp-field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mp-form-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:6px;padding-top:16px;border-top:1px solid var(--line)}
+.mp-form-hint{font-size:13px;color:var(--mut)}
+.mp-form-hint.has-changes{color:var(--ink);font-weight:600}
+.mp-btn:disabled{opacity:.45;cursor:not-allowed}
+.mp-btn.danger{background:#fff;border-color:rgba(224,54,44,.5);color:var(--red)}
+.mp-btn.danger:hover{background:var(--red);border-color:var(--red);color:#fff}
+.mp-danger{border-color:rgba(224,54,44,.35);background:linear-gradient(0deg,rgba(224,54,44,.04),rgba(224,54,44,.04)),#fff}
+.mp-danger h2{color:var(--red)}
+
+/* verification modal */
+.mp-modal{position:fixed;inset:0;z-index:1000;background:rgba(14,10,11,.55);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px}
+.mp-modal-card{position:relative;width:100%;max-width:420px;background:#fff;border-radius:20px;padding:30px 28px 26px;box-shadow:0 30px 80px rgba(0,0,0,.3)}
+.mp-modal-close{position:absolute;right:14px;top:12px;width:34px;height:34px;border:0;border-radius:50%;background:transparent;font-size:24px;line-height:1;color:var(--mut);cursor:pointer}
+.mp-modal-close:hover{background:var(--paper)}
+.mp-modal-card h3{font-size:20px;letter-spacing:-.02em;margin-top:12px}
+.mp-modal-card > p{font-size:14px;color:var(--mut);line-height:1.55;margin:10px 0 20px}
+.mp-verify-sent{font-size:13.5px;color:var(--mut);line-height:1.5;margin-bottom:16px}
+.mp-verify-sent b{color:var(--ink);font-weight:600}
+.mp-code-inputs{display:flex;gap:8px;justify-content:center;margin-bottom:16px}
+.mp-code-inputs input{width:46px;height:54px;text-align:center;font-size:22px;font-weight:700;border:1px solid var(--line);border-radius:12px;font-family:"SF Mono",Menlo,Consolas,monospace;outline:none;transition:border-color .15s,box-shadow .15s}
+.mp-code-inputs input:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(224,54,44,.14)}
+.mp-verify-error{color:#c53030;background:#fff5f5;border:1px solid #fed7d7;padding:8px 12px;border-radius:10px;font-size:12.5px;margin-bottom:12px}
+.mp-verify-resend{margin-top:14px;text-align:center;font-size:13px;color:var(--mut)}
+.mp-verify-resend button{border:0;background:none;color:var(--red);font:inherit;font-weight:700;cursor:pointer;text-decoration:underline}
+.mp-verify-resend button:disabled{color:var(--mut);text-decoration:none;cursor:default}
+#mp-verify-confirm-wrap{margin-bottom:14px}
+@media (max-width:640px){
+  .mp-field-row{grid-template-columns:1fr}
+  .mp-phone-row{grid-template-columns:110px 1fr}
+  .mp-code-inputs input{width:40px;height:48px;font-size:19px}
+}
+
+.mp-field-row.three{grid-template-columns:1fr 1fr 1fr}
+.mp-field-note{font-size:12px;color:var(--mut);margin-top:-6px}
+.mp-notif-link{color:var(--red);font-weight:700;text-decoration:none;white-space:nowrap}
+.mp-notif-link:hover{text-decoration:underline}
+@media (max-width:640px){.mp-field-row.three{grid-template-columns:1fr}}

@@ -59,6 +59,22 @@ async function getReferralsCollection() {
   return col;
 }
 
+async function getInvitationsCollection() {
+  const { db } = await connectToDatabase();
+  const col = db.collection("invitations");
+  await col.createIndex({ campaignId: 1, creatorId: 1 }, { unique: true }).catch(() => {});
+  await col.createIndex({ creatorId: 1, createdAt: -1 }).catch(() => {});
+  return col;
+}
+
+async function getAccountCodesCollection() {
+  const { db } = await connectToDatabase();
+  const col = db.collection("account_action_codes");
+  await col.createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 }).catch(() => {});
+  await col.createIndex({ userId: 1, purpose: 1 }, { unique: true }).catch(() => {});
+  return col;
+}
+
 async function getNotificationsCollection() {
   const { db } = await connectToDatabase();
   const col = db.collection("notifications");
@@ -115,6 +131,8 @@ module.exports = {
   getUsersCollection,
   getReferralsCollection,
   getNotificationsCollection,
+  getAccountCodesCollection,
+  getInvitationsCollection,
   getApplicationsCollection,
   getVerificationCodesCollection,
   getBrandsCollection,

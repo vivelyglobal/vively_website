@@ -637,9 +637,10 @@ document.addEventListener("DOMContentLoaded", () => {
           }),
         });
 
-        const uploadData = await uploadRes.json();
+        const uploadData = await uploadRes.json().catch(() => ({}));
         if (!uploadRes.ok) {
-          throw new Error(uploadData.error || "Image upload failed");
+          const reason = [uploadData.error || "Image upload failed", uploadData.details].filter(Boolean).join(": ");
+          throw new Error(reason);
         }
         imageUrl = uploadData.imageUrl;
       }
