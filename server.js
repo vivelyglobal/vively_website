@@ -81,9 +81,17 @@ app.use(express.static(ROOT_DIR));
 app.listen(PORT, () => {
   console.log(`Vively server running on port ${PORT}`);
 
+  const { connectToDatabase } = require("./netlify/functions/db");
   const { ensureAdminAccount } = require("./netlify/functions/_shared/ensure-admin");
-  ensureAdminAccount()
-    .then((r) => console.log("[admin]", JSON.stringify(r)))
+  const missing = ["MONGODB_URI", "JWT_SECRET", "ADMIN_EMAIL", "ADMIN_PASSWORD", "NODE_ENV"]
+    .filter((k) => !process.env[k]);
+  if (missing.length) console.warn("[env] not set:", missing.join(", "));
+
+  connectToDatabase()
+    .then(() => {
+      console.log("[db] connected to MongoDB Atlas");
+      return ensureAdminAccount().then((r) => console.log("[admin]", JSON.stringify(r)));
+    })
     .catch((err) => {
       const msg = String(err && err.message);
       if (/bad auth|authentication failed/i.test(msg)) {
@@ -92,7 +100,7 @@ app.listen(PORT, () => {
             "Fix the database user/password in Atlas → Database Access and update MONGODB_URI."
         );
       } else {
-        console.error("[admin] ensureAdminAccount failed:", msg);
+        console.error("[db] startup check failed:", msg);
       }
     });
 });
