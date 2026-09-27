@@ -15,17 +15,19 @@
 <meta property="og:url" content="https://www.vivelyglobal.com/story" />
 <meta property="og:image" content="https://www.vivelyglobal.com/assets/logo/vively-logo-black.png" />
 <meta name="twitter:card" content="summary_large_image" />
-<link rel="stylesheet" href="assets/css/style.v13.css" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="stylesheet" href="assets/css/style.v13.css?v=2" />
 <link rel="stylesheet" href="assets/css/style.brand.css" />
 <link rel="stylesheet" href="assets/css/style.brand2.css" />
 <link rel="stylesheet" href="assets/css/style.mobile.v2.css" />
-<link rel="stylesheet" href="assets/css/redesign.v1.css?v=14" />
-<link rel="stylesheet" href="assets/css/user-auth.css" />
+<link rel="stylesheet" href="assets/css/redesign.v1.css?v=15" />
+<link rel="stylesheet" href="assets/css/user-auth.css?v=4" />
 </head>
 <body>
 
 <div id="header-container"></div>
 
+<main id="main-content" tabindex="-1">
 <!-- HERO + WHY VIVELY ring — one section, page background -->
 <section class="story-hero" id="story">
   <div class="story-top">
@@ -188,6 +190,8 @@
         <div><div class="n" data-count="200" data-suffix="+">200+</div><div class="l">Seoul-based global creators</div></div>
         <div><div class="n" data-prefix="&#8361;" data-count="2731">&#8361;2,731</div><div class="l">Juno Seoul organic CPM</div></div>
       </div>
+      <!-- TODO(business): confirm each figure and its source before launch. -->
+      <p class="stat-note" style="grid-column:1/-1">* Vively 자체 집계 기준(2026년 8월 성과 리포트).</p>
       <div class="logos">
         <img src="assets/logos/juno-hair.png" alt="Juno Hair" loading="lazy">
         <img src="assets/logos/tonymoly.png" alt="TONYMOLY" loading="lazy">
@@ -250,10 +254,11 @@
     </div>
   </div>
 </section>
+</main>
 
 <div id="footer-container"></div>
 
-<script src="assets/js/component-loader.js?v=4"></script>
+<script src="assets/js/component-loader.js?v=5"></script>
 <script src="assets/js/main.js?v=23"></script>
 <script>
 (function(){

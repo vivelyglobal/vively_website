@@ -10,6 +10,7 @@ const { verifyRequest } = require("./auth");
 const { requirePermission, canUser } = require("./_shared/permissions");
 const { PERMISSIONS } = require("./_shared/permissions");
 const { ROLES, normalizeRole } = require("./_shared/constants");
+const { emailFooterHTML, emailFooterText } = require("./_shared/email-footer");
 
 const BREVO_API_KEY = process.env.BREVO_API_KEY;
 const BREVO_SENDER_EMAIL =
@@ -54,9 +55,7 @@ function buildStatusEmailHTML({ applicantName, campaignTitle, status }) {
         <tr><td style="padding:0 32px 30px;text-align:center;">
           <p style="margin:0;color:#444;font-size:14px;line-height:1.6;">${message}</p>
         </td></tr>
-        <tr><td style="padding:16px 32px 24px;text-align:center;border-top:1px solid #eee;">
-          <p style="margin:0;color:#999;font-size:12px;line-height:1.5;">&copy; ${new Date().getFullYear()} Vively Global</p>
-        </td></tr>
+${emailFooterHTML({ kind: "notification", reason: "You received this because you applied to a campaign on Vively." })}
       </table>
     </td></tr>
   </table>
@@ -79,7 +78,7 @@ async function sendApplicationStatusEmail({ to, applicantName, campaignTitle, st
 
   try {
     const label = statusLabel(status);
-    const textContent = `Hi ${applicantName || "Creator"},\n\nYour application for ${campaignTitle || "a campaign"} has been updated: ${label}.\n\n- Vively`;
+    const textContent = `Hi ${applicantName || "Creator"},\n\nYour application for ${campaignTitle || "a campaign"} has been updated: ${label}.\n\n- Vively${emailFooterText({ kind: "notification" })}`;
     const res = await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
       headers: {
@@ -128,9 +127,7 @@ function buildNewApplicantEmailHTML({ campaignTitle, applicantName, applicantIns
         <tr><td style="padding:0 32px 30px;text-align:center;">
           <a href="https://www.vivelyglobal.com/brand-dashboard.html" style="display:inline-block;padding:12px 24px;border-radius:999px;background:#111;color:#fff;font-size:14px;font-weight:700;text-decoration:none;">Review Applicant</a>
         </td></tr>
-        <tr><td style="padding:16px 32px 24px;text-align:center;border-top:1px solid #eee;">
-          <p style="margin:0;color:#999;font-size:12px;line-height:1.5;">&copy; ${new Date().getFullYear()} Vively Global</p>
-        </td></tr>
+${emailFooterHTML({ kind: "transactional", reason: "You received this because a creator applied to a campaign owned by your Vively brand account. Use applicant data only for this campaign." })}
       </table>
     </td></tr>
   </table>
@@ -152,7 +149,7 @@ async function sendNewApplicantBrandEmail({ to, campaignTitle, applicantName, ap
   }
 
   try {
-    const textContent = `${applicantName || "A creator"} just applied to your campaign "${campaignTitle || ""}". Log in to your brand dashboard to review.`;
+    const textContent = `${applicantName || "A creator"} just applied to your campaign "${campaignTitle || ""}". Log in to your brand dashboard to review.${emailFooterText({ kind: "transactional" })}`;
     const res = await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
       headers: {
@@ -247,10 +244,12 @@ exports.handler = async (event) => {
         };
       }
 
-      // Prevent duplicate applications on the same campaign.
+      // Prevent duplicate applications on the same campaign. A withdrawn
+      // application (creator cancelled it from My Page) doesn't count.
       const existing = await applications.findOne({
         campaignId: campaignOid,
         creatorId: creatorOid,
+        status: { $ne: "withdrawn" },
       });
       if (existing) {
         return {

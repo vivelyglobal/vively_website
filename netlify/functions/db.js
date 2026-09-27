@@ -117,6 +117,24 @@ async function getPasswordResetTokensCollection() {
   return col;
 }
 
+// Fixed-window counters for _shared/rate-limit.js. Rows are keyed by a
+// caller string + window start and auto-expire shortly after the window ends.
+async function getRateLimitsCollection() {
+  const { db } = await connectToDatabase();
+  const col = db.collection("rate_limits");
+  await col.createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 }).catch(() => {});
+  return col;
+}
+
+// Audit trail for account deletions. Contains NO personal data — only the
+// account type, who initiated it (self/admin) and when.
+async function getAccountDeletionsCollection() {
+  const { db } = await connectToDatabase();
+  const col = db.collection("account_deletions");
+  await col.createIndex({ deletedAt: -1 }).catch(() => {});
+  return col;
+}
+
 async function closeDatabase() {
   if (cachedClient) {
     await cachedClient.close();
@@ -137,5 +155,7 @@ module.exports = {
   getVerificationCodesCollection,
   getBrandsCollection,
   getPasswordResetTokensCollection,
+  getRateLimitsCollection,
+  getAccountDeletionsCollection,
   closeDatabase,
 };

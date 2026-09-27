@@ -346,7 +346,7 @@
   min-width: min(320px, 100%);
   padding: 0 16px;
   border-radius: 999px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--line-input, #8a8788);
   background: rgba(255, 255, 255, 0.88);
   color: var(--ink);
   font: inherit;
@@ -837,7 +837,7 @@
 .form-group textarea {
   width: 100%;
   padding: clamp(12px, 2vw, 16px);
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-input, #8a8788);
   border-radius: 4px;
   font-family: inherit;
   font-size: 15px;
@@ -848,7 +848,37 @@
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: var(--ink-30);
+  color: #6d6467; /* was --ink-30 (1.9:1); 5.7:1 */
+}
+
+/* apply box: explicit data-sharing acknowledgement */
+.apply-consent {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 14px 0 16px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-70);
+  cursor: pointer;
+}
+.apply-consent input {
+  margin-top: 3px;
+  flex-shrink: 0;
+  accent-color: var(--accent);
+}
+.apply-consent a {
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.apply-card .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+.apply-card .btn:disabled:hover {
+  background: var(--accent);
 }
 
 .form-group input:focus,

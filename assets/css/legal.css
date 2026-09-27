@@ -1,0 +1,63 @@
+/* ============================================================================
+   Legal / policy pages (privacy, terms, cookies, rewards & cancellation,
+   unsubscribe). Tokens come from redesign.v1.css.
+   ========================================================================== */
+.legal-hero{padding:150px 0 36px;background:var(--paper-2)}
+.legal-hero h1{margin-top:14px;font-size:clamp(30px,4vw,52px);letter-spacing:-.03em;line-height:1.1}
+.legal-meta{margin-top:12px;font-size:13.5px;color:var(--mut)}
+.legal-meta b{color:var(--ink);font-weight:600}
+.legal-body{padding:8px 0 96px;background:var(--paper-2)}
+.legal-layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:28px;align-items:start}
+.legal-layout>*{min-width:0}
+.legal-toc{position:sticky;top:110px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 18px 12px}
+.legal-toc h2{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--mut);margin-bottom:10px}
+.legal-toc ol{list-style:none;margin:0;padding:0}
+.legal-toc li{margin:0}
+.legal-toc a{display:block;padding:7px 0;font-size:13.5px;color:var(--ink);text-decoration:none;border-top:1px solid var(--line)}
+.legal-toc li:first-child a{border-top:0}
+.legal-toc a:hover{color:var(--red-deep)}
+.legal-doc{background:#fff;border:1px solid var(--line);border-radius:22px;padding:clamp(24px,4vw,48px)}
+.legal-doc h2{font-size:22px;letter-spacing:-.02em;margin-top:44px;padding-top:24px;border-top:1px solid var(--line)}
+.legal-doc h2:first-of-type{margin-top:0;padding-top:0;border-top:0}
+.legal-doc h3{font-size:17px;margin-top:26px}
+.legal-doc p,.legal-doc li{font-size:15px;line-height:1.75;color:var(--ink)}
+.legal-doc p{margin-top:12px}
+.legal-doc ul,.legal-doc ol{padding-left:22px;margin-top:10px}
+.legal-doc li{margin-top:6px}
+.legal-doc a{color:var(--red-deep);text-decoration:underline;text-underline-offset:2px}
+.legal-doc table{width:100%;border-collapse:collapse;margin:16px 0 8px;font-size:14px}
+.legal-doc th,.legal-doc td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top;line-height:1.55}
+.legal-doc th{background:var(--paper-2);font-weight:700}
+.legal-doc code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em;background:var(--paper-2);padding:1px 6px;border-radius:6px}
+.legal-notice{background:var(--paper-2);border-left:3px solid var(--red);padding:14px 18px;border-radius:0 10px 10px 0;font-size:14.5px;margin:18px 0}
+.legal-notice p{margin-top:6px;font-size:14.5px}
+.legal-notice p:first-child{margin-top:0}
+/* Placeholders the business owner must fill in. Deliberately loud so they
+   cannot be shipped unnoticed. */
+.legal-todo{display:inline-block;background:#fff3cd;color:#5c4400;border:1px dashed #b98f00;border-radius:6px;padding:1px 8px;font-size:.92em;font-weight:600;line-height:1.5}
+.legal-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+.legal-summary div{background:var(--paper-2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:14px;line-height:1.55}
+.legal-summary b{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--red-deep);margin-bottom:6px}
+.legal-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.legal-footer-links{margin-top:28px;font-size:13.5px;color:var(--mut)}
+.legal-footer-links a{color:var(--ink);margin-right:14px}
+
+/* unsubscribe page */
+.legal-card{max-width:520px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:22px;padding:clamp(24px,4vw,40px);text-align:center}
+.legal-card h1{font-size:26px;letter-spacing:-.02em;margin-top:8px}
+.legal-card p{margin-top:12px;color:var(--mut);font-size:15px;line-height:1.65}
+.legal-card .status{margin-top:18px;padding:12px 14px;border-radius:12px;font-size:14px;font-weight:600}
+.legal-card .status.ok{background:#e8f3ea;color:#1f6b34;border:1px solid #cfe6d3}
+.legal-card .status.err{background:#f7e9e6;color:#7d2d24;border:1px solid #e2c0b9}
+.legal-card .btn{margin-top:20px}
+
+@media (max-width:900px){
+  .legal-layout{grid-template-columns:minmax(0,1fr)}
+  .legal-toc{position:static}
+}
+@media (max-width:640px){
+  .legal-hero{padding:120px 0 24px}
+  .legal-doc{padding:22px 18px;border-radius:16px}
+  .legal-doc table{display:block;overflow-x:auto;white-space:normal}
+  .legal-summary{grid-template-columns:1fr}
+}

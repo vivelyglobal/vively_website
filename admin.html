@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin Panel | Vively</title>
   <meta name="robots" content="noindex, nofollow" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <link rel="icon" type="image/png" href="assets/logo/favicon.png" />
-  <link rel="stylesheet" href="assets/css/admin-redesign.css" />
+  <link rel="stylesheet" href="assets/css/admin-redesign.css?v=2" />
 </head>
 <body class="admin-page">
 
@@ -24,7 +25,7 @@
     <a href="#" id="logout-btn" class="nav-item logout">Log out</a>
   </header>
 
-  <main class="admin-main">
+  <main class="admin-main" id="main-content" tabindex="-1">
     <header class="admin-header" id="admin-header">
       <h1 id="section-title">Dashboard</h1>
     </header>
@@ -118,9 +119,9 @@
     </section>
 
     <!-- Campaign Form Modal -->
-    <div id="campaign-modal" class="modal">
+    <div id="campaign-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <div class="modal-content">
-        <span class="close">&times;</span>
+        <button type="button" class="close" aria-label="Close">&times;</button>
         <h2 id="modal-title">New Campaign</h2>
         <form id="campaign-form" class="admin-form">
           <input type="hidden" id="campaign-id" />
@@ -160,7 +161,7 @@
               JPEG, PNG, WebP, or GIF · Max 5MB
             </small>
             <div id="campaign-image-preview" style="margin-top: 12px; display: none;">
-              <img id="campaign-image-preview-img" src="" alt="Preview" style="max-width: 200px; max-height: 150px; border-radius: 6px; border: 1px solid var(--line, #ddd);" />
+              <img id="campaign-image-preview-img" src="" alt="Selected campaign image preview" style="max-width: 200px; max-height: 150px; border-radius: 6px; border: 1px solid var(--line, #ddd);" />
               <button type="button" id="campaign-image-clear" style="margin-left: 12px; background: none; border: 1px solid #ddd; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">Clear</button>
             </div>
           </div>
@@ -272,15 +273,16 @@
     </section>
 
     <!-- User Detail Modal -->
-    <div id="user-modal" class="modal">
+    <div id="user-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="user-modal-title">
       <div class="modal-content">
-        <span class="close" id="user-modal-close">&times;</span>
-        <h2>User Details</h2>
+        <button type="button" class="close" id="user-modal-close" aria-label="Close">&times;</button>
+        <h2 id="user-modal-title">User Details</h2>
         <div id="user-detail-body">Loading…</div>
         <div style="display:flex; gap:8px; margin-top:16px; flex-wrap: wrap;">
           <button id="user-toggle-active" type="button" class="btn btn-primary">Toggle Active</button>
           <button id="user-delete" type="button" class="btn-delete" style="padding: 8px 16px;">Delete User</button>
         </div>
+        <p style="margin-top:12px;font-size:12px;color:var(--ad-label);line-height:1.5">Delete removes the account, notifications, invitations, codes and referral rows, and anonymises the user's applications (campaign/status/date kept, all personal fields cleared). It cannot be undone.</p>
       </div>
     </div>
 
@@ -299,7 +301,7 @@
 
   <footer class="admin-footer">
     <span class="footer-brand">vively</span>
-    <span class="footer-copy">© 2026 Vively Global — Admin</span>
+    <span class="footer-copy">© 2026 Vively Global — Admin · <a href="privacy.html" style="color:inherit">Privacy</a></span>
   </footer>
 </div>
 

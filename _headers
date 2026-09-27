@@ -1,4 +1,4 @@
-# Cloudflare Pages cache headers.
+# Cloudflare Pages cache + security headers.
 # Media/CSS/JS get a long edge+browser cache since this is the biggest win
 # for load time (work.html alone ships several MB of video).
 # Caveat: if you ever REPLACE a file at the same path (e.g. re-upload
@@ -6,8 +6,25 @@
 # to a year. Rename the file (or add a ?v= query the HTML already uses for
 # some CSS/JS) when swapping content in place, or purge cache in the
 # Cloudflare dashboard after a swap.
+
+# Baseline security headers for every response. A Content-Security-Policy is
+# intentionally NOT set yet: the pages rely on inline scripts, the Google
+# Sign-In script, the jsDelivr font CDN and Cloudinary images, so a CSP needs
+# to be written and tested deliberately (see the audit report).
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
 /*.html
   Cache-Control: public, max-age=0, must-revalidate
+
+# Password-reset links carry a one-time token in the URL. Never leak it via
+# the Referer header to the font CDN or any other third party.
+/reset-password.html
+  Referrer-Policy: no-referrer

@@ -51,14 +51,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  function formatMoney(value) {
-    const numericValue = Number(String(value || "").replace(/[^\d]/g, ""));
-
-    if (!Number.isFinite(numericValue) || numericValue <= 0) {
-      return value || "TBD";
-    }
-
-    return numericValue.toLocaleString("en-US");
+  // Only a bare number is reformatted ("150000" → "₩150,000"). Anything
+  // else — ranges ("₩200,000 - ₩400,000"), text ("Free (₩500,000 value)") —
+  // is shown exactly as the brand wrote it. Stripping every non-digit used
+  // to collapse a range into one absurd figure (₩200,000,400,000).
+  function formatReward(value) {
+    const raw = String(value ?? "").trim();
+    if (!raw) return "TBD";
+    if (/^\d+$/.test(raw)) return "₩" + Number(raw).toLocaleString("en-US");
+    return raw;
   }
 
   function getSpotsLeft(campaign) {
@@ -129,10 +130,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     activeCategory = categoryValue;
 
     categoryButtons.forEach((button) => {
-      button.classList.toggle(
-        "is-active",
-        button.dataset.categoryFilter === activeCategory
-      );
+      const isActive = button.dataset.categoryFilter === activeCategory;
+      button.classList.toggle("is-active", isActive);
+      button.setAttribute("aria-pressed", isActive ? "true" : "false");
     });
 
     renderCampaigns();
@@ -239,7 +239,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               <span class="brand">${campaignBrand}</span>
               <p class="desc">${shortDescription}${hasMoreDescription ? "..." : ""}</p>
               <div class="cp-meta">
-                <span>리워드 <b>₩${escapeHtml(formatMoney(campaign.budget))}</b></span>
+                <span>리워드 <b>${escapeHtml(formatReward(campaign.budget))}</b></span>
                 <span>~${deadlineText}</span>
               </div>
               <div class="cp-meta" style="border-top:0;padding-top:6px">

@@ -3,6 +3,7 @@
 // 5 attempts, 60s resend cooldown.
 const crypto = require("crypto");
 const { getAccountCodesCollection } = require("../db");
+const { emailFooterHTML, emailFooterText } = require("./email-footer");
 
 const BREVO_API_KEY = process.env.BREVO_API_KEY;
 const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || "noreply@vivelyglobal.com";
@@ -46,9 +47,7 @@ function buildHTML({ title, body, code }) {
         <tr><td style="padding:0 32px 32px;text-align:center;">
           <div style="display:inline-block;padding:16px 24px;background:#faf5f5;border:1px solid #f0dcdc;border-radius:8px;font-size:32px;font-weight:700;letter-spacing:8px;color:#b13a3a;font-family:'Courier New',monospace;">${code}</div>
         </td></tr>
-        <tr><td style="padding:16px 32px 32px;text-align:center;border-top:1px solid #eee;">
-          <p style="margin:0;color:#999;font-size:12px;line-height:1.5;">&copy; ${new Date().getFullYear()} Vively Global</p>
-        </td></tr>
+${emailFooterHTML({ kind: "transactional", reason: "Didn't request this? Ignore this email and consider changing your password." })}
       </table>
     </td></tr>
   </table>
@@ -68,7 +67,7 @@ async function sendCodeEmail(email, purpose, code) {
         to: [{ email }],
         subject: copy.subject,
         htmlContent: buildHTML({ ...copy, code }),
-        textContent: `${copy.title}\n\n${copy.body}\n\nYour code: ${code}\n\nThis code expires in 10 minutes.`,
+        textContent: `${copy.title}\n\n${copy.body}\n\nYour code: ${code}\n\nThis code expires in 10 minutes.${emailFooterText({ kind: "transactional" })}`,
       }),
     });
     if (!res.ok) {

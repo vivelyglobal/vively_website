@@ -16,6 +16,12 @@ node_modules/
 client_secret_*.json
 credentials.json
 
+# User uploads written by the dev-only local-disk fallback. business-docs/
+# holds brand KYC documents (사업자등록증) — these must never be committed.
+assets/uploads/*
+!assets/uploads/.gitkeep
+assets/uploads/business-docs/
+
 # OS / editor
 .DS_Store
 .vscode/

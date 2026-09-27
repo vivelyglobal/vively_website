@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>For Brands | Vively</title>
   <meta name="robots" content="noindex, nofollow" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <link rel="icon" type="image/png" href="assets/logo/favicon.png" />
-  <link href="assets/css/style.v13.css" rel="stylesheet" />
+  <link href="assets/css/style.v13.css?v=2" rel="stylesheet" />
   <link href="assets/css/style.work.css" rel="stylesheet" />
   <link href="assets/css/style.mobile.v2.css" rel="stylesheet" />
   <style>
@@ -54,8 +55,8 @@
     }
 
     .brand-shell-nav a.primary {
-      background: #ff5a66;
-      border-color: #ff5a66;
+      background: #d9332a;
+      border-color: #d9332a;
       color: #ffffff;
     }
 
@@ -118,9 +119,9 @@
     }
 
     .brand-primary {
-      background: #ff5a66;
+      background: #d9332a;
       color: #fff;
-      box-shadow: 0 10px 24px rgba(255, 90, 102, 0.35);
+      box-shadow: 0 10px 24px rgba(217, 51, 42, 0.35);
     }
 
     .brand-secondary {
@@ -132,8 +133,10 @@
     .brand-entry-meta {
       margin-top: 16px;
       font-size: 13px;
-      color: #7c8796;
+      color: #5a6473;
     }
+    .brand-entry-legal { margin-top: 10px; font-size: 12.5px; color: #5a6473; }
+    .brand-entry-legal a { color: #2f3a4c; margin: 0 6px; }
 
     @media (max-width: 700px) {
       .brand-shell-topbar .inner {
@@ -165,7 +168,7 @@
     </div>
   </header>
 
-  <main class="brand-entry-wrap">
+  <main class="brand-entry-wrap" id="main-content" tabindex="-1">
     <section class="brand-entry-card">
       <h1>Brand Portal</h1>
       <p>
@@ -179,6 +182,7 @@
       </div>
 
       <div class="brand-entry-meta">Admin staff login remains at /admin.html</div>
+      <div class="brand-entry-legal"><a href="terms.html">Terms of Service</a>·<a href="privacy.html">Privacy Policy</a>·<a href="refund-policy.html">Fees &amp; Cancellation</a></div>
     </section>
   </main>
 

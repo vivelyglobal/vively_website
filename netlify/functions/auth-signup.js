@@ -13,6 +13,14 @@ const {
   allocateReferralCode,
   sendReferralEmail,
 } = require("./_shared/referral");
+const { POLICY_VERSION } = require("./_shared/constants");
+const { preflight, clientIp, errorDetails } = require("./_shared/http");
+const { enforce, MINUTE, HOUR } = require("./_shared/rate-limit");
+const { emailFooterHTML, emailFooterText } = require("./_shared/email-footer");
+
+// A 6-digit code has only 1,000,000 possibilities; without an attempt cap it
+// can be brute-forced. After this many wrong guesses the code is discarded.
+const MAX_VERIFY_ATTEMPTS = 5;
 
 async function findReferrer(users, rawCode) {
   const code = normalizeCode(rawCode);
@@ -60,12 +68,7 @@ function buildVerificationEmailHTML(code) {
             ${code}
           </div>
         </td></tr>
-        <tr><td style="padding:16px 32px 32px;text-align:center;border-top:1px solid #eee;">
-          <p style="margin:0;color:#999;font-size:12px;line-height:1.5;">
-            Didn't request this? You can safely ignore this email.<br>
-            &copy; ${new Date().getFullYear()} Vively Global
-          </p>
-        </td></tr>
+${emailFooterHTML({ kind: "transactional", reason: "Didn't request this? You can safely ignore this email." })}
       </table>
     </td></tr>
   </table>
@@ -97,7 +100,7 @@ async function sendVerificationEmail(email, code) {
         to: [{ email }],
         subject: `Your Vively verification code: ${code}`,
         htmlContent: buildVerificationEmailHTML(code),
-        textContent: `Your Vively verification code is: ${code}\n\nThis code expires in 10 minutes. If you didn't request it, ignore this email.`,
+        textContent: `Your Vively verification code is: ${code}\n\nThis code expires in 10 minutes. If you didn't request it, ignore this email.${emailFooterText({ kind: "transactional" })}`,
       }),
     });
 
@@ -111,7 +114,8 @@ async function sendVerificationEmail(email, code) {
     }
 
     const data = await res.json().catch(() => ({}));
-    console.log(`[email] Sent verification to ${email} (messageId: ${data.messageId || "n/a"})`);
+    // Don't write the recipient's email address into production logs.
+    console.log(`[email] Verification email sent (messageId: ${data.messageId || "n/a"})`);
     return { sent: true, messageId: data.messageId };
   } catch (error) {
     console.error("[email] Send error:", error);
@@ -125,17 +129,7 @@ function generateCode() {
 }
 
 exports.handler = async (event) => {
-  if (event.httpMethod === "OPTIONS") {
-    return {
-      statusCode: 204,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-      },
-      body: "",
-    };
-  }
+  if (event.httpMethod === "OPTIONS") return preflight("POST, OPTIONS", "Content-Type");
 
   if (event.httpMethod !== "POST") {
     return {
@@ -150,6 +144,7 @@ exports.handler = async (event) => {
     // Always work with a normalized (lowercase, trimmed) email so the
     // lookup key is deterministic regardless of what the user typed.
     const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+    const ip = clientIp(event);
 
     const users = await getUsersCollection();
 
@@ -177,6 +172,17 @@ exports.handler = async (event) => {
         };
       }
 
+      const limited = await enforce([
+        { key: `signup-send:ip:${ip}`, limit: 20, windowMs: 15 * MINUTE },
+        {
+          key: `signup-send:email:${email}`,
+          limit: 5,
+          windowMs: 15 * MINUTE,
+          message: "Too many codes requested for this email. Please wait 15 minutes and try again.",
+        },
+      ]);
+      if (limited) return limited;
+
       // Check if email already exists
       const existing = await users.findOne({ email });
       if (existing) {
@@ -193,7 +199,7 @@ exports.handler = async (event) => {
       const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
       await codes.updateOne(
         { email },
-        { $set: { email, code: verificationCode, expiresAt, createdAt: new Date() } },
+        { $set: { email, code: verificationCode, expiresAt, createdAt: new Date(), attempts: 0, verified: false } },
         { upsert: true }
       );
 
@@ -231,9 +237,15 @@ exports.handler = async (event) => {
         };
       }
 
+      const limited = await enforce([
+        { key: `signup-verify:ip:${ip}`, limit: 30, windowMs: 15 * MINUTE },
+        { key: `signup-verify:email:${email}`, limit: 10, windowMs: 15 * MINUTE },
+      ]);
+      if (limited) return limited;
+
       const codes = await getVerificationCodesCollection();
       const stored = await codes.findOne({ email });
-      if (!stored) {
+      if (!stored || !stored.code) {
         return {
           statusCode: 400,
           body: JSON.stringify({ error: "No code sent for this email" }),
@@ -249,6 +261,15 @@ exports.handler = async (event) => {
       }
 
       if (stored.code !== code.toString()) {
+        const attempts = (stored.attempts || 0) + 1;
+        if (attempts >= MAX_VERIFY_ATTEMPTS) {
+          await codes.deleteOne({ email });
+          return {
+            statusCode: 400,
+            body: JSON.stringify({ error: "Too many incorrect attempts. Please request a new code." }),
+          };
+        }
+        await codes.updateOne({ email }, { $set: { attempts } });
         return {
           statusCode: 400,
           body: JSON.stringify({ error: "Invalid verification code" }),
@@ -280,6 +301,11 @@ exports.handler = async (event) => {
           body: JSON.stringify({ error: "Email and user data required" }),
         };
       }
+
+      const limited = await enforce([
+        { key: `signup-create:ip:${ip}`, limit: 10, windowMs: HOUR },
+      ]);
+      if (limited) return limited;
 
       // Require that this email actually went through the verification
       // flow above. Prevents anyone from POSTing straight to create-account.
@@ -323,7 +349,30 @@ exports.handler = async (event) => {
         inviterUsername,
         referralCode: submittedReferralCode,
         marketingOptIn,
+        agreedToTerms,
+        agreedToPrivacy,
+        agreedToBrandSharing,
+        ageConfirmed,
       } = userData;
+
+      // Consent is enforced here, not only by the browser's `required`
+      // attribute, so an account can never be created without it. Each
+      // item is a separate, unchecked-by-default box in the sign-up form.
+      if (
+        agreedToTerms !== true ||
+        agreedToPrivacy !== true ||
+        agreedToBrandSharing !== true ||
+        ageConfirmed !== true
+      ) {
+        return {
+          statusCode: 400,
+          body: JSON.stringify({
+            error:
+              "Please accept the Terms of Service, the Privacy Policy, profile sharing with brands, and the age confirmation to create an account.",
+            field: "consent",
+          }),
+        };
+      }
 
       // Validate required fields
       if (!username || !fullName || !instagram) {
@@ -358,8 +407,15 @@ exports.handler = async (event) => {
         };
       }
 
-      // Validate age (must be at least 17)
+      // Validate age (must be at least 17). An unparseable date used to slip
+      // through because `NaN < 17` is false — reject it explicitly.
       const birthDate = new Date(dob);
+      if (!dob || Number.isNaN(birthDate.getTime())) {
+        return {
+          statusCode: 400,
+          body: JSON.stringify({ error: "A valid date of birth is required", field: "dob" }),
+        };
+      }
       const age =
         (Date.now() - birthDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000);
       if (age < 17) {
@@ -409,6 +465,7 @@ exports.handler = async (event) => {
       // without letting the client spoof a googleId.
       const linkedGoogleId = codeRecord.googleId || null;
       const linkedPicture = codeRecord.googlePicture || null;
+      const now = new Date();
 
       const newUser = {
         email: email,
@@ -445,8 +502,18 @@ exports.handler = async (event) => {
         googleId: linkedGoogleId,
         isActive: true,
         marketingOptIn: !!marketingOptIn,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        // Consent record: what was agreed, when, and against which policy
+        // version. Kept for as long as the account exists.
+        consents: {
+          policyVersion: POLICY_VERSION,
+          terms: { agreedAt: now },
+          privacy: { agreedAt: now },
+          brandSharing: { agreedAt: now },
+          ageConfirmed: { agreedAt: now },
+          marketing: { optIn: !!marketingOptIn, updatedAt: now, source: "signup" },
+        },
+        createdAt: now,
+        updatedAt: now,
       };
 
       const result = await users.insertOne(newUser);
@@ -521,7 +588,7 @@ exports.handler = async (event) => {
       statusCode: 500,
       body: JSON.stringify({
         error: "Signup failed",
-        details: error.message,
+        details: errorDetails(error),
       }),
     };
   }

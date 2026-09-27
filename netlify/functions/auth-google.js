@@ -4,23 +4,15 @@
 const { OAuth2Client } = require("google-auth-library");
 const { getUsersCollection, getVerificationCodesCollection } = require("./db");
 const { generateToken } = require("./auth");
+const { json, preflight, clientIp, errorDetails } = require("./_shared/http");
+const { enforce, MINUTE } = require("./_shared/rate-limit");
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 exports.handler = async (event) => {
   // CORS preflight
-  if (event.httpMethod === "OPTIONS") {
-    return {
-      statusCode: 204,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-      },
-      body: "",
-    };
-  }
+  if (event.httpMethod === "OPTIONS") return preflight("POST, OPTIONS");
 
   if (event.httpMethod !== "POST") {
     return {
@@ -46,6 +38,11 @@ exports.handler = async (event) => {
         body: JSON.stringify({ error: "Google credential (ID token) required" }),
       };
     }
+
+    const limited = await enforce([
+      { key: `google:ip:${clientIp(event)}`, limit: 30, windowMs: 15 * MINUTE },
+    ]);
+    if (limited) return limited;
 
     // Verify the Google ID token
     const ticket = await client.verifyIdToken({
@@ -105,39 +102,24 @@ exports.handler = async (event) => {
         { upsert: true }
       );
 
-      return {
-        statusCode: 200,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
+      return json(200, {
+        needsSignup: true,
+        prefill: {
+          email: normalizedEmail,
+          name: name || "",
+          picture: picture || null,
         },
-        body: JSON.stringify({
-          needsSignup: true,
-          prefill: {
-            email: normalizedEmail,
-            name: name || "",
-            picture: picture || null,
-          },
-        }),
-      };
+      });
     }
 
     // ===== Case 2: email exists but was created with password only =====
     // Don't silently merge — tell the user to log in with their password
     // (per product decision).
     if (!user.googleId) {
-      return {
-        statusCode: 409,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-        body: JSON.stringify({
-          error:
-            "Email already registered. Please log in with your password.",
-          code: "email-exists-password",
-        }),
-      };
+      return json(409, {
+        error: "Email already registered. Please log in with your password.",
+        code: "email-exists-password",
+      });
     }
 
     // ===== Case 3: existing Google-linked user → login =====
@@ -153,31 +135,24 @@ exports.handler = async (event) => {
     // Generate Vively JWT
     const token = generateToken(user._id, user.email, user.role || "user");
 
-    return {
-      statusCode: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
+    return json(200, {
+      message: "Login successful",
+      token,
+      user: {
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+        picture: user.picture,
+        role: user.role || "user",
       },
-      body: JSON.stringify({
-        message: "Login successful",
-        token,
-        user: {
-          _id: user._id,
-          email: user.email,
-          name: user.name,
-          picture: user.picture,
-          role: user.role || "user",
-        },
-      }),
-    };
+    });
   } catch (error) {
     console.error("Google auth error:", error);
     return {
       statusCode: 500,
       body: JSON.stringify({
         error: "Google authentication failed",
-        details: error.message,
+        details: errorDetails(error),
       }),
     };
   }

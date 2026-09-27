@@ -59,6 +59,89 @@
     });
   }
 
+  function statusLabel(status) {
+    const map = { pending: '검토 중', approved: '승인됨', rejected: '미선정', withdrawn: '철회함' };
+    return map[status] || status || '검토 중';
+  }
+
+  function renderApplications(apps) {
+    const list = $('mp-apps');
+    const empty = $('mp-apps-empty');
+    if (!list) return;
+    const items = Array.isArray(apps) ? apps : [];
+    list.innerHTML = items.map((a) => {
+      const status = a.status || 'pending';
+      const canWithdraw = status === 'pending';
+      return `
+      <li>
+        <div class="app-main">
+          <b><a href="campaign-detail.html?id=${encodeURIComponent(String(a.campaignId || ''))}" style="color:inherit;text-decoration:none">${escapeHtml(a.campaignTitle || '캠페인')}</a></b>
+          <small>${escapeHtml(a.brandName || '')}${a.brandName ? ' · ' : ''}지원일 ${formatDate(a.createdAt)}</small>
+        </div>
+        <div class="app-side">
+          <span class="mp-app-status ${escapeHtml(status)}">${escapeHtml(statusLabel(status))}</span>
+          ${canWithdraw ? `<button type="button" class="mp-btn small" data-withdraw="${escapeHtml(String(a._id))}">지원 철회</button>` : ''}
+        </div>
+      </li>`;
+    }).join('');
+    if (empty) empty.hidden = items.length > 0;
+    list.querySelectorAll('[data-withdraw]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('이 캠페인 지원을 철회할까요? 철회 후에는 다시 지원해야 합니다.')) return;
+        btn.disabled = true;
+        const { res, data } = await apiPost({ action: 'withdraw-application', applicationId: btn.dataset.withdraw });
+        if (!res.ok) { toast(data.error || '철회하지 못했어요'); btn.disabled = false; return; }
+        toast('지원을 철회했어요');
+        load();
+      });
+    });
+  }
+
+  function setupEmailPreferences(user) {
+    const box = $('mp-f-marketing');
+    if (!box) return;
+    box.checked = user.marketingOptIn === true;
+    box.onchange = async () => {
+      box.disabled = true;
+      const { res, data } = await apiPost({ action: 'set-email-preferences', marketingOptIn: box.checked });
+      box.disabled = false;
+      if (!res.ok) { box.checked = !box.checked; toast(data.error || '저장하지 못했어요'); return; }
+      toast(data.marketingOptIn ? '마케팅 이메일을 받아요' : '마케팅 이메일을 받지 않아요');
+    };
+  }
+
+  function setupDataExport() {
+    const btn = $('mp-export');
+    if (!btn || btn.dataset.wired === '1') return;
+    btn.dataset.wired = '1';
+    btn.addEventListener('click', async () => {
+      const token = localStorage.getItem(TOKEN_KEY);
+      if (!token) return;
+      btn.disabled = true;
+      const original = btn.textContent;
+      btn.textContent = '준비 중…';
+      try {
+        const res = await fetch(`${API_BASE}/me?section=export`, { headers: { Authorization: `Bearer ${token}` } });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `vively-data-export-${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        toast('내 데이터 파일을 내려받았어요');
+      } catch {
+        toast('데이터를 내보내지 못했어요. 다시 시도해 주세요.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = original;
+      }
+    });
+  }
+
   function render(data) {
     const { user, referral, notifications, unreadCount } = data;
     $('mp-gate').hidden = true;
@@ -105,6 +188,9 @@
     $('mp-referred-empty').hidden = referral.referred.length > 0;
 
     fillSettings(user);
+    setupEmailPreferences(user);
+    setupDataExport();
+    renderApplications(data.applications);
 
     const notifList = $('mp-notifs');
     notifList.innerHTML = notifications.map((n) => `
@@ -355,7 +441,7 @@
       openVerify({
         purpose: 'delete-account',
         title: '정말 계정을 삭제할까요?',
-        desc: '계정, 프로필, 지원 내역, 알림이 영구적으로 삭제되며 되돌릴 수 없어요. 계속하려면 이메일 인증을 진행해 주세요.',
+        desc: '계정, 프로필, 알림, 초대, 레퍼럴 기록이 영구적으로 삭제되고 지원 내역은 익명 처리돼요. 되돌릴 수 없어요. 계속하려면 이메일 인증을 진행해 주세요.',
         needsConfirm: true,
         onVerified: async (code, confirm) => {
           if (confirm !== 'DELETE') { showVerifyError('확인을 위해 DELETE를 정확히 입력해 주세요'); return; }

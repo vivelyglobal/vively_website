@@ -16,8 +16,12 @@
   --ad-mut:#a5a29f;
   --ad-label:#8a8784;
   --ad-faint:#6f6c69;
-  --ad-red:#ec3013;
+  /* --ad-red is used as TEXT on the dark background (needs ≥4.5:1 → 5.1),
+     --ad-red-dark as a FILL under white text (needs ≥4.5:1 → 5.8). One hue
+     cannot satisfy both, hence two tokens. */
+  --ad-red:#f24a30;
   --ad-red-dark:#c22812;
+  --ad-red-darker:#a8220f;
   --ad-red-tint:rgba(236,48,19,.16);
   --ad-rule:rgba(255,255,255,.14);
   --ad-rule-soft:rgba(255,255,255,.10);
@@ -128,7 +132,7 @@ body.admin-page{
 .admin-quicklink:hover{background:var(--ad-red-tint)}
 .admin-quicklink .ql-num{font-size:16px;font-weight:800;color:var(--ad-red);width:48px;flex:none}
 .admin-quicklink .ql-label{font-size:28px;font-weight:800;letter-spacing:-.02em;flex:1}
-.admin-quicklink .ql-note{font-size:12px;color:var(--ad-faint);letter-spacing:.08em;text-transform:uppercase}
+.admin-quicklink .ql-note{font-size:12px;color:var(--ad-label);letter-spacing:.08em;text-transform:uppercase}
 .admin-quicklink .ql-arrow{font-size:22px;flex:none}
 
 /* ============================================================================
@@ -150,7 +154,7 @@ body.admin-page{
 }
 .login-form-wrapper input{
   width:100%;padding:12px 14px;background:transparent;color:var(--ad-fg);
-  border:2px solid rgba(255,255,255,.24);font-family:inherit;font-size:14px;
+  border:2px solid rgba(255,255,255,.45);font-family:inherit;font-size:14px;
 }
 .login-form-wrapper input:focus{outline:none;border-color:var(--ad-red)}
 .login-form-wrapper .btn{width:100%;margin-top:6px}
@@ -162,8 +166,8 @@ body.admin-page{
   padding:11px 22px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
   border:none;cursor:pointer;transition:background .15s ease;
 }
-.admin-page .btn-accent,.admin-page .btn-primary{background:var(--ad-red);color:#fff}
-.admin-page .btn-accent:hover,.admin-page .btn-primary:hover{background:var(--ad-red-dark)}
+.admin-page .btn-accent,.admin-page .btn-primary{background:var(--ad-red-dark);color:#fff}
+.admin-page .btn-accent:hover,.admin-page .btn-primary:hover{background:var(--ad-red-darker)}
 .admin-page .btn-sm{padding:8px 16px;font-size:11px}
 
 /* ============================================================================
@@ -242,8 +246,8 @@ body.admin-page{
   border:none;cursor:pointer;padding:9px 18px;font-family:inherit;font-size:12px;font-weight:700;
   text-transform:uppercase;letter-spacing:.1em;transition:background .15s ease,border-color .15s ease,color .15s ease;
 }
-.admin-campaign-actions .btn-view{background:var(--ad-red);color:#fff}
-.admin-campaign-actions .btn-view:hover{background:var(--ad-red-dark)}
+.admin-campaign-actions .btn-view{background:var(--ad-red-dark);color:#fff}
+.admin-campaign-actions .btn-view:hover{background:var(--ad-red-darker)}
 .admin-campaign-actions .btn-edit{background:transparent;color:var(--ad-fg);border:2px solid rgba(255,255,255,.28)}
 .admin-campaign-actions .btn-edit:hover{border-color:var(--ad-red);color:var(--ad-red)}
 .admin-campaign-actions .btn-delete{background:transparent;color:var(--ad-red);border:2px solid rgba(236,48,19,.55)}
@@ -309,6 +313,7 @@ body.admin-page{
 }
 .modal .close{
   float:right;font-size:26px;font-weight:400;color:var(--ad-mut);cursor:pointer;line-height:1;
+  background:none;border:0;padding:0 4px;font-family:inherit;
 }
 .modal .close:hover{color:var(--ad-red)}
 
@@ -319,13 +324,13 @@ body.admin-page{
 }
 .form-group input,.form-group select,.form-group textarea{
   padding:11px 12px;background:transparent;color:var(--ad-fg);
-  border:2px solid rgba(255,255,255,.24);font-size:14px;font-family:inherit;
+  border:2px solid rgba(255,255,255,.45);font-size:14px;font-family:inherit;
 }
 .form-group input:focus,.form-group select:focus,.form-group textarea:focus{
   outline:none;border-color:var(--ad-red);
 }
 .form-group select option{background:#1e1b19;color:var(--ad-fg)}
-.form-group small{color:var(--ad-faint)!important}
+.form-group small{color:var(--ad-label)!important}
 .form-group.checkbox{flex-direction:row;align-items:center;gap:10px}
 .form-group.checkbox label{margin:0}
 #target-audience-container{
@@ -384,10 +389,10 @@ body.admin-page{
 #users .admin-section-hero-row{padding:0}
 #users-search{
   width:340px;padding:12px 16px;background:transparent;color:var(--ad-fg);
-  border:2px solid rgba(255,255,255,.24);font-family:inherit;font-size:14px;border-radius:0!important;
+  border:2px solid rgba(255,255,255,.45);font-family:inherit;font-size:14px;border-radius:0!important;
 }
 #users-search:focus{outline:none;border-color:var(--ad-red)}
-#users-search::placeholder{color:var(--ad-faint)}
+#users-search::placeholder{color:var(--ad-label)}
 
 /* ============================================================================
    FOOTER

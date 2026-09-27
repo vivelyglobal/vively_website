@@ -5,18 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
 <title>My Page | Vively</title>
 <meta name="robots" content="noindex" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
 <link rel="icon" type="image/png" href="assets/logo/favicon.png" />
-<link rel="stylesheet" href="assets/css/style.v13.css" />
-<link rel="stylesheet" href="assets/css/style.work.css" />
+<link rel="stylesheet" href="assets/css/style.v13.css?v=2" />
+<link rel="stylesheet" href="assets/css/style.work.css?v=2" />
 <link rel="stylesheet" href="assets/css/style.mobile.v2.css" />
-<link rel="stylesheet" href="assets/css/redesign.v1.css?v=14" />
-<link rel="stylesheet" href="assets/css/user-auth.css" />
-<link rel="stylesheet" href="assets/css/my-page.css?v=3" />
+<link rel="stylesheet" href="assets/css/redesign.v1.css?v=15" />
+<link rel="stylesheet" href="assets/css/user-auth.css?v=4" />
+<link rel="stylesheet" href="assets/css/my-page.css?v=4" />
 </head>
 <body>
 
 <div id="header-container"></div>
 
+<main id="main-content" tabindex="-1">
 <!-- Logged-out gate -->
 <section class="mp-gate" id="mp-gate" hidden>
   <div class="wrap">
@@ -73,6 +75,35 @@
           </div>
           <ul class="mp-list" id="mp-referred"></ul>
           <div class="mp-empty" id="mp-referred-empty" hidden><b>아직 아무도 없어요</b>코드나 링크를 공유하면 여기에 표시됩니다.</div>
+        </div>
+
+        <div class="mp-card" id="mp-applications">
+          <div class="mp-card-head">
+            <h2>내 지원 내역</h2>
+          </div>
+          <p class="mp-note">지원한 캠페인과 진행 상태예요. 검토 중인 지원은 여기서 바로 철회할 수 있어요. 승인된 지원의 취소는 <a href="refund-policy.html">리워드 · 취소 정책</a>을 확인해 주세요.</p>
+          <ul class="mp-list" id="mp-apps"></ul>
+          <div class="mp-empty" id="mp-apps-empty" hidden><b>아직 지원한 캠페인이 없어요</b><a href="campaigns.html">캠페인 둘러보기 →</a></div>
+        </div>
+
+        <div class="mp-card" id="email-preferences">
+          <div class="mp-card-head">
+            <h2>이메일 수신 설정</h2>
+          </div>
+          <label class="mp-toggle" for="mp-f-marketing">
+            <input type="checkbox" id="mp-f-marketing" />
+            <div><b>새 캠페인 · 기회 안내 이메일 (마케팅)</b><span>선택 사항이에요. 끄면 마케팅 이메일은 더 이상 오지 않아요. 계정 운영에 필요한 이메일(인증 코드, 비밀번호 재설정, 지원 결과, 브랜드 초대)은 계정이 있는 동안 계속 발송돼요.</span></div>
+          </label>
+          <p class="mp-links">자세한 내용: <a href="privacy.html#rights">개인정보 처리방침 · 내 권리</a></p>
+        </div>
+
+        <div class="mp-card" id="mp-data">
+          <div class="mp-card-head">
+            <h2>내 데이터</h2>
+          </div>
+          <p class="mp-note">Vively가 내 계정에 대해 저장한 모든 정보(프로필, 지원 내역, 초대, 레퍼럴, 알림, 동의 기록)를 JSON 파일로 내려받을 수 있어요. 비밀번호는 포함되지 않아요.</p>
+          <button type="button" class="mp-btn" id="mp-export">내 데이터 다운로드 (JSON)</button>
+          <p class="mp-links"><a href="privacy.html">개인정보 처리방침</a> · <a href="terms.html">이용약관</a> · <a href="cookies.html">쿠키 및 저장소 정책</a> · <a href="privacy.html#data-request">기타 요청 (열람 · 정정 · 삭제)</a></p>
         </div>
       </div>
 
@@ -169,7 +200,7 @@
         <div class="mp-card-head">
           <h2>계정 삭제</h2>
         </div>
-        <p class="mp-note">계정과 프로필, 지원 내역, 알림이 영구적으로 삭제돼요. 이 작업은 되돌릴 수 없어요. 삭제하려면 이메일 인증이 필요해요.</p>
+        <p class="mp-note">계정, 프로필, 알림, 초대, 레퍼럴 기록이 영구적으로 삭제돼요. 지원 내역은 이름·이메일·전화번호·SNS 계정 등 개인정보를 모두 지운 익명 기록(캠페인·상태·날짜)만 남아요. 이 작업은 되돌릴 수 없어요. 삭제하려면 이메일 인증이 필요해요. <a href="privacy.html#retention">자세히 보기</a></p>
         <button type="button" class="mp-btn danger" id="mp-delete-btn">계정 삭제…</button>
       </div>
       </div>
@@ -210,12 +241,14 @@
   </div>
 </div>
 
+</main>
+
 <div class="mp-toast" id="mp-toast" role="status" aria-live="polite"></div>
 
 <div id="footer-container"></div>
 
-<script src="assets/js/component-loader.js?v=4"></script>
+<script src="assets/js/component-loader.js?v=5"></script>
 <script src="assets/js/main.js?v=23"></script>
-<script src="assets/js/my-page.js?v=3"></script>
+<script src="assets/js/my-page.js?v=4"></script>
 </body>
 </html>

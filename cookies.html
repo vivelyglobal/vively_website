@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<title>Cookie &amp; Storage Policy | Vively</title>
+<meta name="description" content="What the Vively website stores in your browser, which third-party scripts it loads, and how to clear them." />
+<link rel="canonical" href="https://www.vivelyglobal.com/cookies" />
+<link rel="icon" type="image/png" href="assets/logo/favicon.png" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Vively" />
+<meta property="og:title" content="Cookie &amp; Storage Policy | Vively" />
+<meta property="og:description" content="What the Vively website stores in your browser and which third-party scripts it loads." />
+<meta property="og:url" content="https://www.vivelyglobal.com/cookies" />
+<meta property="og:image" content="https://www.vivelyglobal.com/assets/logo/vively-logo-black.png" />
+<link rel="stylesheet" href="assets/css/redesign.v1.css?v=15" />
+<link rel="stylesheet" href="assets/css/user-auth.css?v=4" />
+<link rel="stylesheet" href="assets/css/legal.css?v=1" />
+</head>
+<body>
+
+<div id="header-container"></div>
+
+<main id="main-content" tabindex="-1">
+<section class="legal-hero">
+  <div class="wrap">
+    <span class="kicker slash">LEGAL &nbsp;/ &nbsp;쿠키 및 저장소 정책</span>
+    <h1>Cookie &amp; Storage Policy</h1>
+    <p class="legal-meta">Version <b>2026-09-22</b> · Part of the <a href="privacy.html">Privacy Policy</a></p>
+  </div>
+</section>
+
+<section class="legal-body">
+  <div class="wrap legal-layout">
+    <nav class="legal-toc" aria-label="Cookie policy sections">
+      <h2>Contents</h2>
+      <ol>
+        <li><a href="#summary">1. Summary</a></li>
+        <li><a href="#storage">2. What we store in your browser</a></li>
+        <li><a href="#third">3. Third-party scripts &amp; resources</a></li>
+        <li><a href="#control">4. How to clear or block</a></li>
+        <li><a href="#future">5. If this changes</a></li>
+      </ol>
+    </nav>
+
+    <article class="legal-doc">
+      <h2 id="summary">1. Summary</h2>
+      <div class="legal-summary">
+        <div><b>Cookies we set</b>None. The Vively website does not set any first-party cookies.</div>
+        <div><b>Analytics / ads</b>None. There is no Google Analytics, Meta Pixel, heat-map tool or advertising network on the site.</div>
+        <div><b>Consent banner</b>Not shown, because nothing optional is loaded. Everything listed below is needed for a feature you actively use.</div>
+        <div><b>Third parties</b>Google Sign-In (only when you open the login dialog), the jsDelivr font CDN and Cloudinary image hosting. See section 3.</div>
+      </div>
+
+      <h2 id="storage">2. What we store in your browser</h2>
+      <p>Instead of cookies the site uses your browser's <em>local storage</em>. These values never leave your browser except when your browser sends the session token to our API to prove you are logged in.</p>
+      <table>
+        <tr><th>Key</th><th>Purpose</th><th>Lifetime</th><th>Type</th></tr>
+        <tr><td><code>vively_user_token</code></td><td>Your creator login session (a signed token; contains your account ID, email and role)</td><td>Until you log out, delete your account, or the token expires after 7 days</td><td>Essential</td></tr>
+        <tr><td><code>vively_user_data</code></td><td>Your username/name/email so the header can show that you are logged in without an extra request</td><td>Until log out</td><td>Essential</td></tr>
+        <tr><td><code>vively_ref_code</code></td><td>Remembers a referral code from a link you opened (vivelyglobal.com/?ref=…) so it can be pre-filled if you sign up</td><td>Until you finish sign-up or clear site data</td><td>Functional (set only when you open a referral link)</td></tr>
+        <tr><td><code>brandToken</code>, <code>brandData</code></td><td>Brand-portal login session and company name</td><td>Until log out or 7 days</td><td>Essential (brand portal only)</td></tr>
+        <tr><td><code>adminToken</code>, <code>adminUser</code></td><td>Admin-panel login session</td><td>Until log out or 7 days</td><td>Essential (Vively staff only)</td></tr>
+      </table>
+      <p>Nothing is stored in <code>sessionStorage</code> or IndexedDB.</p>
+
+      <h2 id="third">3. Third-party scripts &amp; resources</h2>
+      <table>
+        <tr><th>Service</th><th>When it loads</th><th>What it may do</th></tr>
+        <tr><td>Google Identity Services (<code>accounts.google.com/gsi/client</code>)</td><td>Only after you open the "Login" dialog. It is not loaded on page view.</td><td>Renders the "Continue with Google" button. Google may set its own cookies and receive your IP address under <a href="https://policies.google.com/privacy" rel="noopener" target="_blank">Google's privacy policy</a>. If you never open the login dialog, nothing is loaded.</td></tr>
+        <tr><td>jsDelivr CDN (<code>cdn.jsdelivr.net</code>)</td><td>On every page</td><td>Serves the Pretendard web font. jsDelivr receives your IP address and browser details for that request. <span class="legal-todo">TODO: consider self-hosting the font to remove this request</span></td></tr>
+        <tr><td>Cloudinary (<code>res.cloudinary.com</code>)</td><td>When a page shows an uploaded campaign image or profile picture</td><td>Serves the image; receives your IP address for the request</td></tr>
+        <tr><td>Google profile pictures (<code>lh3.googleusercontent.com</code>)</td><td>On My Page / brand dashboard if the account uses Google Sign-In</td><td>Serves the picture. We request it with <code>referrerpolicy="no-referrer"</code> so the page URL is not sent</td></tr>
+        <tr><td>Tally forms (<code>tally.so</code>)</td><td>Not currently used. The code can embed a Tally form if one is configured; no page does today</td><td>Would load an iframe from Tally if enabled</td></tr>
+      </table>
+
+      <h2 id="control">4. How to clear or block</h2>
+      <ul>
+        <li><strong>Log out</strong> removes the session keys listed above.</li>
+        <li>Your browser's "clear site data" / "clear browsing data" option removes everything in local storage for vivelyglobal.com. You will need to log in again.</li>
+        <li>You can block third-party scripts with a content blocker. Blocking <code>accounts.google.com</code> disables Google Sign-In only; email/password login still works. Blocking <code>cdn.jsdelivr.net</code> makes the site fall back to your system font.</li>
+      </ul>
+
+      <h2 id="future">5. If this changes</h2>
+      <p>If Vively ever adds analytics, advertising or other non-essential tracking, we will update this page, add a consent dialog that lets you accept or decline before anything loads, and give you a way to change that choice later.</p>
+
+      <p class="legal-footer-links"><a href="privacy.html">Privacy Policy</a> <a href="terms.html">Terms of Service</a> <a href="refund-policy.html">Rewards, Fees &amp; Cancellation</a></p>
+    </article>
+  </div>
+</section>
+</main>
+
+<div id="footer-container"></div>
+
+<script src="assets/js/component-loader.js?v=5"></script>
+<script src="assets/js/main.js?v=23"></script>
+</body>
+</html>

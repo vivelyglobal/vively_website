@@ -6,6 +6,7 @@
   --shell-ink: #191919;
   --shell-muted: #6f6a63;
   --shell-line: #d8d1c7;
+  --shell-line-input: #8a8683; /* 3.6:1 on white — form-control borders (WCAG 1.4.11) */
   --shell-soft: #efe8de;
   --shell-soft-2: #e6ddd0;
   --shell-accent: #111111;

@@ -7,6 +7,8 @@ const {
   consumeResetToken,
   validateNewPassword,
 } = require("./_shared/password-reset");
+const { clientIp } = require("./_shared/http");
+const { enforce, MINUTE } = require("./_shared/rate-limit");
 
 function normalizeEmail(v) {
   return typeof v === "string" ? v.trim().toLowerCase() : "";
@@ -23,6 +25,7 @@ exports.handler = async (event) => {
   try {
     const body = JSON.parse(event.body || "{}");
     const { action } = body;
+    const ip = clientIp(event);
 
     // ========== FORGOT PASSWORD ==========
     if (action === "forgot-password") {
@@ -33,6 +36,12 @@ exports.handler = async (event) => {
           body: JSON.stringify({ error: "Email required" }),
         };
       }
+
+      const limited = await enforce([
+        { key: `forgot:ip:${ip}`, limit: 10, windowMs: 15 * MINUTE },
+        { key: `forgot:email:${email}`, limit: 3, windowMs: 15 * MINUTE },
+      ]);
+      if (limited) return limited;
 
       const users = await getUsersCollection();
       const user = await users.findOne({ email });
@@ -97,7 +106,8 @@ exports.handler = async (event) => {
 
     // ========== LOGIN ==========
     if (action === "login") {
-      const email = body.email;
+      const rawEmail = typeof body.email === "string" ? body.email.trim() : "";
+      const email = normalizeEmail(rawEmail);
       const password = body.password;
       if (!email || !password) {
         return {
@@ -106,8 +116,17 @@ exports.handler = async (event) => {
         };
       }
 
+      // Slow down credential stuffing: per-IP and per-account windows.
+      const limited = await enforce([
+        { key: `login:ip:${ip}`, limit: 30, windowMs: 15 * MINUTE },
+        { key: `login:acct:${email}`, limit: 10, windowMs: 15 * MINUTE },
+      ]);
+      if (limited) return limited;
+
       const users = await getUsersCollection();
-      const user = await users.findOne({ email });
+      // Accounts are stored lowercase; also match the raw string so any
+      // legacy record with mixed case keeps working.
+      const user = await users.findOne({ email: { $in: [email, rawEmail] } });
       if (!user) {
         return {
           statusCode: 401,
@@ -123,7 +142,7 @@ exports.handler = async (event) => {
         };
       }
 
-      const token = generateToken(user._id, email, user.role);
+      const token = generateToken(user._id, user.email, user.role);
       return {
         statusCode: 200,
         headers: { "Content-Type": "application/json" },

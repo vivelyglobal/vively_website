@@ -4,6 +4,7 @@
 // account types behave identically and only get fixed once.
 const crypto = require("crypto");
 const { getPasswordResetTokensCollection } = require("../db");
+const { emailFooterHTML, emailFooterText } = require("./email-footer");
 
 const BREVO_API_KEY = process.env.BREVO_API_KEY;
 const BREVO_SENDER_EMAIL =
@@ -33,12 +34,7 @@ function buildResetEmailHTML(resetUrl) {
             Reset Password
           </a>
         </td></tr>
-        <tr><td style="padding:16px 32px 32px;text-align:center;border-top:1px solid #eee;">
-          <p style="margin:0;color:#999;font-size:12px;line-height:1.5;">
-            Didn't request this? You can safely ignore this email — your password won't change.<br>
-            &copy; ${new Date().getFullYear()} Vively Global
-          </p>
-        </td></tr>
+${emailFooterHTML({ kind: "transactional", reason: "Didn't request this? You can safely ignore this email — your password won't change." })}
       </table>
     </td></tr>
   </table>
@@ -68,7 +64,7 @@ async function sendResetEmail(email, resetUrl) {
         to: [{ email }],
         subject: "Reset your Vively password",
         htmlContent: buildResetEmailHTML(resetUrl),
-        textContent: `Reset your Vively password: ${resetUrl}\n\nThis link expires in 30 minutes. If you didn't request this, ignore this email.`,
+        textContent: `Reset your Vively password: ${resetUrl}\n\nThis link expires in 30 minutes. If you didn't request this, ignore this email.${emailFooterText({ kind: "transactional" })}`,
       }),
     });
 

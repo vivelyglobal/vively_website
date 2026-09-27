@@ -65,19 +65,18 @@ async function loadComponent(componentName, targetSelector) {
 
 // Load header and footer on page load
 async function loadPageComponents() {
-  ensureGoogleSignInScript();
   // Load header at the beginning of body
   const headerContainer = document.querySelector('body');
   if (headerContainer) {
-    const headerHtml = await fetch('/assets/components/header.html?v=2').then(r => r.text());
+    const headerHtml = await fetch('/assets/components/header.html?v=3').then(r => r.text());
     headerContainer.insertAdjacentHTML('afterbegin', headerHtml);
     initHeaderScripts();
   }
-  
+
   // Load footer at the end of body
   const footerContainer = document.querySelector('body');
   if (footerContainer) {
-    const footerHtml = await fetch('/assets/components/footer.html').then(r => r.text());
+    const footerHtml = await fetch('/assets/components/footer.html?v=2').then(r => r.text());
     footerContainer.insertAdjacentHTML('beforeend', footerHtml);
     initFooterScripts();
   }
@@ -125,7 +124,7 @@ async function loadSignupModal() {
     const container = document.getElementById("signup-modal-container");
     if (!container) return;
     
-    const html = await fetch('/assets/components/signup-modal.html?v=2').then(r => r.text());
+    const html = await fetch('/assets/components/signup-modal.html?v=3').then(r => r.text());
     container.innerHTML = html;
   } catch (error) {
     console.error('Error loading signup modal:', error);
@@ -139,7 +138,7 @@ function initUserAuthUI() {
   // Dynamically load user-auth.js script
   const script = document.createElement('script');
   script.id = 'vively-user-auth-script';
-  script.src = '/assets/js/user-auth.js?v=3';
+  script.src = '/assets/js/user-auth.js?v=4';
   script.defer = true;
   document.body.appendChild(script);
 }
@@ -152,22 +151,24 @@ function initFooterScripts() {
 
 // Auto-load components if page has header-container and footer-container elements
 document.addEventListener("DOMContentLoaded", async () => {
-  // Kick off the Google Identity Services script as early as possible so
-  // the login modal has it ready by the time the user opens the modal.
-  ensureGoogleSignInScript();
+  // The Google Identity Services script is NOT loaded here. Loading it on
+  // every page view sends every visitor's IP/browser details to Google and
+  // lets Google set cookies before the visitor has shown any intent to log
+  // in. user-auth.js requests it (via window.vivelyEnsureGoogleSignInScript)
+  // the first time the login dialog is opened instead.
 
   // If page uses component containers, load them
   const headerContainer = document.getElementById("header-container");
   const footerContainer = document.getElementById("footer-container");
   
   if (headerContainer) {
-    const headerHtml = await fetch('/assets/components/header.html?v=2').then(r => r.text()).catch(() => '');
+    const headerHtml = await fetch('/assets/components/header.html?v=3').then(r => r.text()).catch(() => '');
     if (headerHtml) headerContainer.innerHTML = headerHtml;
     initHeaderScripts();
   }
-  
+
   if (footerContainer) {
-    const footerHtml = await fetch('/assets/components/footer.html').then(r => r.text()).catch(() => '');
+    const footerHtml = await fetch('/assets/components/footer.html?v=2').then(r => r.text()).catch(() => '');
     if (footerHtml) footerContainer.innerHTML = footerHtml;
     initFooterScripts();
   }

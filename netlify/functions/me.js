@@ -6,16 +6,19 @@ const {
   getReferralsCollection,
   getNotificationsCollection,
   getApplicationsCollection,
-  getAccountCodesCollection,
+  getCampaignsCollection,
+  getInvitationsCollection,
 } = require("./db");
 const { verifyRequest } = require("./auth");
 const { ensureReferralCode, referralLink } = require("./_shared/referral");
 const { isValidPurpose, issueCode, consumeCode } = require("./_shared/account-codes");
+const { deleteCreatorAccount } = require("./_shared/account-deletion");
+const { preflight } = require("./_shared/http");
 
 const JSON_HEADERS = { "Content-Type": "application/json" };
 
-function json(statusCode, body) {
-  return { statusCode, headers: JSON_HEADERS, body: JSON.stringify(body) };
+function json(statusCode, body, extraHeaders = {}) {
+  return { statusCode, headers: { ...JSON_HEADERS, ...extraHeaders }, body: JSON.stringify(body) };
 }
 
 function str(v, max = 200) {
@@ -43,6 +46,8 @@ function publicProfile(user) {
     instagramFollowers: user.stats?.instagramFollowers ?? "",
     tiktokFollowers: user.stats?.tiktokFollowers ?? "",
     youtubeSubscribers: user.stats?.youtubeSubscribers ?? "",
+    marketingOptIn: user.marketingOptIn === true,
+    policyVersion: user.consents?.policyVersion || null,
     createdAt: user.createdAt,
   };
 }
@@ -105,17 +110,7 @@ async function buildProfileUpdate(users, user, changes) {
 }
 
 exports.handler = async (event) => {
-  if (event.httpMethod === "OPTIONS") {
-    return {
-      statusCode: 204,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-      },
-      body: "",
-    };
-  }
+  if (event.httpMethod === "OPTIONS") return preflight("GET, POST, OPTIONS");
 
   const auth = verifyRequest(event);
   if (auth.error) return json(auth.status, { error: auth.error });
@@ -167,22 +162,55 @@ exports.handler = async (event) => {
         return json(200, { ok: true, user: publicProfile(fresh) });
       }
 
+      // Marketing opt-in/out needs no email code: opting out must be as
+      // easy as opting in.
+      if (action === "set-email-preferences") {
+        const optIn = body.marketingOptIn === true;
+        const now = new Date();
+        await users.updateOne(
+          { _id: userId },
+          {
+            $set: {
+              marketingOptIn: optIn,
+              "consents.marketing": { optIn, updatedAt: now, source: "my-page" },
+              updatedAt: now,
+            },
+          }
+        );
+        return json(200, { ok: true, marketingOptIn: optIn });
+      }
+
+      // Creators can cancel a pending application themselves.
+      if (action === "withdraw-application") {
+        let appId;
+        try {
+          appId = new ObjectId(String(body.applicationId || ""));
+        } catch {
+          return json(400, { error: "Invalid application" });
+        }
+        const applications = await getApplicationsCollection();
+        const app = await applications.findOne({ _id: appId, creatorId: userId });
+        if (!app) return json(404, { error: "Application not found" });
+        if ((app.status || "pending") !== "pending") {
+          return json(400, { error: "Only pending applications can be withdrawn. For approved applications, please contact Vively." });
+        }
+        await applications.updateOne({ _id: appId }, { $set: { status: "withdrawn", withdrawnAt: new Date() } });
+        const campaigns = await getCampaignsCollection();
+        await campaigns.updateOne(
+          { _id: app.campaignId, applicantCount: { $gt: 0 } },
+          { $inc: { applicantCount: -1 } }
+        );
+        return json(200, { ok: true, status: "withdrawn" });
+      }
+
       if (action === "delete-account") {
         if (body.confirm !== "DELETE") return json(400, { error: 'Type DELETE to confirm', field: "confirm" });
         const verified = await consumeCode(userId, "delete-account", body.code);
         if (!verified.ok) return json(400, { error: verified.error, field: "code" });
 
-        const referrals = await getReferralsCollection();
-        const applications = await getApplicationsCollection();
-        const codes = await getAccountCodesCollection();
-        await Promise.all([
-          referrals.updateMany({ referredUserId: userId }, { $set: { referredUsername: "deleted-user", referredDeleted: true } }),
-          referrals.deleteMany({ referrerId: userId }),
-          notifications.deleteMany({ userId }),
-          applications.deleteMany({ creatorId: userId }),
-          codes.deleteMany({ userId }),
-        ]);
-        await users.deleteOne({ _id: userId });
+        // Shared cascade (also used by admin deletion) — see
+        // _shared/account-deletion.js for exactly what is deleted vs anonymised.
+        await deleteCreatorAccount(userId, { initiatedBy: "self" });
         return json(200, { ok: true, deleted: true });
       }
 
@@ -195,6 +223,28 @@ exports.handler = async (event) => {
     const unreadCount = await notifications.countDocuments({ userId, read: false });
 
     if (section === "summary") return json(200, { unreadCount });
+
+    // Data access / portability: everything stored about this creator, as
+    // JSON. The password hash is the only field left out.
+    if (section === "export") {
+      const [referrals, applications, invitations] = await Promise.all([
+        getReferralsCollection(),
+        getApplicationsCollection(),
+        getInvitationsCollection(),
+      ]);
+      // eslint-disable-next-line no-unused-vars
+      const { passwordHash, ...account } = user;
+      const data = {
+        exportedAt: new Date(),
+        note: "Export of the personal data Vively stores for this creator account. Password hashes are never included.",
+        account,
+        applications: await applications.find({ creatorId: userId }).sort({ createdAt: -1 }).limit(500).toArray(),
+        invitations: await invitations.find({ creatorId: userId }).sort({ createdAt: -1 }).limit(500).toArray(),
+        referralsMade: await referrals.find({ referrerId: userId }).sort({ createdAt: -1 }).limit(500).toArray(),
+        notifications: await notifications.find({ userId }).sort({ createdAt: -1 }).limit(500).toArray(),
+      };
+      return json(200, data, { "Content-Disposition": 'attachment; filename="vively-data-export.json"' });
+    }
 
     const referralCode = await ensureReferralCode(users, user);
     const referrals = await getReferralsCollection();
@@ -218,6 +268,14 @@ exports.handler = async (event) => {
       referredByUsername = referrer?.username || null;
     }
 
+    const applications = await getApplicationsCollection();
+    const myApplications = await applications
+      .find({ creatorId: userId })
+      .sort({ createdAt: -1 })
+      .limit(100)
+      .project({ _id: 1, campaignId: 1, campaignTitle: 1, brandName: 1, status: 1, createdAt: 1, reviewedAt: 1, withdrawnAt: 1 })
+      .toArray();
+
     return json(200, {
       user: { ...publicProfile(user), referredByUsername },
       referral: {
@@ -226,6 +284,7 @@ exports.handler = async (event) => {
         count: referred.length,
         referred,
       },
+      applications: myApplications,
       notifications: notes,
       unreadCount,
     });

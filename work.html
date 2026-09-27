@@ -15,15 +15,16 @@
 <meta property="og:url" content="https://www.vivelyglobal.com/work" />
 <meta property="og:image" content="https://www.vivelyglobal.com/assets/logo/vively-logo-black.png" />
 <meta name="twitter:card" content="summary_large_image" />
-<link rel="stylesheet" href="assets/css/redesign.v1.css?v=14" />
-<link rel="stylesheet" href="assets/css/user-auth.css" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="stylesheet" href="assets/css/redesign.v1.css?v=15" />
+<link rel="stylesheet" href="assets/css/user-auth.css?v=4" />
 </head>
 <body>
 
 <div id="header-container"></div>
 
 <!-- CASE HERO -->
-<section class="case-hero">
+<section class="case-hero" id="main-content" tabindex="-1">
   <div class="bg" id="case-bg" aria-hidden="true"></div>
   <div class="wrap">
     <div class="case-topline">
@@ -269,7 +270,7 @@ var ORDER = ["juno","labab","jaimdang","myeondong","apgujeong","tonymoly","parkj
   /* sections */
   set("t-overview", p.brand + " 캠페인은 " + p.service + " 방식으로 진행했습니다. 목표는 " + p.goal + "이며, " + p.branches + "에서 실행했습니다.");
   set("t-approach", p.creators + "이 참여해 각자의 시장을 대상으로 콘텐츠를 제작했고, " + p.reach + "에 도달했습니다.");
-  set("t-results", "총 조회수 " + p.views + "회, 공유 " + p.shares + "회를 기록했습니다. 조회수의 대부분이 팔로워가 아닌 신규 유입에서 발생해, 기존 팬덤을 넘어선 도달을 확인했습니다.");
+  set("t-results", "총 조회수 " + p.views + "회, 공유 " + p.shares + "회를 기록했습니다. 조회수의 대부분이 팔로워가 아닌 신규 유입에서 발생해, 기존 팬덤을 넘어선 도달을 확인했습니다. (Vively 자체 집계, 2026년 8월 성과 리포트 기준)");
   var insightPlain = p.note.replace(/<[^>]+>/g, "");
   set("t-insight", insightPlain);
 
@@ -309,7 +310,7 @@ var ORDER = ["juno","labab","jaimdang","myeondong","apgujeong","tonymoly","parkj
   document.getElementById("next-link").href = "work.html?p=" + encodeURIComponent(nextKey);
 })();
 </script>
-<script src="assets/js/component-loader.js?v=4"></script>
+<script src="assets/js/component-loader.js?v=5"></script>
 <script src="assets/js/main.js?v=23"></script>
 </body>
 </html>

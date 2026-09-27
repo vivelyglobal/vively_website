@@ -26,6 +26,21 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
+# Baseline security headers (mirrors _headers for Cloudflare Pages).
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+
+[[headers]]
+  for = "/reset-password.html"
+  [headers.values]
+    Referrer-Policy = "no-referrer"
+
 # Production context uses the same no-op build as dev (this is a static site).
 # If a real build pipeline is added later, change command here.
 [context.production]

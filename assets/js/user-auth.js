@@ -11,6 +11,64 @@
   };
 
   // =========================
+  // MODAL ACCESSIBILITY
+  // Focus moves into the dialog on open and back to the trigger on close,
+  // Escape closes it, and Tab is trapped inside so keyboard users can't
+  // land on the page behind the overlay.
+  // =========================
+  let modalReturnFocus = null;
+
+  function focusablesIn(root) {
+    return Array.from(
+      root.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter((el) => el.offsetParent !== null);
+  }
+
+  function openModalEl(modal) {
+    if (!modal) return;
+    if (modal.style.display !== 'flex') modalReturnFocus = document.activeElement;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => {
+      const items = focusablesIn(modal);
+      const first = items.find((el) => !el.classList.contains('modal-close')) || items[0];
+      if (first) first.focus();
+    }, 0);
+  }
+
+  function closeModalEl(modal) {
+    if (!modal) return;
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+    if (modalReturnFocus && typeof modalReturnFocus.focus === 'function') modalReturnFocus.focus();
+    modalReturnFocus = null;
+  }
+
+  document.addEventListener('keydown', (e) => {
+    const modal = document.getElementById('login-modal');
+    if (!modal || modal.style.display !== 'flex') return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeModalEl(modal);
+      return;
+    }
+    if (e.key !== 'Tab') return;
+    const items = focusablesIn(modal);
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (e.shiftKey && (document.activeElement === first || !modal.contains(document.activeElement))) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && (document.activeElement === last || !modal.contains(document.activeElement))) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
+
+  // =========================
   // INITIALIZATION
   // =========================
   const REF_KEY = 'vively_ref_code';
@@ -78,12 +136,12 @@
         return;
       }
       const loginModal = document.getElementById('login-modal');
-      if (loginModal) loginModal.style.display = 'flex';
+      if (loginModal) openModalEl(loginModal);
     };
 
     window.vivelyOpenSignupModal = () => {
       const loginModal = document.getElementById('login-modal');
-      if (loginModal) loginModal.style.display = 'flex';
+      if (loginModal) openModalEl(loginModal);
       const loginContainer = document.querySelector('.login-form-container');
       if (loginContainer) loginContainer.style.display = 'none';
       showSignupStep(1);
@@ -124,7 +182,7 @@
       const signupContainer = document.querySelector('.signup-form-container');
       if (loginContainer) loginContainer.style.display = 'block';
       if (signupContainer) signupContainer.style.display = 'none';
-      if (loginModal) loginModal.style.display = 'flex';
+      if (loginModal) openModalEl(loginModal);
       initGoogleSignIn();
     };
 
@@ -140,12 +198,12 @@
 
     // Close modal
     if (modalClose) modalClose.addEventListener('click', () => {
-      if (loginModal) loginModal.style.display = 'none';
+      if (loginModal) closeModalEl(loginModal);
     });
 
     if (loginModal) {
       loginModal.addEventListener('click', (e) => {
-        if (e.target === loginModal) loginModal.style.display = 'none';
+        if (e.target === loginModal) closeModalEl(loginModal);
       });
     }
 
@@ -154,8 +212,8 @@
       userLoginForm.addEventListener('submit', handleLogin);
     }
 
-    // Google login — render official Google Sign-In button (reliable popup)
-    initGoogleSignIn();
+    // The Google Sign-In script/button is initialised in showLoginView(),
+    // i.e. only once the visitor opens the login dialog — not on page load.
 
     // Retain click handler on the fallback custom button (only shown if GSI failed)
     if (googleLoginBtn) {
@@ -168,7 +226,7 @@
       signupToggle.addEventListener('click', (e) => {
         e.preventDefault();
         // Ensure modal is open
-        if (loginModal) loginModal.style.display = 'flex';
+        if (loginModal) openModalEl(loginModal);
         // Hide login form, show signup form
         const loginContainer = document.querySelector('.login-form-container');
         if (loginContainer) loginContainer.style.display = 'none';
@@ -207,7 +265,7 @@
       updateAuthUI(true, data.user);
 
       const loginModal = document.getElementById('login-modal');
-      if (loginModal) loginModal.style.display = 'none';
+      if (loginModal) closeModalEl(loginModal);
     } catch (error) {
       console.error('Login error:', error);
       alert('Login failed');
@@ -425,7 +483,7 @@
       localStorage.setItem(USER_KEY, JSON.stringify(data.user));
       updateAuthUI(true, data.user);
       const loginModal = document.getElementById('login-modal');
-      if (loginModal) loginModal.style.display = 'none';
+      if (loginModal) closeModalEl(loginModal);
     } catch (err) {
       console.error('Google credential error:', err);
       showAuthError('Google sign-in failed: ' + err.message);
@@ -438,7 +496,7 @@
     const loginModal = document.getElementById('login-modal');
     const loginContainer = document.querySelector('.login-form-container');
     const signupContainer = document.querySelector('.signup-form-container');
-    if (loginModal) loginModal.style.display = 'flex';
+    if (loginModal) openModalEl(loginModal);
     if (loginContainer) loginContainer.style.display = 'none';
     if (signupContainer) signupContainer.style.display = 'block';
 
@@ -561,7 +619,7 @@
       loginToggle.addEventListener('click', (e) => {
         e.preventDefault();
         const loginModal = document.getElementById('login-modal');
-        if (loginModal) loginModal.style.display = 'flex';
+        if (loginModal) openModalEl(loginModal);
         // Hide signup container, show login container
         const signupContainer = document.querySelector('.signup-form-container');
         if (signupContainer) signupContainer.style.display = 'none';
@@ -876,7 +934,7 @@
       if (input.value.trim().toUpperCase() !== code) return;
       if (result.valid) {
         status.textContent = `Code found — invited by @${result.referrerUsername}`;
-        status.style.color = '#1f8a4c';
+        status.style.color = '#1a7a43';
         if (result.code) input.value = result.code;
       } else {
         status.textContent = 'Code not found. Double-check it or leave empty.';
@@ -900,9 +958,11 @@
 
       const password = document.getElementById('signup-password')?.value || '';
       const confirmPassword = document.getElementById('signup-password-confirm')?.value || '';
-      const terms = document.getElementById('signup-terms')?.checked;
-      const age = document.getElementById('signup-age')?.checked;
-      const marketingOptIn = document.getElementById('signup-marketing')?.checked;
+      const terms = document.getElementById('signup-terms')?.checked === true;
+      const privacy = document.getElementById('signup-privacy')?.checked === true;
+      const brandSharing = document.getElementById('signup-brand-sharing')?.checked === true;
+      const age = document.getElementById('signup-age')?.checked === true;
+      const marketingOptIn = document.getElementById('signup-marketing')?.checked === true;
 
       if (!password || password.length < 8) {
         alert('Password must be at least 8 characters');
@@ -919,8 +979,8 @@
         return;
       }
 
-      if (!terms || !age) {
-        alert('Please agree to terms and confirm age');
+      if (!terms || !privacy || !brandSharing || !age) {
+        alert('Please tick the four required agreements (Terms, Privacy Policy, profile sharing with brands, and age confirmation).');
         return;
       }
 
@@ -940,6 +1000,12 @@
               ...signupState.userData,
               password,
               marketingOptIn,
+              // Each consent is sent explicitly; the server refuses the
+              // account unless the required ones are true.
+              agreedToTerms: terms,
+              agreedToPrivacy: privacy,
+              agreedToBrandSharing: brandSharing,
+              ageConfirmed: age,
             },
           }),
         });
@@ -960,7 +1026,7 @@
         const container = document.querySelector('.signup-form-container');
         if (container) container.style.display = 'none';
         const loginModal = document.getElementById('login-modal');
-        if (loginModal) loginModal.style.display = 'none';
+        if (loginModal) closeModalEl(loginModal);
         // Reset login-form to visible for next time user opens the modal.
         const loginContainer = document.querySelector('.login-form-container');
         if (loginContainer) loginContainer.style.display = 'block';
@@ -998,6 +1064,13 @@
     const stepEl = document.getElementById(`signup-step-${stepNum}`);
     if (stepEl) {
       stepEl.style.display = 'block';
+      // Announce the new step to screen readers and put keyboard focus at
+      // the top of it rather than leaving it on a now-hidden button.
+      const heading = stepEl.querySelector('h2');
+      if (heading) {
+        heading.setAttribute('tabindex', '-1');
+        setTimeout(() => heading.focus(), 0);
+      }
     } else {
       console.warn(`Signup step ${stepNum} not found`);
     }
@@ -1050,7 +1123,7 @@
       localStorage.removeItem(USER_KEY);
       updateAuthUI(false);
       const loginModal = document.getElementById('login-modal');
-      if (loginModal) loginModal.style.display = 'none';
+      if (loginModal) closeModalEl(loginModal);
     };
 
     if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
@@ -1079,13 +1152,13 @@
 
       if (target.id === 'signup-toggle') {
         // Login → Signup
-        if (loginModal) loginModal.style.display = 'flex';
+        if (loginModal) openModalEl(loginModal);
         if (loginContainer) loginContainer.style.display = 'none';
         if (signupContainer) signupContainer.style.display = 'block';
         showSignupStep(1);
       } else {
         // Signup → Login, or Login button pressed
-        if (loginModal) loginModal.style.display = 'flex';
+        if (loginModal) openModalEl(loginModal);
         if (loginContainer) loginContainer.style.display = 'block';
         if (signupContainer) signupContainer.style.display = 'none';
       }

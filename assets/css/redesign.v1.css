@@ -18,8 +18,13 @@
   --paper:#f2eee8;
   --paper-2:#faf8f4;
   --white:#ffffff;
-  --red:#e0362c;
+  /* #d9332a (was #e0362c): visually identical, but white text on it now
+     meets WCAG AA 4.5:1 (4.71) for the 13–14px bold button labels. */
+  --red:#d9332a;
   --red-deep:#b3221a;
+  /* form-control borders need 3:1 against white (WCAG 1.4.11); the
+     decorative --line divider is far too light for that */
+  --line-input:rgba(14,10,11,.45);
   --wine:#3a0e16;
   --wine-2:#1c070c;
   --gold:#f6c51e;
@@ -672,7 +677,7 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
 .field label{display:block;font-size:12.5px;font-weight:700;margin-bottom:8px}
 .field label .req{color:var(--red)}
 .field input[type="text"],.field input[type="email"],.field select,.field textarea{
-  width:100%;border:1px solid var(--line);border-radius:10px;background:var(--paper-2);
+  width:100%;border:1px solid var(--line-input);border-radius:10px;background:var(--paper-2);
   padding:13px 15px;font-family:inherit;font-size:14.5px;color:var(--ink);
   transition:border-color .15s ease, background .15s ease;
 }
@@ -694,10 +699,16 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
 .chip input:checked + .face{border-color:var(--red);background:#fdeeed;color:var(--red)}
 .chip input:checked + .face svg{color:var(--red)}
 .chip input:focus-visible + .face{outline:2px solid var(--red);outline-offset:2px}
-.consent{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--mut)}
-.consent input{margin-top:3px;accent-color:var(--red)}
-.consent .req{color:var(--red)}
+.consent{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--mut);line-height:1.55}
+.consent input{margin-top:3px;accent-color:var(--red);flex-shrink:0}
+.consent .req{color:var(--red-deep)}
+.consent a{color:var(--red-deep);text-decoration:underline;text-underline-offset:2px}
+.consent-detail{font-size:12px;color:var(--mut);line-height:1.55;margin:-6px 0 0 26px}
 .form-note{font-size:12.5px;color:var(--mut)}
+/* source note under self-reported performance figures */
+.stat-note{margin-top:14px;font-size:11.5px;line-height:1.5;color:var(--mut);max-width:60em}
+.on-dark .stat-note,.hero-statbar .stat-note{color:var(--mut-dark)}
+.hero-statbar .stat-note{padding:0 0 18px}
 
 .info-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .info-card{

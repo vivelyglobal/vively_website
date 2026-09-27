@@ -17,6 +17,8 @@ const {
   aiAvailable,
   fmtFollowers,
 } = require("./_shared/creator-matching");
+const { preflight } = require("./_shared/http");
+const { emailFooterHTML, emailFooterText } = require("./_shared/email-footer");
 
 const BREVO_API_KEY = process.env.BREVO_API_KEY;
 const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || "noreply@vivelyglobal.com";
@@ -94,9 +96,7 @@ function inviteEmailHTML({ creatorName, brandName, campaign, message }) {
         <tr><td style="padding:8px 32px 32px;text-align:center;">
           <a href="${url}" style="display:inline-block;padding:12px 22px;background:#e0362c;color:#fff;text-decoration:none;border-radius:999px;font-size:14px;font-weight:700;">View campaign &amp; apply</a>
         </td></tr>
-        <tr><td style="padding:16px 32px 32px;text-align:center;border-top:1px solid #eee;">
-          <p style="margin:0;color:#999;font-size:12px;line-height:1.5;">You received this because a brand invited you through Vively. &copy; ${new Date().getFullYear()} Vively Global</p>
-        </td></tr>
+${emailFooterHTML({ kind: "notification", reason: "You received this because a brand invited you through Vively." })}
       </table>
     </td></tr>
   </table>
@@ -115,7 +115,7 @@ async function sendInviteEmail(creator, brandName, campaign, message) {
         to: [{ email: creator.email }],
         subject: `${brandName} invited you to "${campaign.title}" on Vively`,
         htmlContent: inviteEmailHTML({ creatorName: creator.profile?.fullName || creator.username, brandName, campaign, message }),
-        textContent: `${brandName} invited you to the campaign "${campaign.title}" on Vively.${message ? `\n\n${message}` : ""}\n\nView & apply: ${SITE_URL}/campaign-detail.html?id=${String(campaign._id)}`,
+        textContent: `${brandName} invited you to the campaign "${campaign.title}" on Vively.${message ? `\n\n${message}` : ""}\n\nView & apply: ${SITE_URL}/campaign-detail.html?id=${String(campaign._id)}${emailFooterText({ kind: "notification" })}`,
       }),
     });
     return res.ok;
@@ -126,9 +126,7 @@ async function sendInviteEmail(creator, brandName, campaign, message) {
 }
 
 exports.handler = async (event) => {
-  if (event.httpMethod === "OPTIONS") {
-    return { statusCode: 204, headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Content-Type, Authorization", "Access-Control-Allow-Methods": "POST, OPTIONS" }, body: "" };
-  }
+  if (event.httpMethod === "OPTIONS") return preflight("POST, OPTIONS");
   if (event.httpMethod !== "POST") return json(405, { error: "Method not allowed" });
 
   const auth = verifyRequest(event);

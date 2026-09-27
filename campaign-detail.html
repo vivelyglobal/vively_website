@@ -13,16 +13,18 @@
   <meta property="og:description" content="Vively 캠페인 상세 정보 — 브랜드, 참여 조건, 리워드를 확인하고 지원하세요." />
   <meta property="og:image" content="https://www.vivelyglobal.com/assets/logo/vively-logo-black.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="stylesheet" href="assets/css/style.v13.css" />
-  <link rel="stylesheet" href="assets/css/style.work.css" />
-  <link rel="stylesheet" href="assets/css/campaigns.css?v=20260821" />
-  <link rel="stylesheet" href="assets/css/user-auth.css" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <link rel="stylesheet" href="assets/css/style.v13.css?v=2" />
+  <link rel="stylesheet" href="assets/css/style.work.css?v=2" />
+  <link rel="stylesheet" href="assets/css/campaigns.css?v=20260922" />
+  <link rel="stylesheet" href="assets/css/user-auth.css?v=4" />
   <link rel="stylesheet" href="assets/css/style.mobile.v2.css" />
 </head>
 <body>
 
 <div id="header-container"></div>
 
+<main id="main-content" tabindex="-1">
 <section id="campaign-detail" class="campaign-detail">
   <div class="wrap">
     <div id="detail-content">
@@ -37,16 +39,17 @@
     <div id="apply-container">
       <!-- Populated by campaign-detail.js based on login state -->
     </div>
-    <div id="form-success" class="form-success" style="display:none;">
-      <p>✓ Application submitted successfully!</p>
+    <div id="form-success" class="form-success" style="display:none;" role="status">
+      <p>✓ Application submitted successfully! You can track or withdraw it from <a href="my-page.html#mp-applications">My Page</a>.</p>
     </div>
   </div>
 </section>
+</main>
 
 <div id="footer-container"></div>
 
-<script src="assets/js/component-loader.js?v=4"></script>
+<script src="assets/js/component-loader.js?v=5"></script>
 <script src="assets/js/main.js?v=23"></script>
-<script src="assets/js/campaign-detail.js?v=20260821"></script>
+<script src="assets/js/campaign-detail.js?v=20260922"></script>
 </body>
 </html>

@@ -78,7 +78,7 @@
 .mp-field label{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
 .mp-field label .req{color:var(--red)}
 .mp-field small{font-size:12px;color:var(--mut)}
-.mp-field input,.mp-field select,.mp-field textarea{width:100%;height:44px;padding:0 14px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font:inherit;font-size:14px;outline:none;transition:border-color .15s,box-shadow .15s}
+.mp-field input,.mp-field select,.mp-field textarea{width:100%;height:44px;padding:0 14px;border:1px solid var(--line-input);border-radius:12px;background:#fff;color:var(--ink);font:inherit;font-size:14px;outline:none;transition:border-color .15s,box-shadow .15s}
 .mp-field textarea{height:auto;padding:12px 14px;resize:vertical;line-height:1.5}
 .mp-field input:focus,.mp-field select:focus,.mp-field textarea:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(224,54,44,.14)}
 .mp-field input.is-changed,.mp-field select.is-changed,.mp-field textarea.is-changed{border-color:var(--ink)}
@@ -107,7 +107,7 @@
 .mp-verify-sent{font-size:13.5px;color:var(--mut);line-height:1.5;margin-bottom:16px}
 .mp-verify-sent b{color:var(--ink);font-weight:600}
 .mp-code-inputs{display:flex;gap:8px;justify-content:center;margin-bottom:16px}
-.mp-code-inputs input{width:46px;height:54px;text-align:center;font-size:22px;font-weight:700;border:1px solid var(--line);border-radius:12px;font-family:"SF Mono",Menlo,Consolas,monospace;outline:none;transition:border-color .15s,box-shadow .15s}
+.mp-code-inputs input{width:46px;height:54px;text-align:center;font-size:22px;font-weight:700;border:1px solid var(--line-input);border-radius:12px;font-family:"SF Mono",Menlo,Consolas,monospace;outline:none;transition:border-color .15s,box-shadow .15s}
 .mp-code-inputs input:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(224,54,44,.14)}
 .mp-verify-error{color:#c53030;background:#fff5f5;border:1px solid #fed7d7;padding:8px 12px;border-radius:10px;font-size:12.5px;margin-bottom:12px}
 .mp-verify-resend{margin-top:14px;text-align:center;font-size:13px;color:var(--mut)}
@@ -122,6 +122,23 @@
 
 .mp-field-row.three{grid-template-columns:1fr 1fr 1fr}
 .mp-field-note{font-size:12px;color:var(--mut);margin-top:-6px}
+
+/* ---- email preferences / data / applications ---- */
+.mp-toggle{display:flex;gap:12px;align-items:flex-start;cursor:pointer;font-size:14px;line-height:1.55}
+.mp-toggle input{margin-top:3px;width:18px;height:18px;accent-color:var(--red);flex-shrink:0}
+.mp-toggle b{display:block;font-weight:700}
+.mp-toggle span{color:var(--mut);font-size:13px}
+.mp-links{margin-top:14px;font-size:13px;color:var(--mut);line-height:1.7}
+.mp-links a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+.mp-app-status{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:var(--paper);color:var(--mut)}
+.mp-app-status.approved{background:#e3f2e6;color:#1f7a37}
+.mp-app-status.rejected{background:#f7e5e2;color:#a4372b}
+.mp-app-status.pending{background:#f4ecd6;color:#7a5c15}
+.mp-list .app-main{min-width:0;display:flex;flex-direction:column;gap:3px}
+.mp-list .app-main b{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mp-list .app-main small{font-size:12.5px;color:var(--mut)}
+.mp-list .app-side{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.mp-btn.small{height:34px;padding:0 12px;font-size:12.5px}
 .mp-notif-link{color:var(--red);font-weight:700;text-decoration:none;white-space:nowrap}
 .mp-notif-link:hover{text-decoration:underline}
 @media (max-width:640px){.mp-field-row.three{grid-template-columns:1fr}}

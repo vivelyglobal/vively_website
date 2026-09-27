@@ -15,8 +15,9 @@
   <meta property="og:url" content="https://www.vivelyglobal.com/brand-login" />
   <meta property="og:image" content="https://www.vivelyglobal.com/assets/logo/vively-logo-black.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link href="brand-shell.css" rel="stylesheet" />
-  <link href="assets/css/redesign.v1.css?v=14" rel="stylesheet" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <link href="brand-shell.css?v=2" rel="stylesheet" />
+  <link href="assets/css/redesign.v1.css?v=15" rel="stylesheet" />
   <style>
     .brand-login-card {
       width: min(100%, 520px);
@@ -49,7 +50,7 @@
       width: 100%;
       min-height: 50px;
       padding: 12px 14px;
-      border: 1px solid var(--shell-line);
+      border: 1px solid var(--shell-line-input);
       border-radius: 12px;
       background: #fff;
       color: var(--shell-ink);
@@ -127,7 +128,7 @@
 <body class="shell-page">
   <div id="header-container"></div>
 
-  <main class="brand-auth-page">
+  <main class="brand-auth-page" id="main-content" tabindex="-1">
     <div class="shell-auth-card brand-login-card">
       <h2>Sign in</h2>
       <p class="muted">Use your business email and password.</p>
@@ -151,12 +152,13 @@
         <a class="shell-btn secondary" href="brand-signup.html">Create Brand Account</a>
         <a class="shell-btn" href="for-brand.html">Back to Main Site</a>
       </div>
+      <p class="form-footer" style="margin-top:16px;"><a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a></p>
     </div>
   </main>
 
   <div id="footer-container"></div>
 
-  <script src="assets/js/component-loader.js?v=4"></script>
+  <script src="assets/js/component-loader.js?v=5"></script>
   <script src="assets/js/main.js?v=23"></script>
   <script>
   (function () {

@@ -15,17 +15,18 @@
   <meta property="og:url" content="https://www.vivelyglobal.com/campaigns" />
   <meta property="og:image" content="https://www.vivelyglobal.com/assets/logo/vively-logo-black.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="stylesheet" href="assets/css/style.v13.css" />
-  <link rel="stylesheet" href="assets/css/style.work.css" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <link rel="stylesheet" href="assets/css/style.v13.css?v=2" />
+  <link rel="stylesheet" href="assets/css/style.work.css?v=2" />
   <link rel="stylesheet" href="assets/css/style.mobile.v2.css" />
-  <link rel="stylesheet" href="assets/css/redesign.v1.css?v=14" />
-  <link rel="stylesheet" href="assets/css/user-auth.css" />
-  <link rel="stylesheet" href="assets/css/campaigns.v2.css?v=2" />
+  <link rel="stylesheet" href="assets/css/redesign.v1.css?v=15" />
+  <link rel="stylesheet" href="assets/css/user-auth.css?v=4" />
+  <link rel="stylesheet" href="assets/css/campaigns.v2.css?v=3" />
 </head>
 <body>
   <div id="header-container"></div>
 
-  <main class="campaigns-page">
+  <main class="campaigns-page" id="main-content" tabindex="-1">
     <section class="cp-hero">
       <div class="wrap cp-hero-grid">
         <div>
@@ -42,24 +43,32 @@
             <div><b>10K<span>+</span></b><small>글로벌 KOL 네트워크</small></div>
             <div><b>7</b><small>캠페인 카테고리</small></div>
           </div>
+          <!-- TODO(business): confirm these figures. -->
+          <p class="stat-note">* Vively 자체 집계 기준.</p>
         </div>
 
-        <div class="cp-stack" aria-hidden="true">
-          <div class="cp-ticket a">
-            <div class="ph"><img src="assets/banner/juno.png" alt="" loading="lazy"><span class="badge soon">오픈 예정</span></div>
-            <div class="t">BEAUTY &amp; CARE</div><h3>서울 헤어 살롱 방문 브이로그</h3><div class="b">JUNO HAIR</div>
-            <div class="m"><span>리워드 <b>시술 제공</b></span><span>~10월 12일</span></div>
+        <div>
+          <!-- Illustrative mock-ups only: the rewards and dates below are not
+               real offers. Each card is labelled "예시" and the live list is
+               rendered from the API further down the page. -->
+          <div class="cp-stack" aria-hidden="true">
+            <div class="cp-ticket a">
+              <div class="ph"><img src="assets/banner/juno.png" alt="" loading="lazy"><span class="badge soon">예시</span><span class="sample">SAMPLE</span></div>
+              <div class="t">BEAUTY &amp; CARE</div><h3>서울 헤어 살롱 방문 브이로그</h3><div class="b">예시 브랜드</div>
+              <div class="m"><span>리워드 <b>예시</b></span><span>예시 마감일</span></div>
+            </div>
+            <div class="cp-ticket b">
+              <div class="ph"><img src="assets/banner/tonymoly.png" alt="" loading="lazy"><span class="badge">예시</span><span class="sample">SAMPLE</span></div>
+              <div class="t">PRODUCT</div><h3>글로벌 스킨케어 루틴 숏폼</h3><div class="b">예시 브랜드</div>
+              <div class="m"><span>리워드 <b>예시</b></span><span>예시 마감일</span></div>
+            </div>
+            <div class="cp-ticket c">
+              <div class="ph"><img src="assets/banner/mkd.png" alt="" loading="lazy"><span class="badge">예시</span><span class="sample">SAMPLE</span></div>
+              <div class="t">DINING</div><h3>외국인 크리에이터 다이닝 리뷰</h3><div class="b">예시 브랜드</div>
+              <div class="m"><span>리워드 <b>예시</b></span><span>예시 마감일</span></div>
+            </div>
           </div>
-          <div class="cp-ticket b">
-            <div class="ph"><img src="assets/banner/tonymoly.png" alt="" loading="lazy"><span class="badge">모집 중</span></div>
-            <div class="t">PRODUCT</div><h3>글로벌 스킨케어 루틴 숏폼</h3><div class="b">TONYMOLY</div>
-            <div class="m"><span>리워드 <b>제품 + ₩300,000</b></span><span>~10월 5일</span></div>
-          </div>
-          <div class="cp-ticket c">
-            <div class="ph"><img src="assets/banner/mkd.png" alt="" loading="lazy"><span class="badge">모집 중</span></div>
-            <div class="t">DINING</div><h3>외국인 크리에이터 다이닝 리뷰</h3><div class="b">명동 K-갈비</div>
-            <div class="m"><span>리워드 <b>식사 + ₩150,000</b></span><span>~9월 30일</span></div>
-          </div>
+          <p class="cp-stack-note">위 카드는 화면 예시이며 실제 캠페인이 아닙니다. 실제 캠페인은 아래 목록에서 확인하세요.</p>
         </div>
       </div>
 
@@ -87,14 +96,14 @@
         </div>
 
         <div class="cp-filter" role="group" aria-label="Campaign category" id="campaign-category-row">
-        <button type="button" class="cp-chip is-active" data-category-filter="all">All <span class="c" data-category-count="all">0</span></button>
-        <button type="button" class="cp-chip" data-category-filter="Casting">Casting <span class="c" data-category-count="Casting">0</span></button>
-        <button type="button" class="cp-chip" data-category-filter="Dining">Dining <span class="c" data-category-count="Dining">0</span></button>
-        <button type="button" class="cp-chip" data-category-filter="Beauty & Care">Beauty &amp; Care <span class="c" data-category-count="Beauty & Care">0</span></button>
-        <button type="button" class="cp-chip" data-category-filter="Product">Product <span class="c" data-category-count="Product">0</span></button>
-        <button type="button" class="cp-chip" data-category-filter="Stay & Travel">Stay &amp; Travel <span class="c" data-category-count="Stay & Travel">0</span></button>
-        <button type="button" class="cp-chip" data-category-filter="Class & Activity">Class &amp; Activity <span class="c" data-category-count="Class & Activity">0</span></button>
-        <button type="button" class="cp-chip" data-category-filter="Life Service">Life Service <span class="c" data-category-count="Life Service">0</span></button>
+        <button type="button" class="cp-chip is-active" aria-pressed="true" data-category-filter="all">All <span class="c" data-category-count="all">0</span></button>
+        <button type="button" class="cp-chip" aria-pressed="false" data-category-filter="Casting">Casting <span class="c" data-category-count="Casting">0</span></button>
+        <button type="button" class="cp-chip" aria-pressed="false" data-category-filter="Dining">Dining <span class="c" data-category-count="Dining">0</span></button>
+        <button type="button" class="cp-chip" aria-pressed="false" data-category-filter="Beauty & Care">Beauty &amp; Care <span class="c" data-category-count="Beauty & Care">0</span></button>
+        <button type="button" class="cp-chip" aria-pressed="false" data-category-filter="Product">Product <span class="c" data-category-count="Product">0</span></button>
+        <button type="button" class="cp-chip" aria-pressed="false" data-category-filter="Stay & Travel">Stay &amp; Travel <span class="c" data-category-count="Stay & Travel">0</span></button>
+        <button type="button" class="cp-chip" aria-pressed="false" data-category-filter="Class & Activity">Class &amp; Activity <span class="c" data-category-count="Class & Activity">0</span></button>
+        <button type="button" class="cp-chip" aria-pressed="false" data-category-filter="Life Service">Life Service <span class="c" data-category-count="Life Service">0</span></button>
         </div>
 
         <div id="campaigns-list" class="cp-grid"></div>
@@ -170,9 +179,9 @@
 
   <div id="footer-container"></div>
 
-  <script src="assets/js/component-loader.js?v=4"></script>
+  <script src="assets/js/component-loader.js?v=5"></script>
   <script src="assets/js/main.js?v=23"></script>
-  <script src="assets/js/campaigns.js?v=3"></script>
+  <script src="assets/js/campaigns.js?v=4"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const loginButtons = [

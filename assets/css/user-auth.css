@@ -49,7 +49,7 @@
   background: none;
   border: none;
   font-size: 28px;
-  color: var(--ink-30);
+  color: var(--mut, #6d6467);
   cursor: pointer;
   padding: 0;
   width: 32px;
@@ -107,9 +107,11 @@
   letter-spacing: 0.05em;
 }
 
-.auth-form input {
+.auth-form input,
+.auth-form select,
+.auth-form textarea {
   padding: 12px 14px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-input, #8a8788);
   border-radius: 4px;
   font-size: 14px;
   font-family: inherit;
@@ -166,7 +168,7 @@
   justify-content: center;
   gap: 12px;
   background: #fff;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-input, #8a8788);
   color: #3c4043;
 }
 
@@ -183,8 +185,9 @@
 .form-footer {
   text-align: center;
   font-size: 13px;
-  color: var(--ink-50);
+  color: var(--ink-50, var(--mut, #6d6467));
   margin-top: 16px;
+  line-height: 1.5;
 }
 
 .form-footer a {

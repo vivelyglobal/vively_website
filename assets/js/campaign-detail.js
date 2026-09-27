@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     detailContent.innerHTML = `
       <div class="campaign-hero-detail">
-        <img src="${imageUrl}" alt="${title}" />
+        <img src="${imageUrl}" alt="${brand} — ${title} campaign image" />
         <div class="campaign-header-overlay">
           <span class="campaign-tag">${category}</span>
           <h1>${title}</h1>
@@ -260,6 +260,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const name = user.fullName || user.name || user.username || user.email || "Your account";
     const email = user.email || "";
     const instagram = user.instagram || "";
+    const brandName = escapeHtml((currentCampaign && currentCampaign.brand) || "the brand");
 
     applyContainer.innerHTML = `
       <div class="apply-card">
@@ -272,17 +273,29 @@ document.addEventListener("DOMContentLoaded", async () => {
           </div>
         </div>
         <p class="apply-card-note">
-          Your profile details will be shared with the brand and Vively admin
-          when you submit.
+          The reward, deliverables and deadline shown above are set by the brand.
+          Confirm anything unclear before you commit — see the
+          <a href="refund-policy.html" target="_blank" rel="noopener">Rewards, Fees &amp; Cancellation Policy</a>.
+          You can withdraw a pending application from My Page.
         </p>
-        <button type="button" id="apply-submit-btn" class="btn btn-accent">
+        <label class="apply-consent" for="apply-consent">
+          <input type="checkbox" id="apply-consent" />
+          <span>I understand that my name, email, phone number, Instagram/TikTok handles and this application will be shared with <strong>${brandName}</strong> and Vively to process my application, as described in the <a href="privacy.html#brands" target="_blank" rel="noopener">Privacy Policy</a>.</span>
+        </label>
+        <button type="button" id="apply-submit-btn" class="btn btn-accent" disabled aria-describedby="apply-consent">
           Apply Now
         </button>
-        <div id="apply-error" class="apply-error" style="display:none;"></div>
+        <div id="apply-error" class="apply-error" style="display:none;" role="alert"></div>
       </div>
     `;
 
     const submitBtn = document.getElementById("apply-submit-btn");
+    const consentBox = document.getElementById("apply-consent");
+    if (consentBox && submitBtn) {
+      consentBox.addEventListener("change", () => {
+        submitBtn.disabled = !consentBox.checked;
+      });
+    }
     if (submitBtn) submitBtn.addEventListener("click", () => submitApplication(session));
   }
 

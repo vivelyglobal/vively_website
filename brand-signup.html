@@ -15,8 +15,9 @@
   <meta property="og:url" content="https://www.vivelyglobal.com/brand-signup" />
   <meta property="og:image" content="https://www.vivelyglobal.com/assets/logo/vively-logo-black.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link href="brand-shell.css" rel="stylesheet" />
-  <link href="assets/css/redesign.v1.css?v=14" rel="stylesheet" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <link href="brand-shell.css?v=2" rel="stylesheet" />
+  <link href="assets/css/redesign.v1.css?v=15" rel="stylesheet" />
   <style>
     .brand-form-card {
       padding: clamp(22px, 3vw, 34px);
@@ -89,7 +90,7 @@
       width: 100%;
       min-height: 48px;
       padding: 12px 14px;
-      border: 1px solid var(--shell-line);
+      border: 1px solid var(--shell-line-input);
       border-radius: 12px;
       font-size: 14px;
       box-sizing: border-box;
@@ -198,6 +199,10 @@
         grid-template-columns: 1fr;
       }
     }
+    .brand-consent { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; line-height:1.55; color:var(--shell-ink); cursor:pointer; }
+    .brand-consent input { width:auto; min-height:auto; margin-top:3px; flex-shrink:0; accent-color:#111; }
+    .brand-consent a { color:#b3221a; text-decoration:underline; text-underline-offset:2px; }
+    .brand-consent-group { display:grid; gap:12px; }
     .brand-page-main{ padding:140px 24px 64px; }
     .brand-page-main .shell-header{ position:static; max-width:900px; margin:0 auto 24px; background:transparent; backdrop-filter:none; border-bottom:none; padding:0; }
     .brand-page-main .shell-card{ max-width:900px; margin:0 auto; }
@@ -206,7 +211,7 @@
 <body class="shell-page">
   <div id="header-container"></div>
 
-  <main class="brand-page-main">
+  <main class="brand-page-main" id="main-content" tabindex="-1">
       <header class="shell-header">
         <div>
           <h1>Brand Signup</h1>
@@ -303,7 +308,7 @@
               <div class="form-group">
                 <label for="businessRegCertFile">Business Registration Certificate</label>
                 <input type="file" id="businessRegCertFile" accept=".pdf,image/jpeg,image/png,image/webp" />
-                <small>Optional - PDF or image, max 5 MB.</small>
+                <small>Optional - PDF or image, max 5 MB. Stored as a private file that only Vively staff can open, used solely to verify your business.</small>
               </div>
             </div>
 
@@ -385,6 +390,21 @@
               </div>
             </div>
 
+            <div class="brand-section-title">Agreements</div>
+            <!-- Nothing pre-checked; the server (auth-brand.js) also refuses
+                 the application unless both required boxes are true. -->
+            <div class="brand-consent-group">
+              <label class="brand-consent" for="brand-agree-terms">
+                <input type="checkbox" id="brand-agree-terms" required />
+                <span>I am authorised to act for this company and agree to the <a href="terms.html" target="_blank" rel="noopener">Terms of Service</a>, including the rules on using creator data only for Vively campaigns. <strong>(Required)</strong></span>
+              </label>
+              <label class="brand-consent" for="brand-agree-privacy">
+                <input type="checkbox" id="brand-agree-privacy" required />
+                <span>I agree to the collection and use of the company, representative and business-registration information above to review and operate this brand account, as described in the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>. <strong>(Required)</strong></span>
+              </label>
+            </div>
+            <p style="margin:14px 0 0;font-size:13px;color:var(--shell-muted);line-height:1.55">Service fees are quoted individually after review — see the <a href="refund-policy.html" target="_blank" rel="noopener" style="color:var(--shell-ink)">Rewards, Fees &amp; Cancellation Policy</a>. To close a brand account or request deletion of its data, email <a href="mailto:vivelyglobal@gmail.com" style="color:var(--shell-ink)">vivelyglobal@gmail.com</a>.</p>
+
             <div class="brand-actions">
               <button type="submit" id="brand-signup-submit" class="btn btn-accent">Submit Application</button>
               <a class="btn btn-secondary" href="brand-login.html">I already have an account</a>
@@ -396,7 +416,7 @@
 
   <div id="footer-container"></div>
 
-  <script src="assets/js/component-loader.js?v=4"></script>
+  <script src="assets/js/component-loader.js?v=5"></script>
   <script src="assets/js/main.js?v=23"></script>
   <script>
     (function () {
@@ -465,7 +485,13 @@
             contentCategories: getChecked("contentCategories"),
             budgetRange: document.getElementById("budgetRange").value || null,
             notes: document.getElementById("notes").value.trim() || null,
+            agreedToTerms: document.getElementById("brand-agree-terms").checked === true,
+            agreedToPrivacy: document.getElementById("brand-agree-privacy").checked === true,
           };
+
+          if (!payload.agreedToTerms || !payload.agreedToPrivacy) {
+            throw new Error("Please accept the Terms of Service and Privacy Policy to apply.");
+          }
 
           const fileInput = document.getElementById("businessRegCertFile");
           if (fileInput.files && fileInput.files[0]) {

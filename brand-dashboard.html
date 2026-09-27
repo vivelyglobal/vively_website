@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Brand Dashboard | Vively</title>
   <meta name="robots" content="noindex, nofollow" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <link rel="icon" type="image/png" href="assets/logo/favicon.png" />
-  <link href="assets/css/style.v13.css" rel="stylesheet" />
-  <link href="brand-shell.css" rel="stylesheet" />
+  <link href="assets/css/style.v13.css?v=2" rel="stylesheet" />
+  <link href="brand-shell.css?v=2" rel="stylesheet" />
   <style>
     .dash-header-row {
       display: flex;
@@ -65,7 +66,9 @@
       margin-bottom: 6px;
     }
 
-    .status-badge.pending_review { background: #f4ecd6; color: #8a6a1f; }
+    .status-badge.pending_review,
+    .status-badge.pending { background: #f4ecd6; color: #7a5c15; }
+    .status-badge.withdrawn { background: var(--shell-soft); color: var(--shell-muted); }
     .status-badge.published { background: #e3f2e6; color: #1f7a37; }
     .status-badge.approved { background: #e3f2e6; color: #1f7a37; }
     .status-badge.rejected,
@@ -112,7 +115,7 @@
     .brand-form-card select,
     .brand-form-card textarea {
       width: 100%; min-height: 48px; padding: 12px 14px;
-      border: 1px solid var(--shell-line); border-radius: 12px; font-size: 14px;
+      border: 1px solid var(--shell-line-input); border-radius: 12px; font-size: 14px;
       box-sizing: border-box; background: #fff; color: var(--shell-ink); outline: none;
     }
     .brand-form-card textarea { min-height: 100px; resize: vertical; }
@@ -128,20 +131,26 @@
     .nav-ai { display:inline-block; margin-left:8px; padding:2px 7px; border-radius:999px; background:#e0362c; color:#fff; font-size:10px; font-weight:800; letter-spacing:.06em; vertical-align:middle; }
     .fc-panel { display:grid; gap:18px; }
     .fc-search { padding: clamp(20px, 3vw, 28px); }
-    .fc-search textarea { width:100%; min-height:88px; padding:14px 16px; border:1px solid var(--shell-line); border-radius:14px; font:inherit; font-size:15px; resize:vertical; box-sizing:border-box; background:#fff; color:var(--shell-ink); outline:none; }
+    .fc-search textarea { width:100%; min-height:88px; padding:14px 16px; border:1px solid var(--shell-line-input); border-radius:14px; font:inherit; font-size:15px; resize:vertical; box-sizing:border-box; background:#fff; color:var(--shell-ink); outline:none; }
     .fc-search textarea:focus { border-color:#e0362c; box-shadow:0 0 0 3px rgba(224,54,44,.12); }
     .fc-examples { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
     .fc-examples button { border:1px solid var(--shell-line); background:#fff; border-radius:999px; padding:6px 12px; font:inherit; font-size:12.5px; color:var(--shell-muted); cursor:pointer; }
     .fc-examples button:hover { border-color:var(--shell-ink); color:var(--shell-ink); }
     .fc-row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:16px; }
     .fc-row .or { color:var(--shell-muted); font-size:13px; }
-    .fc-row select, .fc-filters select, .fc-filters input { min-height:44px; padding:0 12px; border:1px solid var(--shell-line); border-radius:12px; font:inherit; font-size:13.5px; background:#fff; color:var(--shell-ink); box-sizing:border-box; }
+    .fc-row select, .fc-filters select, .fc-filters input { min-height:44px; padding:0 12px; border:1px solid var(--shell-line-input); border-radius:12px; font:inherit; font-size:13.5px; background:#fff; color:var(--shell-ink); box-sizing:border-box; }
     .fc-filters { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin-top:14px; padding-top:14px; border-top:1px dashed var(--shell-line); }
     .fc-filters label { display:block; font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--shell-muted); margin-bottom:5px; }
     .fc-filters .chips { display:flex; flex-wrap:wrap; gap:6px; }
     .fc-filters .chips label { display:inline-flex; align-items:center; gap:5px; padding:6px 10px; border:1px solid var(--shell-line); border-radius:999px; font-size:12px; font-weight:600; text-transform:none; letter-spacing:0; margin:0; cursor:pointer; background:#fff; color:var(--shell-ink); }
-    .fc-filters .chips input { display:none; }
+    /* Keep the real checkbox focusable for keyboard users (display:none
+       removed it from the tab order); hide it visually instead. */
+    .fc-filters .chips input { position:absolute; opacity:0; width:1px; height:1px; margin:0; overflow:hidden; clip:rect(0 0 0 0); }
+    .fc-filters .chips label { position:relative; }
     .fc-filters .chips label:has(input:checked) { background:var(--shell-ink); border-color:var(--shell-ink); color:#fff; }
+    .fc-filters .chips label:has(input:focus-visible) { outline:2px solid #d9332a; outline-offset:2px; }
+    .fc-privacy-note { margin:0 0 12px; padding:10px 12px; border-radius:10px; background:var(--shell-soft); border:1px solid var(--shell-line); font-size:12.5px; line-height:1.5; color:var(--shell-ink); }
+    .fc-privacy-note a { color:var(--shell-ink); }
     .fc-filters .span-all { grid-column:1 / -1; }
     .fc-toggle { background:none; border:0; font:inherit; font-size:13px; font-weight:700; color:var(--shell-muted); cursor:pointer; padding:0; margin-top:12px; }
     .fc-summary { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
@@ -207,11 +216,13 @@
         <a class="active" href="brand-dashboard.html" id="nav-dashboard">Dashboard</a>
         <a href="#find-creators" id="nav-find-creators">Find Creators <span class="nav-ai">AI</span></a>
         <a href="/">Main Website</a>
+        <a href="terms.html">Terms</a>
+        <a href="privacy.html">Privacy</a>
         <a href="#" id="logout-link" class="danger">Log Out</a>
       </nav>
     </aside>
 
-    <main class="shell-main">
+    <main class="shell-main" id="main-content" tabindex="-1">
       <section class="shell-content">
         <div id="page-banner" class="brand-banner"></div>
 
@@ -242,6 +253,8 @@
           <div class="fc-panel">
             <div class="shell-card fc-search">
               <div id="fc-banner" class="brand-banner"></div>
+              <p class="fc-privacy-note">Creators agreed to have their profile shown to approved brands for campaign invitations only. Use this data to evaluate and invite creators to your Vively campaigns — do not export it, contact creators for other purposes, or share it outside your team. <a href="terms.html#brands" target="_blank" rel="noopener">Brand terms</a> · <a href="privacy.html#brands" target="_blank" rel="noopener">What creators consented to</a></p>
+              <label for="fc-query" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Describe the creators you are looking for</label>
               <textarea id="fc-query" placeholder="e.g. Indonesian creators living in Seoul who make skincare content, 20s, 5k+ Instagram followers"></textarea>
               <div class="fc-examples">
                 <button type="button" data-q="Indonesian female creators in Seoul for a skincare campaign, 20-29, 5k+ followers">Skincare · Indonesia · 20s</button>
@@ -384,6 +397,7 @@
               <div class="form-group">
                 <label for="nc-budget">Budget / Compensation</label>
                 <input type="text" id="nc-budget" placeholder="e.g. ₩200,000 - ₩400,000" />
+                <small>Shown to creators as the reward. State exactly what each selected creator receives (product, service and/or amount). See the <a href="refund-policy.html" target="_blank" rel="noopener" style="color:var(--shell-ink)">Rewards, Fees &amp; Cancellation Policy</a>.</small>
               </div>
               <div class="form-group">
                 <label for="nc-spots">Number of Spots</label>

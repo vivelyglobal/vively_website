@@ -1,5 +1,6 @@
 // Referral / affiliate helpers shared by auth-signup and me.
 const crypto = require("crypto");
+const { emailFooterHTML, emailFooterText } = require("./email-footer");
 
 // No 0/O/1/I so codes read unambiguously when typed from a screenshot.
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -87,9 +88,7 @@ function buildReferralEmailHTML({ referrerName, newUsername, code }) {
         <tr><td style="padding:0 32px 32px;text-align:center;">
           <a href="${myPageUrl}" style="display:inline-block;padding:12px 22px;background:#e0362c;color:#fff;text-decoration:none;border-radius:999px;font-size:14px;font-weight:700;">View on My Page</a>
         </td></tr>
-        <tr><td style="padding:16px 32px 32px;text-align:center;border-top:1px solid #eee;">
-          <p style="margin:0;color:#999;font-size:12px;line-height:1.5;">&copy; ${new Date().getFullYear()} Vively Global</p>
-        </td></tr>
+${emailFooterHTML({ kind: "notification", reason: "You received this because someone joined Vively with your referral code." })}
       </table>
     </td></tr>
   </table>
@@ -108,7 +107,7 @@ async function sendReferralEmail({ to, referrerName, newUsername, code }) {
         to: [{ email: to }],
         subject: `@${newUsername} joined Vively with your referral code`,
         htmlContent: buildReferralEmailHTML({ referrerName, newUsername, code }),
-        textContent: `@${newUsername} just created a Vively account using your referral code ${code}. See who's joined on your My Page: ${SITE_URL}/my-page.html`,
+        textContent: `@${newUsername} just created a Vively account using your referral code ${code}. See who's joined on your My Page: ${SITE_URL}/my-page.html${emailFooterText({ kind: "notification" })}`,
       }),
     });
     if (!res.ok) {

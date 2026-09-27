@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+<meta name="referrer" content="no-referrer" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Unsubscribe | Vively</title>
+<link rel="icon" type="image/png" href="assets/logo/favicon.png" />
+<link rel="stylesheet" href="assets/css/redesign.v1.css?v=15" />
+<link rel="stylesheet" href="assets/css/user-auth.css?v=4" />
+<link rel="stylesheet" href="assets/css/legal.css?v=1" />
+</head>
+<body>
+
+<div id="header-container"></div>
+
+<main id="main-content" tabindex="-1">
+<section class="legal-body" style="padding-top:150px">
+  <div class="wrap">
+    <div class="legal-card">
+      <span class="kicker slash">EMAIL PREFERENCES</span>
+      <h1 id="unsub-title">Unsubscribe from marketing email</h1>
+      <p id="unsub-desc">Confirm below to stop receiving marketing updates from Vively. Service emails about your account (verification codes, password resets, application status, campaign invitations) will continue while your account exists.</p>
+      <div id="unsub-status" class="status" role="status" aria-live="polite" hidden></div>
+      <button type="button" class="btn btn-accent" id="unsub-btn">Unsubscribe me</button>
+      <p style="margin-top:22px;font-size:13.5px">Want finer control? <a href="my-page.html#email-preferences">Manage all email preferences on My Page</a> · <a href="privacy.html">Privacy Policy</a></p>
+    </div>
+  </div>
+</section>
+</main>
+
+<div id="footer-container"></div>
+
+<script>
+(function () {
+  var params = new URLSearchParams(location.search);
+  var u = params.get('u');
+  var t = params.get('t');
+  var btn = document.getElementById('unsub-btn');
+  var status = document.getElementById('unsub-status');
+
+  function show(kind, msg) {
+    status.className = 'status ' + kind;
+    status.textContent = msg;
+    status.hidden = false;
+  }
+
+  if (!u || !t) {
+    btn.hidden = true;
+    show('err', 'This link is missing its security token. Please use the unsubscribe link from a Vively email, or change your preferences on My Page.');
+    return;
+  }
+
+  btn.addEventListener('click', async function () {
+    btn.disabled = true;
+    btn.textContent = 'Updating…';
+    try {
+      var res = await fetch('/api/email-preferences', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ u: u, t: t }),
+      });
+      var data = await res.json().catch(function () { return {}; });
+      if (!res.ok) {
+        show('err', data.error || 'Something went wrong. Please try again.');
+        btn.disabled = false;
+        btn.textContent = 'Unsubscribe me';
+        return;
+      }
+      show('ok', 'Done. You will no longer receive marketing email from Vively.');
+      btn.hidden = true;
+    } catch (e) {
+      show('err', 'Network error. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Unsubscribe me';
+    }
+  });
+})();
+</script>
+<script src="assets/js/component-loader.js?v=5"></script>
+<script src="assets/js/main.js?v=23"></script>
+</body>
+</html>

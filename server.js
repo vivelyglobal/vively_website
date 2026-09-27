@@ -10,6 +10,20 @@ const PORT = process.env.PORT || 8888;
 const ROOT_DIR = __dirname;
 const FUNCTIONS_DIR = path.join(ROOT_DIR, "netlify", "functions");
 
+// Baseline security headers (same set as _headers / netlify.toml so the
+// behaviour is identical whichever host serves the request).
+app.disable("x-powered-by");
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader(
+    "Referrer-Policy",
+    req.path === "/reset-password.html" ? "no-referrer" : "strict-origin-when-cross-origin"
+  );
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=(), usb=()");
+  next();
+});
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 

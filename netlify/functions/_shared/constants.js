@@ -3,6 +3,12 @@
 // a copy in assets/js/constants.js if needed (Netlify Functions can't be
 // require()'d from browsers).
 
+// ============ LEGAL / CONSENT ============
+// Bump this whenever privacy.html / terms.html change materially. It is
+// stored alongside every consent record so you can tell which version a
+// user agreed to.
+const POLICY_VERSION = "2026-09-22";
+
 // ============ ROLES ============
 // Keep in sync with any UI role selectors.
 const ROLES = Object.freeze({
@@ -206,6 +212,7 @@ const SOCIAL_PLATFORMS = Object.freeze([
 ]);
 
 module.exports = {
+  POLICY_VERSION,
   ROLES,
   ALL_ROLES,
   LEGACY_USER_ROLE,

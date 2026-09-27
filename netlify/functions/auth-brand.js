@@ -22,6 +22,9 @@ const {
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
+const { POLICY_VERSION } = require("./_shared/constants");
+const { clientIp } = require("./_shared/http");
+const { enforce, MINUTE, HOUR } = require("./_shared/rate-limit");
 
 const ALLOWED_DOC_TYPES = [
   "application/pdf",
@@ -112,6 +115,7 @@ exports.handler = async (event) => {
   }
 
   const { action } = body;
+  const ip = clientIp(event);
   const brands = await getBrandsCollection();
 
   // ============
@@ -120,6 +124,20 @@ exports.handler = async (event) => {
   if (action === "signup") {
     const email = normalizeEmail(body.email);
     const password = body.password;
+
+    const limited = await enforce([
+      { key: `brand-signup:ip:${ip}`, limit: 5, windowMs: HOUR },
+    ]);
+    if (limited) return limited;
+
+    // Consent is required server-side (the form also marks the boxes
+    // required). Brand accounts hold company + representative data and an
+    // optional KYC document, so the applicant must accept both documents.
+    if (body.agreedToTerms !== true || body.agreedToPrivacy !== true) {
+      return bad(400, "Please accept the Terms of Service and Privacy Policy to apply for a brand account.", {
+        field: "consent",
+      });
+    }
 
     // Required fields — mirror the frontend form validation.
     const required = {
@@ -188,6 +206,13 @@ exports.handler = async (event) => {
         : [],
       budgetRange: body.budgetRange || null,
       notes: body.notes || null,
+
+      // consent record
+      consents: {
+        policyVersion: POLICY_VERSION,
+        terms: { agreedAt: now },
+        privacy: { agreedAt: now },
+      },
     };
 
     // Optional: business registration certificate file (base64 data URL).
@@ -218,6 +243,12 @@ exports.handler = async (event) => {
     if (!email || !password) {
       return bad(400, "Email and password required");
     }
+
+    const limited = await enforce([
+      { key: `brand-login:ip:${ip}`, limit: 30, windowMs: 15 * MINUTE },
+      { key: `brand-login:acct:${email}`, limit: 10, windowMs: 15 * MINUTE },
+    ]);
+    if (limited) return limited;
 
     const brand = await brands.findOne({ email });
     if (!brand) {
@@ -261,6 +292,12 @@ exports.handler = async (event) => {
   if (action === "forgot-password") {
     const email = normalizeEmail(body.email);
     if (!email) return bad(400, "Email required");
+
+    const limited = await enforce([
+      { key: `brand-forgot:ip:${ip}`, limit: 10, windowMs: 15 * MINUTE },
+      { key: `brand-forgot:email:${email}`, limit: 3, windowMs: 15 * MINUTE },
+    ]);
+    if (limited) return limited;
 
     const existing = await brands.findOne({ email });
     // Only send when the account exists, but always return the same

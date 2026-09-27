@@ -2,6 +2,7 @@
 const { getUsersCollection } = require("./db");
 const { verifyRequest } = require("./auth");
 const { requirePermission, PERMISSIONS } = require("./_shared/permissions");
+const { deleteCreatorAccount } = require("./_shared/account-deletion");
 const { ObjectId } = require("mongodb");
 
 // Strip sensitive fields before returning
@@ -132,8 +133,20 @@ exports.handler = async (event) => {
       };
     }
     try {
-      const result = await users.deleteOne({ _id: new ObjectId(id) });
-      if (result.deletedCount === 0) {
+      let objectId;
+      try {
+        objectId = new ObjectId(id);
+      } catch (_) {
+        return {
+          statusCode: 400,
+          body: JSON.stringify({ error: "Invalid user ID" }),
+        };
+      }
+      // Same cascade as self-service deletion (me.js): notifications,
+      // codes, invitations, tokens and referrals are removed and the user's
+      // applications are anonymised, so nothing personal is left behind.
+      const result = await deleteCreatorAccount(objectId, { initiatedBy: "admin" });
+      if (!result.deleted) {
         return {
           statusCode: 404,
           body: JSON.stringify({ error: "User not found" }),

@@ -8,6 +8,7 @@ const crypto = require("crypto");
 const { verifyRequest } = require("./auth");
 const { requirePermission, PERMISSIONS } = require("./_shared/permissions");
 const cloudinaryClient = require("./_shared/cloudinary");
+const { preflight, errorDetails } = require("./_shared/http");
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
@@ -22,17 +23,7 @@ if (!IS_PROD && !fs.existsSync(UPLOAD_DIR)) {
 
 exports.handler = async (event) => {
   // CORS preflight
-  if (event.httpMethod === "OPTIONS") {
-    return {
-      statusCode: 204,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-      },
-      body: "",
-    };
-  }
+  if (event.httpMethod === "OPTIONS") return preflight("POST, OPTIONS");
 
   if (event.httpMethod !== "POST") {
     return {
@@ -89,7 +80,6 @@ exports.handler = async (event) => {
         statusCode: 201,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify({
           message: "Upload successful",
@@ -122,7 +112,6 @@ exports.handler = async (event) => {
       statusCode: 201,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({
         message: "Upload successful",
@@ -137,7 +126,7 @@ exports.handler = async (event) => {
       statusCode: 500,
       body: JSON.stringify({
         error: "Upload failed",
-        details: error.message,
+        details: errorDetails(error),
       }),
     };
   }
