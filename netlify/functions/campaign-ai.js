@@ -119,6 +119,9 @@ exports.handler = async (event) => {
     if (!res.ok) {
       console.error(`[campaign-ai] Gemini error ${res.status}:`, JSON.stringify(data.error || data).slice(0, 300));
       if (res.status === 429) return json(429, { error: "AI free quota reached. Try again in a minute." });
+      if (res.status === 400 || res.status === 401 || res.status === 403) {
+        return json(502, { error: "Gemini rejected the API key/project. Create a new key at aistudio.google.com and update GEMINI_API_KEY." });
+      }
       return json(502, { error: "AI generation failed. Try again." });
     }
     if (data.promptFeedback?.blockReason) return json(422, { error: "AI declined to generate this field." });
