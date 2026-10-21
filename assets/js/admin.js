@@ -580,6 +580,67 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function readCampaignForm() {
+    return {
+      title: document.getElementById("campaign-title").value,
+      brand: document.getElementById("campaign-brand").value,
+      category: document.getElementById("campaign-category").value,
+      description: document.getElementById("campaign-description").value,
+      guidelines: document.getElementById("campaign-guidelines").value,
+      targetAudience: Array.from(audienceContainer.children).map((row) => ({
+        label: row.querySelector(".audience-label").value,
+        value: row.querySelector(".audience-value").value,
+      })),
+      budget: document.getElementById("campaign-budget").value,
+      spots: document.getElementById("campaign-spots").value,
+      deadline: document.getElementById("campaign-deadline").value,
+    };
+  }
+
+  function applyAiValue(field, value) {
+    if (field === "description") document.getElementById("campaign-description").value = value;
+    else if (field === "guidelines") document.getElementById("campaign-guidelines").value = value.join("\n");
+    else if (field === "budget") document.getElementById("campaign-budget").value = value;
+    else if (field === "spots") document.getElementById("campaign-spots").value = value;
+    else if (field === "targetAudience") {
+      audienceContainer.innerHTML = "";
+      value.forEach((r) => {
+        const row = createAudienceRow();
+        row.querySelector(".audience-label").value = r.label;
+        row.querySelector(".audience-value").value = r.value;
+        audienceContainer.appendChild(row);
+      });
+    }
+  }
+
+  document.querySelectorAll(".ai-gen").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const field = btn.dataset.aiField;
+      const form = readCampaignForm();
+      if (!form.title.trim() && !form.brand.trim() && !form.category && !form.description.trim()) {
+        alert("Fill in Title, Brand or Category first so AI has context.");
+        return;
+      }
+      btn.disabled = true;
+      btn.classList.add("is-loading");
+      try {
+        const res = await fetch("/api/campaign-ai", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${authToken}` },
+          body: JSON.stringify({ field, form }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || "AI generation failed.");
+        applyAiValue(field, data.value);
+      } catch (error) {
+        alert(error.message);
+      } finally {
+        btn.disabled = false;
+        btn.classList.remove("is-loading");
+      }
+    });
+  });
+
   // Reset form helper
   function resetCampaignForm() {
     campaignForm.reset();

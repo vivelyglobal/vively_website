@@ -333,6 +333,16 @@ body.admin-page{
 .form-group small{color:var(--ad-label)!important}
 .form-group.checkbox{flex-direction:row;align-items:center;gap:10px}
 .form-group.checkbox label{margin:0}
+.form-group .label-row{display:flex;align-items:center;gap:8px}
+.ai-gen{
+  display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;padding:0;
+  background:none;border:0;color:#8a8784;cursor:pointer;transition:color .15s ease,transform .15s ease;
+}
+.ai-gen svg{width:14px;height:14px}
+.ai-gen:hover,.ai-gen:focus-visible{color:#c9c6c3;transform:scale(1.15);outline:none}
+.ai-gen:disabled{cursor:wait}
+.ai-gen.is-loading svg{animation:ai-gen-pulse .9s ease-in-out infinite}
+@keyframes ai-gen-pulse{50%{opacity:.25;transform:rotate(20deg) scale(.85)}}
 #target-audience-container{
   border:2px solid var(--ad-rule)!important;background:transparent!important;
 }

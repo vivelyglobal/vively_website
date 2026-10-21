@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex, nofollow" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <link rel="icon" type="image/png" href="assets/logo/favicon.png" />
-  <link rel="stylesheet" href="assets/css/admin-redesign.css?v=2" />
+  <link rel="stylesheet" href="assets/css/admin-redesign.css?v=3" />
 </head>
 <body class="admin-page">
 
@@ -150,7 +150,7 @@
           </div>
 
           <div class="form-group">
-            <label for="campaign-description">Description *</label>
+            <div class="label-row"><label for="campaign-description">Description *</label><button type="button" class="ai-gen" data-ai-field="description" title="Generate description with AI" aria-label="Generate description with AI"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.9 5.6L19.5 9.5l-5.6 1.9L12 17l-1.9-5.6L4.5 9.5l5.6-1.9L12 2Z"/><path d="M19 14l.9 2.6L22.5 17.5l-2.6.9L19 21l-.9-2.6-2.6-.9 2.6-.9L19 14Z"/></svg></button></div>
             <textarea id="campaign-description" rows="5" required></textarea>
           </div>
 
@@ -175,12 +175,12 @@
           </div>
 
           <div class="form-group">
-            <label for="campaign-budget">Budget Range</label>
+            <div class="label-row"><label for="campaign-budget">Budget Range</label><button type="button" class="ai-gen" data-ai-field="budget" title="Generate budget range with AI" aria-label="Generate budget range with AI"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.9 5.6L19.5 9.5l-5.6 1.9L12 17l-1.9-5.6L4.5 9.5l5.6-1.9L12 2Z"/><path d="M19 14l.9 2.6L22.5 17.5l-2.6.9L19 21l-.9-2.6-2.6-.9 2.6-.9L19 14Z"/></svg></button></div>
             <input type="text" id="campaign-budget" placeholder="e.g., ₩100,000 - ₩500,000" />
           </div>
 
           <div class="form-group">
-            <label for="campaign-spots">Available Spots</label>
+            <div class="label-row"><label for="campaign-spots">Available Spots</label><button type="button" class="ai-gen" data-ai-field="spots" title="Generate available spots with AI" aria-label="Generate available spots with AI"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.9 5.6L19.5 9.5l-5.6 1.9L12 17l-1.9-5.6L4.5 9.5l5.6-1.9L12 2Z"/><path d="M19 14l.9 2.6L22.5 17.5l-2.6.9L19 21l-.9-2.6-2.6-.9 2.6-.9L19 14Z"/></svg></button></div>
             <input type="number" id="campaign-spots" min="1" />
           </div>
 
@@ -190,7 +190,7 @@
           </div>
 
           <div class="form-group">
-            <label for="campaign-guidelines">Guidelines (one per line)</label>
+            <div class="label-row"><label for="campaign-guidelines">Guidelines (one per line)</label><button type="button" class="ai-gen" data-ai-field="guidelines" title="Generate guidelines with AI" aria-label="Generate guidelines with AI"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.9 5.6L19.5 9.5l-5.6 1.9L12 17l-1.9-5.6L4.5 9.5l5.6-1.9L12 2Z"/><path d="M19 14l.9 2.6L22.5 17.5l-2.6.9L19 21l-.9-2.6-2.6-.9 2.6-.9L19 14Z"/></svg></button></div>
             <textarea id="campaign-guidelines" rows="4" placeholder="No content creation&#10;Do not film without consent&#10;Attend one session&#10;Come as you normally would"></textarea>
             <small style="color: var(--ink-50, #666); font-size: 12px; margin-top: 4px; display: block;">
               Enter each guideline on a new line
@@ -198,7 +198,7 @@
           </div>
 
           <div class="form-group">
-            <label>Target Audience</label>
+            <div class="label-row"><label>Target Audience</label><button type="button" class="ai-gen" data-ai-field="targetAudience" title="Generate target audience with AI" aria-label="Generate target audience with AI"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.9 5.6L19.5 9.5l-5.6 1.9L12 17l-1.9-5.6L4.5 9.5l5.6-1.9L12 2Z"/><path d="M19 14l.9 2.6L22.5 17.5l-2.6.9L19 21l-.9-2.6-2.6-.9 2.6-.9L19 14Z"/></svg></button></div>
             <div id="target-audience-container" style="border: 1px solid #ddd; border-radius: 6px; padding: 12px; background: #fafafa;">
               <div id="target-audience-list"></div>
               <button type="button" id="add-audience-row" class="btn btn-sm" style="background: #f0f0f0; color: #333; border: 1px solid #ddd; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-top: 8px;">
@@ -305,6 +305,6 @@
   </footer>
 </div>
 
-<script src="assets/js/admin.js?v=2"></script>
+<script src="assets/js/admin.js?v=3"></script>
 </body>
 </html>
