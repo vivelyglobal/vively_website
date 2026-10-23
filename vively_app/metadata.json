@@ -1,0 +1,6 @@
+{
+  "name": "Vively Global",
+  "description": "Influencer and creator collaboration platform connecting global creators with South Korean brands with gamified companion progression.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
