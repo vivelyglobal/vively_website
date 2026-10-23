@@ -594,6 +594,7 @@
 
         signupState.email = email;
         document.getElementById('verify-email-display').textContent = email;
+        clearCodeInputs();
         showSignupStep('1b');
 
         // Dev-only: log the code to the browser console so you can test
@@ -627,6 +628,12 @@
         if (loginContainer) loginContainer.style.display = 'block';
       });
     }
+  }
+
+  function clearCodeInputs() {
+    document.querySelectorAll('.code-input').forEach((i) => { i.value = ''; });
+    const hidden = document.getElementById('signup-code');
+    if (hidden) hidden.value = '';
   }
 
   // === STEP 1b: Verify Code ===
@@ -700,7 +707,7 @@
     if (resendLink) {
       resendLink.addEventListener('click', (e) => {
         e.preventDefault();
-        setupSignupStep1(); // Reset and re-trigger step 1
+        clearCodeInputs();
         showSignupStep(1);
       });
     }
@@ -1124,6 +1131,13 @@
       updateAuthUI(false);
       const loginModal = document.getElementById('login-modal');
       if (loginModal) closeModalEl(loginModal);
+      // Pages render personal/unlocked data on load and don't watch same-tab
+      // storage changes, so re-render from a logged-out state.
+      if (/my-page(\.html)?$/.test(window.location.pathname)) {
+        window.location.href = 'index.html';
+      } else {
+        window.location.reload();
+      }
     };
 
     if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);

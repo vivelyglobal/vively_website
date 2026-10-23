@@ -1,0 +1,10 @@
+◇ injected env (13) from .env.local // tip: ⌘ suppress logs { quiet: true }
+Vively server running on port 8888
+Connected to MongoDB
+[db] connected to MongoDB Atlas
+[admin] {"unchanged":true,"email":"admin@vively.com"}
+[demo-brand] {"unchanged":true,"email":"brand@vively.com"}
+[DEV] Verification code for code-reset-1792734781897@example.com: 819071
+[email] BREVO_API_KEY not set — email not actually sent. Add it to .env.local to enable delivery.
+[DEV] Verification code for code-reset-1792734781897@example.com: 318615
+[email] BREVO_API_KEY not set — email not actually sent. Add it to .env.local to enable delivery.

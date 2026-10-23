@@ -138,7 +138,7 @@ function initUserAuthUI() {
   // Dynamically load user-auth.js script
   const script = document.createElement('script');
   script.id = 'vively-user-auth-script';
-  script.src = '/assets/js/user-auth.js?v=4';
+  script.src = '/assets/js/user-auth.js?v=6';
   script.defer = true;
   document.body.appendChild(script);
 }
