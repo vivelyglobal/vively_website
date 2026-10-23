@@ -16,7 +16,7 @@ const { JWT_SECRET } = require("../auth");
 
 const SITE_URL = (process.env.SITE_URL || "https://www.vivelyglobal.com").replace(/\/$/, "");
 const BUSINESS_NAME = "Vively";
-const CONTACT_EMAIL = process.env.BREVO_SENDER_EMAIL || "vivelyglobal@gmail.com";
+const CONTACT_EMAIL = process.env.BREVO_SENDER_EMAIL || "brands@vivelyglobal.com";
 
 function unsubscribeToken(userId) {
   return crypto
