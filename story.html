@@ -20,7 +20,7 @@
 <link rel="stylesheet" href="assets/css/style.brand.css" />
 <link rel="stylesheet" href="assets/css/style.brand2.css" />
 <link rel="stylesheet" href="assets/css/style.mobile.v2.css" />
-<link rel="stylesheet" href="assets/css/redesign.v1.css?v=15" />
+<link rel="stylesheet" href="assets/css/redesign.v1.css?v=18" />
 <link rel="stylesheet" href="assets/css/user-auth.css?v=4" />
 </head>
 <body>
@@ -40,7 +40,7 @@
     <div class="ring" id="ring"></div>
     <div class="ring-shadow"></div>
   </div>
-  <p class="sr-only">외국인이 이끄는 해외 진출 전문 팀. 섭외 가능한 KOL 10,000+. 관리 중인 한국 거주 외국인 인플루언서 1,000명+. 감이 아닌 현지 반응으로 먼저 검증. 콘텐츠·캠페인·커머스까지 연결.</p>
+  <p class="sr-only">외국인이 이끄는 해외 진출 전문 팀. 섭외 가능한 KOL 13,000명+. 관리 중인 한국 거주 외국인 인플루언서 1,000명+. 감이 아닌 현지 반응으로 먼저 검증. 콘텐츠·캠페인·커머스까지 연결.</p>
 
   <div class="scroll-cue" aria-hidden="true"><span class="meta-caps">Scroll</span></div>
 </section>
@@ -69,11 +69,11 @@
         <div class="l"><b>외국인이 이끄는 팀</b></div>
       </div>
       <div class="diff-cell">
-        <div class="n" data-count="13000" data-suffix="+">13,000명+</div>
+        <div class="n" data-count="13000" data-suffix="명+">13,000명+</div>
         <div class="l">섭외 가능한 KOL</div>
       </div>
       <div class="diff-cell">
-        <div class="n" data-count="200" data-suffix="+">200+</div>
+        <div class="n" data-count="1000" data-suffix="명+">1,000명+</div>
         <div class="l">관리 중인 한국 거주 외국인 인플루언서</div>
       </div>
       <div class="diff-cell">
@@ -186,9 +186,9 @@
   <div class="wrap reveal">
     <div class="stat-band">
       <div class="stats">
-        <div><div class="n" data-count="13000" data-suffix="+">13,000명+</div><div class="l">섭외 가능한 KOL</div></div>
-        <div><div class="n" data-count="1000" data-suffix="+">1,000명+</div><div class="l">관리 중인 한국 거주 외국인 인플루언서</div></div>
-        <div><div class="n" data-prefix="&#8361;" data-count="2731">&#8361;2,731</div><div class="l">Juno Seoul organic CPM</div></div>
+        <div><div class="n" data-count="13000" data-suffix="명+">13,000명+</div><div class="l">섭외 가능한 KOL</div></div>
+        <div><div class="n" data-count="1000" data-suffix="명+">1,000명+</div><div class="l">관리 중인 한국 거주 외국인 인플루언서</div></div>
+        <div><div class="n">CPV 10원 보장</div><div class="l">인플루언서 50명 캠페인 기준</div></div>
       </div>
       <!-- TODO(business): confirm each figure and its source before launch. -->
       <!--<p class="stat-note" style="grid-column:1/-1">* Vively 자체 집계 기준(2026년 8월 성과 리포트).</p>-->
@@ -265,10 +265,10 @@
   var ring = document.getElementById('ring');
   if (!ring) return;
   var items = [
-    '관리 중인 한국 거주 외국인 인플루언서 <span class="num">200+</span>',
+    '관리 중인 한국 거주 외국인 인플루언서 <span class="num">1,000명+</span>',
     '감이 아닌 현지 반응으로 먼저 검증',
     '콘텐츠·캠페인·커머스까지 연결',
-    '섭외 가능한 KOL <span class="num">10,000+</span>',
+    '섭외 가능한 KOL <span class="num">13,000명+</span>',
     '외국인이 이끄는 해외 진출 전문 팀'
   ];
   var n = items.length, step = 360 / n, segs = [];

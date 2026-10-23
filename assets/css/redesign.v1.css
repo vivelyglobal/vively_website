@@ -1077,3 +1077,29 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
 .hero-loop{transform:none;border:none;background:none}
 .mobile-menu{bottom:auto}
 .cta-band::before,.cta-band::after{content:none}
+
+/* SERVICE PACKAGES (index accordion + for-brand cards) */
+.svc-stats{margin-top:14px;font-size:14.5px;font-weight:600;line-height:1.6;color:var(--mut)}
+.on-dark .svc-stats{color:var(--mut-dark)}
+.svc-stats b{color:var(--red);font-weight:800;white-space:nowrap}
+.svc-price{
+  display:inline-block;flex:none;padding:3px 10px;border-radius:999px;
+  background:var(--red);color:#fff;font-size:12.5px;font-weight:800;letter-spacing:.01em;
+}
+.svc-link{display:inline-block;margin-top:12px;font-weight:700;color:var(--red);text-decoration:none}
+.svc-link:hover{text-decoration:underline}
+.svc-note{display:block;margin-top:8px;font-size:12.5px;opacity:.75}
+.service-row.open .service-row-body{max-height:640px}
+.service-row .svc-price{margin-right:14px}
+.svc-grid.svc-grid-pkg{grid-template-columns:repeat(2,1fr)}
+.svc-grid-pkg .svc-card.is-featured{grid-column:1/-1;border-color:var(--red)}
+.svc-grid-pkg .svc-card .svc-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.svc-grid-pkg .svc-card h3{font-size:17.5px}
+.svc-grid-pkg .svc-card p{font-size:14px}
+@media (max-width:640px){
+  .svc-grid.svc-grid-pkg{grid-template-columns:1fr}
+  .service-row .svc-price{margin-right:8px;font-size:11.5px}
+}
+.on-dark .svc-card h3{color:var(--ink)}
+.proc-metric{flex-wrap:wrap;row-gap:4px}
+.proc-metric .l{margin-left:auto}
