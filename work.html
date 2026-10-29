@@ -6,7 +6,7 @@
 <title>Work | Vively</title>
 <meta name="description" content="Vively가 진행한 글로벌 크리에이터 캠페인 리포트." />
 <link rel="canonical" href="https://www.vivelyglobal.com/work" />
-<link rel="icon" type="image/png" href="assets/logo/favicon.png" />
+<link rel="icon" type="image/png" href="assets/logo/favicon.png?v=2" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Vively" />
 <meta property="og:locale" content="ko_KR" />
@@ -42,6 +42,7 @@
         <div class="row"><dt>참여 크리에이터</dt><dd id="f-creators"></dd></div>
         <div class="row"><dt>도달 국가</dt><dd class="small" id="f-reach"></dd></div>
         <div class="row"><dt>진행 지점</dt><dd class="small" id="f-branches"></dd></div>
+        <div class="row" id="f-reports-row" hidden><dt>성과 리포트</dt><dd class="small" id="f-reports"></dd></div>
       </dl>
     </aside>
   </div>
@@ -131,10 +132,17 @@ var PROJECTS = {
     banner: "assets/banner/juno.png", logo: "assets/logos/juno-hair.png",
     service: "인플루언서 KOL 시딩", serviceEn: "Influencer KOL Seeding",
     goal: "브랜드 인지도 제고 및 외국인 방문객 유치",
-    creators: "외국인 인플루언서 14명",
+    creators: "외국인 인플루언서 17명",
     reach: "6개국 (인도네시아, 우즈베키스탄, 대만, 콜롬비아, 카자흐스탄, 캐나다)",
     branches: "준오 서울 한남 · 준오 안녕인사동 · 준오 강서구청 · 준오 VIP 이벤트",
-    views: "355,772", shares: "446",
+    views: "56,968", shares: "34",
+    source: "Juno Seoul · Juno Singapore 성과 리포트 기준",
+    /* live figures: summed from these sheet tabs on page load; values above are the fallback */
+    sheet: { id: "1AU9GO4lON-xGUkCVfI1aPjCwAJZUCL8bSGosEk0A27M", gids: ["199243107", "608431650"] },
+    reports: [
+      { label: "Juno Seoul", url: "https://vivelyglobal.github.io/report/?brand=juno%20seoul&sheet=1AU9GO4lON-xGUkCVfI1aPjCwAJZUCL8bSGosEk0A27M&gid=199243107" },
+      { label: "Juno Singapore", url: "https://vivelyglobal.github.io/report/?brand=juno%20singapore&sheet=1AU9GO4lON-xGUkCVfI1aPjCwAJZUCL8bSGosEk0A27M&gid=608431650" }
+    ],
     note: "시딩 진행 후 VIVELY 전용 창구를 통해 예약 시 전 시술 <b>20% 할인</b> 프로모션을 연계해 진행했습니다.",
     insightQuote: "예약 전환을 이끈 핵심 인사이트.",
     clips: ["assets/brand/juno-1.mp4","assets/brand/juno-2.mp4","assets/brand/juno-3.mp4","assets/brand/juno-4.mp4"]
@@ -170,10 +178,15 @@ var PROJECTS = {
     banner: "assets/banner/mkd.png", logo: "assets/logos/myeongdong-kgalbi.png",
     service: "인플루언서 KOL 시딩", serviceEn: "Influencer KOL Seeding",
     goal: "방한 외국인 관광객 타깃 맛집 인지도 확보 및 방문 유도",
-    creators: "외국인 크리에이터 45명",
+    creators: "외국인 크리에이터 56명",
     reach: "19개국 (동남아, 동아시아, 남아시아, 중동, 동유럽, 중앙아시아, 서유럽, 북미, 남미, 아프리카)",
     branches: "명동 K-갈비 본점",
-    views: "103,806", shares: "873",
+    views: "370,534", shares: "226",
+    source: "명동 K-갈비 성과 리포트 기준",
+    sheet: { id: "1AU9GO4lON-xGUkCVfI1aPjCwAJZUCL8bSGosEk0A27M", gids: ["684405442"] },
+    reports: [
+      { label: "명동 K-갈비", url: "https://vivelyglobal.github.io/report/?brand=galbi&sheet=1AU9GO4lON-xGUkCVfI1aPjCwAJZUCL8bSGosEk0A27M&gid=684405442" }
+    ],
     note: "명동을 방문하는 관광객을 대상으로 <b>실질적인 방문</b>과 오프라인 동선까지 연계했습니다.",
     insightQuote: "온라인 도달을 오프라인 방문으로.",
     clips: ["assets/brand/myeondong-1.mp4","assets/brand/myeondong-2.mp4","assets/brand/myeondong-3.mp4","assets/brand/myeondong-4.mp4"]
@@ -183,10 +196,15 @@ var PROJECTS = {
     banner: "assets/banner/adm.png", logo: "",
     service: "인플루언서 KOL 시딩", serviceEn: "Influencer KOL Seeding",
     goal: "방한 일본 관광객 타깃 맛집 인지도 확보 및 방문 유도",
-    creators: "일본인 크리에이터 45명",
+    creators: "일본인 크리에이터 55명",
     reach: "1개국 (일본)",
     branches: "압구정 본점",
-    views: "30,080", shares: "20",
+    views: "167,341", shares: "103",
+    source: "압구정 닭한마리 성과 리포트 기준",
+    sheet: { id: "1AU9GO4lON-xGUkCVfI1aPjCwAJZUCL8bSGosEk0A27M", gids: ["520282250"] },
+    reports: [
+      { label: "압구정 닭한마리", url: "https://vivelyglobal.github.io/report/?brand=apgujeong&sheet=1AU9GO4lON-xGUkCVfI1aPjCwAJZUCL8bSGosEk0A27M&gid=520282250" }
+    ],
     note: "일본 관광객을 타깃으로 한 <b>맞춤형 바이럴</b>로, 현지 선호 타깃을 집중 공략했습니다.",
     insightQuote: "단일 시장 집중 공략의 정석.",
     clips: ["assets/brand/apgujeong-1.mp4","assets/brand/apgujeong-2.mp4","assets/brand/apgujeong-3.mp4","assets/brand/apgujeong-4.mp4"]
@@ -229,9 +247,81 @@ var PROJECTS = {
     note: "K-웰니스와 <b>약국 쇼핑 투어</b>를 기반으로 글로벌 확산을 만들었습니다.",
     insightQuote: "K-웰니스로 넓힌 새로운 접점.",
     clips: ["assets/brand/verynew-1.mp4","assets/brand/verynew-2.mp4","assets/brand/verynew-3.mp4","assets/brand/verynew-4.mp4"]
+  },
+  kowork: {
+    title: "Job Platform for Foreigners", brand: "코워크", cat: "HR Tech",
+    banner: "assets/banner/kowork.webp", logo: "assets/logos/kowork.png",
+    service: "인플루언서 KOL 시딩", serviceEn: "Influencer KOL Seeding",
+    goal: "한국 거주 외국인 및 유학생 대상 코워크 앱 인지도 제고 및 가입 유도",
+    creators: "외국인 크리에이터 26명",
+    reach: "한국 거주 외국인 · 해외 유학 준비생 커뮤니티",
+    branches: "코워크 앱 · kowork.kr (온라인)",
+    views: "699,141", shares: "892",
+    source: "Kowork 성과 리포트 기준",
+    sheet: { id: "1AU9GO4lON-xGUkCVfI1aPjCwAJZUCL8bSGosEk0A27M", gids: ["1875774314"] },
+    reports: [
+      { label: "Kowork", url: "https://vivelyglobal.github.io/report/?brand=kowork&sheet=1AU9GO4lON-xGUkCVfI1aPjCwAJZUCL8bSGosEk0A27M&gid=1875774314" }
+    ],
+    note: "비자부터 취업까지 한 번에 해결하는 <b>외국인 구인구직 플랫폼</b>을, 실제 한국에 거주하는 외국인 크리에이터의 경험담으로 전달했습니다.",
+    insightQuote: "같은 고민을 겪은 크리에이터가 전한 진짜 이야기.",
+    clips: ["assets/brand/kowork-1.mp4","assets/brand/kowork-2.mp4","assets/brand/kowork-3.mp4","assets/brand/kowork-4.mp4"]
+  },
+  naap: {
+    title: "K-Skincare for MENA", brand: "naap", cat: "Beauty",
+    banner: "assets/banner/naap.png", logo: "",
+    service: "인플루언서 KOL 시딩", serviceEn: "Influencer KOL Seeding",
+    goal: "중동·북아프리카(MENA) 시장 대상 신제품 론칭 전 사전 인지도 확보",
+    creators: "외국인 크리에이터 27명",
+    reach: "MENA (중동·북아프리카) 및 이란 타깃 크리에이터 커뮤니티",
+    branches: "글로벌 온라인 (@naap_mena)",
+    views: "301,149", shares: "74",
+    source: "naap 성과 리포트 기준",
+    sheet: { id: "1AU9GO4lON-xGUkCVfI1aPjCwAJZUCL8bSGosEk0A27M", gids: ["1463693564"] },
+    reports: [
+      { label: "naap", url: "https://vivelyglobal.github.io/report/?brand=naap&sheet=1AU9GO4lON-xGUkCVfI1aPjCwAJZUCL8bSGosEk0A27M&gid=1463693564" }
+    ],
+    note: "9월 공식 론칭에 앞서 Layer Shield Cream · Ampoule과 피부 타입별 마스크팩을 담은 <b>맞춤형 시딩 박스</b>를 크리에이터에게 먼저 전달했습니다.",
+    insightQuote: "론칭 전부터 쌓아 올린 현지 기대감.",
+    clips: ["assets/brand/naap-1.mp4","assets/brand/naap-2.mp4","assets/brand/naap-3.mp4","assets/brand/naap-4.mp4"]
+  },
+  labiotte: {
+    title: "K-Beauty", brand: "라비오뜨", cat: "Beauty",
+    banner: "assets/banner/labiotte.jpg", logo: "assets/logos/labiotte.png",
+    service: "인플루언서 KOL 시딩", serviceEn: "Influencer KOL Seeding",
+    goal: "스킨 체인지 쿠션 크림 중심의 글로벌 제품 인지도 제고",
+    creators: "외국인 크리에이터 27명",
+    reach: "다국적 크리에이터 (인도네시아 · 일본 · 인도 등)",
+    branches: "글로벌 온라인 (@labiotteofficial)",
+    views: "173,253", shares: "88",
+    source: "라비오뜨 성과 리포트 기준",
+    sheet: { id: "1AU9GO4lON-xGUkCVfI1aPjCwAJZUCL8bSGosEk0A27M", gids: ["1975751077"] },
+    reports: [
+      { label: "라비오뜨", url: "https://vivelyglobal.github.io/report/?brand=labiotte&sheet=1AU9GO4lON-xGUkCVfI1aPjCwAJZUCL8bSGosEk0A27M&gid=1975751077" }
+    ],
+    note: "바르면 캡슐이 터지며 피치 컬러로 변하는 <b>스킨 체인지 쿠션 크림</b>을 크리에이터가 각자의 데일리 루틴 속에서 자연스럽게 보여줬습니다.",
+    insightQuote: "제품의 변화를 그대로 보여준 데일리 콘텐츠.",
+    clips: ["assets/brand/labiotte-1.mp4","assets/brand/labiotte-2.mp4","assets/brand/labiotte-3.mp4","assets/brand/labiotte-4.mp4"]
+  },
+  movo: {
+    title: "AI Presentation Maker", brand: "MOVO AI", cat: "AI Tech",
+    banner: "assets/banner/movo.png", logo: "",
+    service: "인플루언서 KOL 시딩", serviceEn: "Influencer KOL Seeding",
+    goal: "유학생·직장인 대상 AI 프레젠테이션 생성 서비스 인지도 제고 및 사용 유도",
+    creators: "외국인 크리에이터 24명",
+    reach: "다국적 크리에이터 (인도네시아 · 일본 · 인도 등)",
+    branches: "글로벌 온라인 (movoai.app · @movoai.global)",
+    views: "153,363", shares: "99",
+    source: "MOVO AI 성과 리포트 기준",
+    sheet: { id: "1AU9GO4lON-xGUkCVfI1aPjCwAJZUCL8bSGosEk0A27M", gids: ["521006565"] },
+    reports: [
+      { label: "MOVO AI", url: "https://vivelyglobal.github.io/report/?brand=movo+ai&sheet=1AU9GO4lON-xGUkCVfI1aPjCwAJZUCL8bSGosEk0A27M&gid=521006565" }
+    ],
+    note: "주제만 입력하면 구성부터 디자인까지 완성되는 <b>AI 프레젠테이션</b>을, 과제와 업무에 직접 활용하는 크리에이터의 일상으로 보여줬습니다.",
+    insightQuote: "실제 과제 속에서 증명된 AI의 쓸모.",
+    clips: ["assets/brand/movo-1.mp4","assets/brand/movo-2.mp4","assets/brand/movo-3.mp4","assets/brand/movo-4.mp4"]
   }
 };
-var ORDER = ["juno","labab","jaimdang","myeondong","apgujeong","tonymoly","parkjun","verynew"];
+var ORDER = ["juno","labab","jaimdang","myeondong","apgujeong","tonymoly","parkjun","verynew","kowork","naap","labiotte","movo"];
 
 (function () {
   var key = (location.search.match(/[?&]p=([^&]+)/) || [])[1];
@@ -269,22 +359,75 @@ var ORDER = ["juno","labab","jaimdang","myeondong","apgujeong","tonymoly","parkj
 
   /* sections */
   set("t-overview", p.brand + " 캠페인은 " + p.service + " 방식으로 진행했습니다. 목표는 " + p.goal + "이며, " + p.branches + "에서 실행했습니다.");
-  set("t-approach", p.creators + "이 참여해 각자의 시장을 대상으로 콘텐츠를 제작했고, " + p.reach + "에 도달했습니다.");
-  set("t-results", "총 조회수 " + p.views + "회, 공유 " + p.shares + "회를 기록했습니다. 조회수의 대부분이 팔로워가 아닌 신규 유입에서 발생해, 기존 팬덤을 넘어선 도달을 확인했습니다. (Vively 자체 집계, 2026년 8월 성과 리포트 기준)");
+  var renderStats = function () {
+    set("t-approach", p.creators + "이 참여해 각자의 시장을 대상으로 콘텐츠를 제작했고, " + p.reach + "에 도달했습니다.");
+    set("t-results", "총 조회수 " + p.views + "회, 공유 " + p.shares + "회를 기록했습니다. 조회수의 대부분이 팔로워가 아닌 신규 유입에서 발생해, 기존 팬덤을 넘어선 도달을 확인했습니다. (Vively 자체 집계, " + (p.source || "2026년 8월 성과 리포트 기준") + ")");
+    set("q-overview", p.creators + "의 시선이 " + p.brand + "를 만났습니다.");
+    set("q-results", "조회수 " + p.views + "회, 공유 " + p.shares + "회 달성.");
+    set("f-creators", p.creators);
+  };
+  renderStats();
   var insightPlain = p.note.replace(/<[^>]+>/g, "");
   set("t-insight", insightPlain);
 
-  set("q-overview", p.creators + "의 시선이 " + p.brand + "를 만났습니다.");
-  set("q-approach", num(p.reach) + "개국에서 전해진 진짜 경험의 콘텐츠.");
-  set("q-results", "조회수 " + p.views + "회, 공유 " + p.shares + "회 달성.");
+  set("q-approach", /\d/.test(p.reach) ? num(p.reach) + "개국에서 전해진 진짜 경험의 콘텐츠." : "현지의 시선으로 전해진 진짜 경험의 콘텐츠.");
   set("q-insight", p.insightQuote || "다음 캠페인으로 이어진 핵심 인사이트.");
 
   /* facts */
   set("f-brand", p.brand);
   set("f-service", p.service);
-  set("f-creators", p.creators);
   set("f-reach", p.reach);
   set("f-branches", p.branches);
+  if (p.reports && p.reports.length) {
+    document.getElementById("f-reports").innerHTML = p.reports.map(function (r) {
+      return '<a href="' + esc(r.url) + '" target="_blank" rel="noopener">' + esc(r.label) + ' &#8599;</a>';
+    }).join(" · ");
+    document.getElementById("f-reports-row").hidden = false;
+  }
+
+  /* live stats: sum views / shares (reposts when shares is empty) / unique creators across sheet tabs */
+  if (p.sheet) {
+    var parseCsv = function (text) {
+      return text.trim().split(/\r?\n/).map(function (line) {
+        var out = [], cur = "", q = false;
+        for (var i = 0; i < line.length; i++) {
+          var ch = line[i];
+          if (q) {
+            if (ch === '"' && line[i + 1] === '"') { cur += '"'; i++; }
+            else if (ch === '"') q = false;
+            else cur += ch;
+          } else if (ch === '"') q = true;
+          else if (ch === ",") { out.push(cur); cur = ""; }
+          else cur += ch;
+        }
+        out.push(cur);
+        return out;
+      });
+    };
+    Promise.all(p.sheet.gids.map(function (gid) {
+      return fetch("https://docs.google.com/spreadsheets/d/" + p.sheet.id + "/gviz/tq?tqx=out:csv&gid=" + gid)
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); });
+    })).then(function (texts) {
+      var views = 0, shares = 0, reposts = 0, creators = {};
+      texts.forEach(function (text) {
+        var rows = parseCsv(text), h = rows.shift() || [];
+        var col = function (row, name) { return parseFloat(String(row[h.indexOf(name)] || "").replace(/,/g, "")) || 0; };
+        rows.forEach(function (row) {
+          if (!row[h.indexOf("deliverable_id")]) return;
+          creators[row[h.indexOf("influencer_id")]] = 1;
+          views += col(row, "views");
+          shares += col(row, "shares");
+          reposts += col(row, "reposts");
+        });
+      });
+      var count = Object.keys(creators).length;
+      if (!count) return;
+      p.views = views.toLocaleString("en-US");
+      p.shares = (shares || reposts).toLocaleString("en-US");
+      p.creators = p.creators.replace(/\d+명/, count + "명");
+      renderStats();
+    }).catch(function () {});
+  }
 
   /* clips: lazy videos wired up by main.js via data-src + data-autoloop */
   var grid = document.getElementById("clip-grid");
