@@ -10,7 +10,11 @@
 //   status    { token }                            -> { participant }
 //   complete  { token, task, code }                -> { participant }
 //   admin     (header x-admin-key)                 -> { participants, counts }
-//   admin + { purge: "DELETE ALL" }                -> deletes every record (post-event cleanup)
+//   admin + { purge: "DELETE ALL" }                -> deletes every attendee record (post-event cleanup)
+//   admin + { saveContent, baseRev }               -> publishes new page wording
+//   content   (public)                             -> { rev, content, termsVersion }
+//   admin + { draw: "hotel" | "skin" }             -> draws and saves one winner
+//   admin + { removeWinner: "<prize>:<slot>", entryNo } -> frees the slot; that person is not drawn again
 const crypto = require("crypto");
 const { connectToDatabase } = require("./db");
 
@@ -124,6 +128,136 @@ function cleanInstagram(raw) {
   return /^[A-Za-z0-9._]{1,30}$/.test(s) ? s : null;
 }
 
+// ---- Lucky draw. Each winner is one document whose _id is the prize slot, with a unique index on the
+// person, so two staff drawing at once can't over-fill a prize or give one person two prizes. ----
+const PRIZES = [
+  { id: "hotel", label: "Hotel voucher (₩300,000)", slots: 5 },
+  { id: "skin", label: "Skin treatment (₩650,000)", slots: 5 },
+];
+async function getWinners() {
+  const { db } = await connectToDatabase();
+  const col = db.collection("event_winners");
+  await col.createIndex({ token: 1 }, { unique: true }); // must exist, so errors are not swallowed
+  return col;
+}
+const winnerView = (w) => ({
+  id: w._id, prize: w.prize, slot: w.slot, entryNo: w.entryNo,
+  name: w.name, phone: w.phone, instagram: w.instagram, drawnAt: w.drawnAt,
+});
+async function drawOne(people, prize) {
+  const winners = await getWinners();
+  for (let attempt = 0; attempt < 12; attempt++) {
+    const taken = await winners.find({}).toArray();
+    const used = new Set(taken.filter((w) => w.prize === prize.id).map((w) => w.slot));
+    let slot = 1;
+    while (used.has(slot)) slot++;
+    if (slot > prize.slots) return { error: "All " + prize.slots + " winners for this prize are already drawn." };
+    const won = new Set(taken.map((w) => w.token));
+    const pool = (await people.find({}).toArray()).filter((p) => p.completedAt && !p.drawRemoved && !won.has(p.token));
+    if (!pool.length) return { error: "No one left to draw. Only creators with all 3 stamps who haven't won are included." };
+    const p = pool[crypto.randomInt(pool.length)];
+    const doc = {
+      _id: prize.id + ":" + slot, prize: prize.id, slot, token: p.token, entryNo: p.entryNo,
+      name: p.name, phone: p.phone, instagram: p.instagram, drawnAt: new Date(),
+    };
+    try {
+      await winners.insertOne(doc);
+      return { winner: winnerView(doc), pool: pool.length };
+    } catch (e) {
+      if (!e || e.code !== 11000) throw e; // slot or person taken a moment ago: try again
+    }
+  }
+  return { error: "Busy, please tap again." };
+}
+
+// ---- Page wording edited on the desk page. Every save is a new revision (never overwritten), so
+// the terms a creator agreed to can be looked up later by termsVersion. ----
+class BadContent extends Error {}
+function cleanContent(c) {
+  const obj = (v, label) => {
+    if (!v || typeof v !== "object" || Array.isArray(v)) throw new BadContent(label + " is missing.");
+    return v;
+  };
+  const text = (v, label, max, required) => {
+    if (typeof v !== "string") throw new BadContent(label + " is missing.");
+    const t = v.replace(/\r\n/g, "\n").trim();
+    if (required && !t) throw new BadContent(label + " can't be empty.");
+    if (t.length > max) throw new BadContent(label + " is too long (max " + max + " characters).");
+    return t;
+  };
+  const list = (v, label, max) => {
+    if (!Array.isArray(v) || v.length > max) throw new BadContent(label + " can have up to " + max + " entries.");
+    return v;
+  };
+  const lines = (v, label, max, len) => list(v, label, max).map((x) => text(x, label, len, false)).filter(Boolean);
+  const pairs = (v, label, max, len) =>
+    list(v, label, max)
+      .map((p) => {
+        if (!Array.isArray(p)) throw new BadContent(label + " has a broken entry.");
+        const q = text(p[0], label + " heading", 200, false);
+        const a = text(p[1], label + " text", len, false);
+        if (!q !== !a) throw new BadContent(label + ": fill in both boxes, or clear both.");
+        return [q, a];
+      })
+      .filter((p) => p[0]);
+
+  obj(c, "Content");
+  const e = obj(c.event, "Event details");
+  const w = obj(c.welcome, "Welcome");
+  const z = obj(c.prizes, "Prizes");
+  const r = obj(c.register, "Sign-in");
+  const tp = obj(c.tasksPage, "Stamp page");
+  const d = obj(c.done, "Finish screen");
+  const f = obj(c.faq, "FAQ");
+  if (!Array.isArray(c.tasks) || c.tasks.length !== TASKS) throw new BadContent("There must be " + TASKS + " stops.");
+  const terms = pairs(c.terms, "Terms", 20, 2000);
+  if (!terms.length) throw new BadContent("Terms can't be empty.");
+  return {
+    event: {
+      dateLabel: text(e.dateLabel, "Date", 60, true),
+      chip: text(e.chip, "Date badge", 30, true),
+      time: text(e.time, "Time", 60, false),
+      place: text(e.place, "Venue", 200, false),
+      note: text(e.note, "Today line", 200, false),
+    },
+    welcome: {
+      title: text(w.title, "Welcome title", 80, true),
+      lead: text(w.lead, "Welcome intro", 400, false),
+      steps: lines(w.steps, "Steps", 6, 120),
+      footer: text(w.footer, "Footer line", 120, false),
+    },
+    prizes: {
+      heading: text(z.heading, "Prize heading", 80, false),
+      items: lines(z.items, "Prizes", 6, 160),
+      note: text(z.note, "Prize note", 300, false),
+    },
+    register: { title: text(r.title, "Sign-in title", 80, true), lead: text(r.lead, "Sign-in intro", 300, false) },
+    tasksPage: { intro: text(tp.intro, "Stamp page intro", 300, false), handoff: text(tp.handoff, "Staff handoff text", 300, false) },
+    tasks: c.tasks.map((t, i) => {
+      const label = "Stop " + (i + 1);
+      obj(t, label);
+      return {
+        title: text(t.title, label + " name", 60, true),
+        instruction: text(t.instruction, label + " instruction", 400, true),
+        faq: pairs(t.faq, label + " FAQ", 8, 600),
+      };
+    }),
+    done: { title: text(d.title, "Finish title", 80, true), lead: text(d.lead, "Finish text", 400, false) },
+    faq: {
+      welcome: pairs(f.welcome, "Welcome FAQ", 12, 600),
+      register: pairs(f.register, "Sign-in FAQ", 12, 600),
+      tasks: pairs(f.tasks, "Stamp page FAQ", 12, 600),
+      done: pairs(f.done, "Finish FAQ", 12, 600),
+    },
+    terms,
+  };
+}
+async function latestContent() {
+  const { db } = await connectToDatabase();
+  const rows = await db.collection("event_content").find({}).sort({ _id: -1 }).limit(1).toArray();
+  return rows[0] || null;
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") return reply(405, { error: "POST only" });
 
@@ -150,11 +284,56 @@ exports.handler = async (event) => {
       if (!safeEqual(sent, adminKey)) return reply(401, { error: "Wrong key" });
       await giveBack(slot);
 
+      // Publish new wording. baseRev stops two staff members overwriting each other.
+      if (body.saveContent !== undefined) {
+        let content;
+        try {
+          content = cleanContent(body.saveContent);
+        } catch (e) {
+          if (e instanceof BadContent) return reply(400, { error: e.message });
+          throw e;
+        }
+        const current = await latestContent();
+        const currentRev = current ? current._id : 0;
+        const stale = { error: "Someone else saved changes first. Reload the wording, then edit again." };
+        if (body.baseRev !== currentRev) return reply(409, stale);
+        // The version changes only when the terms or prizes change.
+        const termsVersion =
+          "t-" + crypto.createHash("sha256").update(JSON.stringify([content.terms, content.prizes])).digest("hex").slice(0, 12);
+        const { db } = await connectToDatabase();
+        try {
+          await db.collection("event_content").insertOne({ _id: currentRev + 1, content, termsVersion, savedAt: new Date() });
+        } catch (e) {
+          if (e && e.code === 11000) return reply(409, stale);
+          throw e;
+        }
+        return reply(200, { rev: currentRev + 1, content, termsVersion });
+      }
+
       const col = await getCol();
+
+      if (body.draw !== undefined) {
+        const prize = PRIZES.find((x) => x.id === body.draw);
+        if (!prize) return reply(400, { error: "Unknown prize." });
+        const r = await drawOne(col, prize);
+        return reply(r.error ? 409 : 200, r);
+      }
+      if (body.removeWinner !== undefined) {
+        const winners = await getWinners();
+        const w = await winners.findOne({ _id: String(body.removeWinner) });
+        if (!w) return reply(404, { error: "That winner is no longer on the list." });
+        // A stale screen must not remove whoever has since taken the slot.
+        if (body.entryNo !== w.entryNo) return reply(409, { error: "The winner list changed. Check it and try again." });
+        // Mark the person first so a draw running right now can't pick them again.
+        await col.updateOne({ token: w.token }, { $set: { drawRemoved: true } });
+        await winners.deleteOne({ _id: w._id, token: w.token });
+        return reply(200, { removed: w._id });
+      }
 
       // Wipe everything after the event (the page promises deletion). Needs the exact phrase.
       if (body.purge !== undefined) {
         if (body.purge !== "DELETE ALL") return reply(400, { error: "Type DELETE ALL to confirm." });
+        await (await getWinners()).deleteMany({});
         const r = await col.deleteMany({});
         const rate = await getRate();
         await rate.deleteMany({});
@@ -165,6 +344,7 @@ exports.handler = async (event) => {
       }
 
       const rows = await col.find({}).sort({ entryNo: 1 }).toArray();
+      const winners = (await (await getWinners()).find({}).toArray()).map(winnerView);
       const participants = rows.map((p) => ({
         termsAt: p.termsAt || null,
         termsVersion: p.termsVersion || "",
@@ -178,11 +358,19 @@ exports.handler = async (event) => {
       }));
       return reply(200, {
         participants,
+        prizes: PRIZES,
+        winners,
         counts: {
           registered: participants.length,
           finished: participants.filter((p) => p.completedAt).length,
         },
       });
+    }
+
+    // ---------- public wording ----------
+    if (action === "content") {
+      const c = await latestContent();
+      return reply(200, c ? { rev: c._id, content: c.content, termsVersion: c.termsVersion } : { rev: 0, content: null, termsVersion: "" });
     }
 
     const col = await getCol();
@@ -211,6 +399,11 @@ exports.handler = async (event) => {
           return reply(200, { token: existing.token, participant: publicView(existing) });
         return reply(409, { error: "This phone number is already checked in. Please ask a Vively staff member." });
       }
+
+      // If staff changed the terms or prizes while this page was open, show the new ones first.
+      const published = await latestContent();
+      if (published && body.termsVersion !== published.termsVersion)
+        return reply(409, { error: "The Terms were just updated. Please read and agree again.", termsChanged: true });
 
       const token = crypto.randomBytes(24).toString("hex");
       // entryNo has a unique index; if two sign-ups collide, recompute and retry.
