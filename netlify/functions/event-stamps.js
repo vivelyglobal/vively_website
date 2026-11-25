@@ -56,17 +56,26 @@ async function getRate() {
   await col.createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 }).catch(() => {});
   return col;
 }
-async function isBlocked(key, limit) {
+// Count FIRST, compare second. One atomic upsert per attempt, so a burst of parallel guesses
+// cannot all slip past the limit. Fixed windows; the TTL index clears old ones.
+async function take(key, limit, windowMs = WINDOW_MS) {
   const col = await getRate();
-  const d = await col.findOne({ key });
-  return !!(d && d.expiresAt > new Date() && d.count >= limit);
+  const bucket = Math.floor(Date.now() / windowMs);
+  const id = key + ":" + bucket;
+  const resetAt = (bucket + 1) * windowMs;
+  const r = await col.findOneAndUpdate(
+    { _id: id },
+    { $inc: { count: 1 }, $setOnInsert: { expiresAt: new Date(resetAt) } },
+    { upsert: true, returnDocument: "after" }
+  );
+  const doc = r && typeof r.count === "number" ? r : r && r.value;
+  if (!doc || typeof doc.count !== "number") throw new Error("rate limiter unavailable");
+  return { id, resetAt, count: doc.count, ok: doc.count <= limit };
 }
-async function bump(key) {
+// A correct code or key should not use up the allowance.
+async function giveBack(slot, n = 1) {
   const col = await getRate();
-  const d = await col.findOne({ key });
-  const now = new Date();
-  if (d && d.expiresAt > now) await col.updateOne({ key }, { $inc: { count: 1 } });
-  else await col.updateOne({ key }, { $set: { count: 1, expiresAt: new Date(now.getTime() + WINDOW_MS) } }, { upsert: true });
+  await col.updateOne({ _id: slot.id }, { $inc: { count: -n } });
 }
 
 // Atomic counter: hands every sign-up its own entry number even when 50 people scan at once.
@@ -134,13 +143,12 @@ exports.handler = async (event) => {
       if (!adminKey || adminKey.length < MIN_KEY_LEN)
         return reply(503, { error: "Admin key not configured (needs 16+ characters)" });
       const ip = clientIp(event);
-      if (await isBlocked("admin:" + ip, LIMITS.adminFail))
+      const slot = await take("admin:" + ip, LIMITS.adminFail);
+      if (!slot.ok)
         return reply(429, { error: "Too many wrong keys. Try again in 10 minutes." });
       const sent = event.headers["x-admin-key"] || event.headers["X-Admin-Key"] || "";
-      if (!safeEqual(sent, adminKey)) {
-        await bump("admin:" + ip);
-        return reply(401, { error: "Wrong key" });
-      }
+      if (!safeEqual(sent, adminKey)) return reply(401, { error: "Wrong key" });
+      await giveBack(slot);
 
       const col = await getCol();
 
@@ -192,10 +200,8 @@ exports.handler = async (event) => {
       if (body.consent !== true)
         return reply(400, { error: "Please tick the box so we can keep your details." });
 
-      const regKey = "reg:" + clientIp(event);
-      if (await isBlocked(regKey, LIMITS.register))
+      if (!(await take("reg:" + clientIp(event), LIMITS.register)).ok)
         return reply(429, { error: "Too many sign-ups from this connection. Ask staff for help." });
-      await bump(regKey);
 
       const existing = await col.findOne({ phone });
       if (existing) {
@@ -221,7 +227,6 @@ exports.handler = async (event) => {
           termsVersion: String(body.termsVersion || "").slice(0, 40),
           registeredAt: new Date(),
           tasks: [null, null, null],
-          wrong: 0,
           lockedUntil: 0,
           completedAt: null,
         };
@@ -275,21 +280,22 @@ exports.handler = async (event) => {
       if (!expected || expected.length < MIN_CODE_LEN)
         return reply(503, { error: "Task code not set up yet. Ask staff." });
 
-      const failKey = "code:" + clientIp(event);
-      if (await isBlocked(failKey, LIMITS.codeFail))
+      // Reserve an attempt for this person, then for this connection, BEFORE checking the code.
+      const mine = await take("p:" + token, MAX_WRONG, LOCK_MS);
+      if (!mine.ok) return reply(429, { error: "Too many tries. Wait 30 seconds.", participant: publicView(p) });
+      const net = await take("code:" + clientIp(event), LIMITS.codeFail);
+      if (!net.ok)
         return reply(429, { error: "Too many wrong codes from this connection. Ask staff." });
 
       if (!safeEqual(norm(body.code), norm(expected))) {
-        await bump(failKey);
-        // Atomic increment so parallel guesses can't all read wrong=0.
-        await col.updateOne({ token }, { $inc: { wrong: 1 } });
-        const after = await col.findOne({ token });
-        const lock = (after.wrong || 0) >= MAX_WRONG;
-        if (lock) await col.updateOne({ token }, { $set: { wrong: 0, lockedUntil: Date.now() + LOCK_MS } });
+        const lock = mine.count >= MAX_WRONG;
+        if (lock) await col.updateOne({ token }, { $set: { lockedUntil: mine.resetAt } });
         return reply(400, {
           error: lock ? "Too many tries. Wait 30 seconds." : "That code is not right. Check with staff.",
         });
       }
+      await giveBack(net);
+      await giveBack(mine, mine.count); // fresh allowance for the next stop
 
       // Atomic, idempotent stamp: only writes if this task is still empty AND the previous one is
       // done. Double/triple submits (or two staff taps) can't stamp twice or overwrite each other.
@@ -297,7 +303,7 @@ exports.handler = async (event) => {
       const idx = task - 1;
       const filter = { token, ["tasks." + idx]: null };
       if (idx > 0) filter["tasks." + (idx - 1)] = { $ne: null };
-      const upd = await col.updateOne(filter, { $set: { ["tasks." + idx]: now, wrong: 0, lockedUntil: 0 } });
+      const upd = await col.updateOne(filter, { $set: { ["tasks." + idx]: now, lockedUntil: 0 } });
       let fresh = await col.findOne({ token });
       if (upd && upd.modifiedCount === 0 && !(fresh.tasks || [])[idx]) {
         // Nothing was written and the stop is still empty: the earlier stop isn't done.
