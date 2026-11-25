@@ -45,9 +45,10 @@ const MIN_KEY_LEN = 16;
 
 function clientIp(event) {
   const h = event.headers || {};
-  return String(
-    h["x-nf-client-connection-ip"] || (h["x-forwarded-for"] || "").split(",")[0] || "unknown"
-  ).trim();
+  // Trust only the header the current host sets itself. On Render (behind
+  // Cloudflare) the caller can forge x-nf-* and the start of x-forwarded-for.
+  const trusted = process.env.RENDER ? h["cf-connecting-ip"] : h["x-nf-client-connection-ip"];
+  return String(trusted || (h["x-forwarded-for"] || "").split(",").pop() || "unknown").trim();
 }
 async function getRate() {
   const { db } = await connectToDatabase();
