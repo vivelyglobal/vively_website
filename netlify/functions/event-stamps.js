@@ -39,7 +39,7 @@ const norm = (s) => String(s || "").trim().toLowerCase();
 // ---- per-IP limiter (Mongo, auto-expiring). Venue wifi shares one IP, so limits are generous
 // for normal use but stop scripted guessing. ----
 const WINDOW_MS = 10 * 60 * 1000;
-const LIMITS = { adminFail: 8, codeFail: 40, register: 60 };
+const LIMITS = { adminFail: 20, codeFail: 200, register: 300 };
 const MIN_CODE_LEN = 6; // env codes shorter than this are treated as "not set up"
 const MIN_KEY_LEN = 16;
 
@@ -73,9 +73,9 @@ async function take(key, limit, windowMs = WINDOW_MS) {
   return { id, resetAt, count: doc.count, ok: doc.count <= limit };
 }
 // A correct code or key should not use up the allowance.
-async function giveBack(slot, n = 1) {
+async function giveBack(slot) {
   const col = await getRate();
-  await col.updateOne({ _id: slot.id }, { $inc: { count: -n } });
+  await col.updateOne({ _id: slot.id }, { $inc: { count: -1 } });
 }
 
 // Atomic counter: hands every sign-up its own entry number even when 50 people scan at once.
@@ -295,7 +295,7 @@ exports.handler = async (event) => {
         });
       }
       await giveBack(net);
-      await giveBack(mine, mine.count); // fresh allowance for the next stop
+      await giveBack(mine); // only this attempt; parallel correct taps can't bank extra guesses
 
       // Atomic, idempotent stamp: only writes if this task is still empty AND the previous one is
       // done. Double/triple submits (or two staff taps) can't stamp twice or overwrite each other.
