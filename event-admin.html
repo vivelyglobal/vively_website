@@ -256,7 +256,7 @@ function drawEditor() {
   $("editForm").textContent = "";
   const c = draft;
   let s = section("Event details (date, time, venue)");
-  bind(s, "Date", c.event, "dateLabel"); bind(s, "Date badge (top right)", c.event, "chip");
+  bind(s, "Date", c.event, "dateLabel");
   bind(s, "Time", c.event, "time"); bind(s, "Venue (blank hides the row)", c.event, "place"); bind(s, "Today line", c.event, "note");
   s = section("Lucky draw prizes");
   bind(s, "Heading", c.prizes, "heading"); bindLines(s, "Prizes", c.prizes, "items", 4); bind(s, "Note under the prizes", c.prizes, "note", 2);
