@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#F6E3BE">
+<title>Vively Thanks-Giving Stamp Rally</title>
+<link rel="icon" type="image/png" href="assets/logo/favicon.png">
+<link rel="apple-touch-icon" href="assets/logo/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6E3BE;
+  --paper-2:#FBF1DA;
+  --ink:#3A2214;
+  --pumpkin:#C2540A;
+  --cranberry:#9B2C3A;
+  --mustard:#EDB033;
+  --olive:#5E6B2A;
+  --coral:#FF5757;
+  --line:2.5px solid var(--ink);
+  --pop:4px 4px 0 var(--ink);
+  --serif:"Fraunces","Iowan Old Style",Georgia,serif;
+  --sans:"DM Sans","Pretendard",-apple-system,"Segoe UI",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;min-height:100vh;color:var(--ink);font:500 16px/1.5 var(--sans);
+  background:
+    radial-gradient(circle at 1px 1px, rgba(58,34,20,.16) 1px, transparent 1.6px) 0 0/18px 18px,
+    var(--paper);
+  overflow-x:hidden;
+}
+.wrap{position:relative;z-index:3;max-width:480px;margin:0 auto;padding:18px 20px calc(24px + env(safe-area-inset-bottom))}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.top img{height:28px;width:auto;display:block}
+.chip{font:700 12px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;border:var(--line);border-radius:99px;padding:7px 11px;background:var(--mustard)}
+h1,h2,h3{font-family:var(--serif);font-weight:900;line-height:1.02;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(38px,11vw,50px)}
+h2{font-size:30px}
+h3{font-size:22px}
+p{margin:0}
+.lead{font-size:17px;margin-top:12px}
+.muted{opacity:.8}
+section{display:none}
+section.on{display:block;animation:rise .55s cubic-bezier(.2,.9,.3,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+:focus-visible,input:focus{outline:3px solid var(--cranberry);outline-offset:3px;border-radius:6px}
+h1:focus,h2:focus{outline:none}
+
+/* ---------- back / refresh ---------- */
+.navbar{display:flex;justify-content:space-between;gap:10px;margin:10px 0 2px}
+.navbar[hidden]{display:none}
+.navbtn{appearance:none;min-height:44px;padding:8px 14px;border:var(--line);border-radius:12px;background:var(--paper-2);color:var(--ink);font:700 14px var(--sans);box-shadow:3px 3px 0 var(--ink);cursor:pointer;transition:transform .12s,box-shadow .12s}
+.navbtn:active{transform:translate(3px,3px);box-shadow:none}
+.navbtn[hidden]{display:none}
+.navbtn[disabled]{opacity:.6;cursor:wait}
+.navbtn.spin::before{content:"";display:inline-block;width:12px;height:12px;margin-right:8px;border:2.5px solid var(--ink);border-top-color:transparent;border-radius:50%;vertical-align:-2px;animation:spinflake .7s linear infinite}
+
+/* ---------- buttons ---------- */
+.btn{
+  appearance:none;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:54px;
+  font:700 17px/1 var(--sans);color:#fff;background:var(--pumpkin);text-decoration:none;
+  border:var(--line);border-radius:14px;box-shadow:var(--pop);padding:14px 18px;cursor:pointer;
+  transition:transform .12s ease,box-shadow .12s ease,background .2s;
+}
+.btn:hover{background:#d4600f}
+.btn:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--ink)}
+.btn.ghost{background:var(--paper-2);color:var(--ink)}
+.btn.ig{background:var(--coral);color:var(--ink)}
+.btn.ig:hover{background:#ff6c6c}
+.btn[disabled]{opacity:.6;cursor:wait}
+.stack{display:grid;gap:14px;margin-top:22px}
+
+/* ---------- cards ---------- */
+.card{background:var(--paper-2);border:var(--line);border-radius:18px;box-shadow:var(--pop);padding:18px}
+.party{margin-top:20px;transform:rotate(-1deg)}
+.party dl{margin:0;display:grid;gap:10px}
+.party .row{display:flex;gap:12px;align-items:baseline}
+.party dt{flex:0 0 74px;font:700 12px/1.4 var(--sans);text-transform:uppercase;letter-spacing:.08em;color:var(--cranberry)}
+.party dd{margin:0;font-weight:700}
+.steps{list-style:none;margin:16px 0 0;padding:16px 0 0;border-top:2px dashed rgba(58,34,20,.4);display:grid;gap:10px}
+.steps li{display:flex;gap:12px;align-items:center}
+.steps b{flex:0 0 28px;height:28px;border-radius:50%;background:var(--ink);color:var(--paper-2);display:grid;place-items:center;font:700 14px var(--sans)}
+
+/* ---------- turkey ---------- */
+.hero{display:grid;place-items:center;margin:2px 0 0}
+.turkey{width:min(270px,76%);height:auto;overflow:visible}
+.turkey .bob{transform-origin:130px 210px;animation:bob 3.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) scale(1,1)}50%{transform:translateY(-4px) scale(.99,1.015)}}
+.turkey.hop .bob{animation:hop .75s cubic-bezier(.3,1.4,.5,1) 1}
+@keyframes hop{0%{transform:scale(1.08,.88)}35%{transform:translateY(-26px) scale(.94,1.08)}65%{transform:translateY(0) scale(1.06,.92)}100%{transform:none}}
+.turkey .blink{transform-box:fill-box;transform-origin:center;animation:blink 4.2s infinite}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+.turkey .twinkle{transform-box:fill-box;transform-origin:center;animation:twinkle 2.4s ease-in-out infinite}
+.turkey .twinkle:nth-of-type(2){animation-delay:.8s}
+.turkey .twinkle:nth-of-type(3){animation-delay:1.5s}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.5) rotate(0)}50%{opacity:1;transform:scale(1.1) rotate(25deg)}}
+.feather .fill{opacity:0;transform:scale(.2);transform-origin:130px 140px}
+.feather .ghost{fill:rgba(58,34,20,.07);stroke:var(--ink);stroke-width:2.5;stroke-dasharray:3 6;stroke-linecap:round;opacity:.55}
+.feather.got .fill{opacity:1;transform:none;animation:featherPop .85s cubic-bezier(.2,1.5,.4,1) both}
+.feather.got .ghost{opacity:0}
+.feather.static .fill{animation:none}
+@keyframes featherPop{0%{opacity:0;transform:scale(.1) rotate(-30deg)}60%{transform:scale(1.18) rotate(6deg)}100%{opacity:1;transform:none}}
+
+/* ---------- forms ---------- */
+form{display:grid;gap:16px;margin-top:20px}
+label.f{display:grid;gap:6px;font:700 14px var(--sans)}
+input[type=text],input[type=tel],input[type=password]{
+  width:100%;min-height:54px;font:500 18px var(--sans);color:var(--ink);background:#fff;
+  border:var(--line);border-radius:12px;padding:12px 14px;
+}
+.checks{display:grid;gap:12px}
+.consent{display:flex;gap:12px;align-items:flex-start;font-size:14.5px;font-weight:500}
+.consent input{flex:0 0 26px;width:26px;height:26px;margin:1px 0 0;accent-color:var(--cranberry)}
+.linkbtn{appearance:none;background:none;border:0;padding:0;font:inherit;font-weight:700;color:var(--cranberry);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.err{min-height:22px;color:var(--cranberry);font-weight:700;font-size:15px}
+
+/* ---------- tasks ---------- */
+.progress{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 0 12px}
+.progress .count{font:900 30px var(--serif)}
+.tasks{display:grid;gap:22px;margin-top:6px}
+.task{position:relative;background:var(--paper-2);border:var(--line);border-radius:18px;box-shadow:var(--pop);padding:16px}
+.task.locked{background:#E9D9B3;box-shadow:none}
+.task.locked h3,.task.locked p{opacity:.85}
+.task.locked .num{opacity:.7}
+.task.hit{animation:thud .5s ease}
+@keyframes thud{0%{transform:none}20%{transform:translate(2px,5px) rotate(.6deg)}45%{transform:translate(-3px,-2px) rotate(-.6deg)}70%{transform:translate(1px,1px)}100%{transform:none}}
+.task-head{display:flex;gap:14px;align-items:center}
+.task.done .task-head{padding-right:84px}
+.num{flex:0 0 46px;height:46px;border-radius:50%;border:var(--line);display:grid;place-items:center;font:900 22px var(--serif);background:var(--mustard)}
+.task.locked .num{background:#d9c9a4}
+.task.done .num{background:var(--olive);color:#fff}
+.task-head p{font-size:14px;margin-top:3px}
+.stampslot{position:absolute;right:12px;top:-14px;width:92px;height:92px;pointer-events:none}
+.stamp{width:100%;height:100%;transform:rotate(var(--r,-10deg))}
+.stamp.slam{animation:slam .65s cubic-bezier(.2,1.6,.35,1) both}
+@keyframes slam{0%{opacity:0;transform:scale(3.2) rotate(calc(var(--r,-10deg) - 25deg))}55%{opacity:1;transform:scale(.88) rotate(var(--r,-10deg))}75%{transform:scale(1.07) rotate(var(--r,-10deg))}100%{opacity:1;transform:scale(1) rotate(var(--r,-10deg))}}
+.task .go{margin-top:14px}
+.handoff{margin-top:14px;padding:14px;border:2.5px dashed var(--ink);border-radius:14px;background:#fff;display:none;gap:10px}
+.handoff.open{display:grid;animation:rise .35s both}
+.handoff .who{font:700 13px var(--sans);text-transform:uppercase;letter-spacing:.08em;color:var(--cranberry)}
+.handoff .row{display:flex;gap:10px}
+.handoff input{letter-spacing:.12em}
+.handoff .btn{width:auto;min-width:112px}
+
+/* ---------- FAQ ---------- */
+.faqwrap{margin-top:30px}
+.faqwrap>h3{font-size:24px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.faqwrap>h3::before{content:"?";display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--mustard);border:var(--line);font:900 18px var(--serif)}
+details.faq{background:var(--paper-2);border:var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden}
+details.faq summary{list-style:none;cursor:pointer;padding:13px 46px 13px 14px;font-weight:700;position:relative;min-height:48px;display:flex;align-items:center}
+details.faq summary::-webkit-details-marker{display:none}
+details.faq summary::after{content:"+";position:absolute;right:12px;top:50%;width:26px;height:26px;margin-top:-13px;border-radius:50%;background:var(--pumpkin);color:#fff;display:grid;place-items:center;font:700 18px/1 var(--sans);transition:transform .25s}
+details.faq[open] summary::after{transform:rotate(135deg)}
+details.faq .ans{padding:0 14px 14px;font-size:15px;animation:rise .3s both}
+details.faq.mini{margin:14px 0 0;background:#fff;border-width:2px;border-radius:12px}
+details.faq.mini summary{font-size:14px;min-height:44px}
+
+/* ---------- ticket ---------- */
+.ticket{
+  position:relative;margin-top:22px;text-align:center;padding:26px 20px 24px;color:var(--ink);
+  background:var(--mustard);border:var(--line);border-radius:18px;box-shadow:var(--pop);
+  animation:ticketIn .9s cubic-bezier(.2,1.3,.4,1) both;
+}
+.ticket::before,.ticket::after{content:"";position:absolute;top:50%;width:26px;height:26px;border-radius:50%;background:var(--paper);border:var(--line);transform:translateY(-50%)}
+.ticket::before{left:-15px;clip-path:inset(0 0 0 50%)}
+.ticket::after{right:-15px;clip-path:inset(0 50% 0 0)}
+@keyframes ticketIn{from{opacity:0;transform:translateY(40px) rotate(-6deg) scale(.9)}to{opacity:1;transform:rotate(-1.5deg)}}
+.ticket .no{font:900 clamp(64px,22vw,92px)/1 var(--serif);margin:6px 0 2px}
+.ticket .tiny{font:700 12px var(--sans);letter-spacing:.14em;text-transform:uppercase}
+.ticket .nm{font:700 20px var(--sans)}
+.ticket hr{border:0;border-top:2.5px dashed var(--ink);margin:16px 0}
+
+/* ---------- terms dialog ---------- */
+dialog{width:min(560px,94vw);max-height:86vh;padding:0;border:var(--line);border-radius:18px;background:var(--paper-2);color:var(--ink);box-shadow:var(--pop)}
+dialog::backdrop{background:rgba(58,34,20,.55)}
+.dlg-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:16px 18px;border-bottom:2px dashed rgba(58,34,20,.4)}
+.dlg-body{overflow:auto;max-height:calc(86vh - 150px);padding:6px 18px 12px;font-size:15px}
+.dlg-body h4{font:900 17px var(--serif);margin:16px 0 4px}
+.dlg-body p{margin-bottom:6px}
+.dlg-foot{display:flex;gap:10px;padding:14px 18px;border-top:2px dashed rgba(58,34,20,.4)}
+.dlg-foot .btn{min-height:48px;font-size:16px}
+.xbtn{appearance:none;width:40px;height:40px;border-radius:50%;border:var(--line);background:#fff;font:700 20px var(--sans);cursor:pointer}
+
+/* ---------- atmosphere: leaves, snow, fire ---------- */
+.fx{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.glow{position:fixed;left:0;right:0;bottom:0;height:46vh;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 80% 100% at 50% 100%,rgba(255,138,40,.34),rgba(255,138,40,0) 70%);animation:glow 3.2s ease-in-out infinite}
+@keyframes glow{0%,100%{opacity:.75}30%{opacity:1}55%{opacity:.82}80%{opacity:.95}}
+.leaf{position:absolute;top:-70px;width:var(--s,34px);height:var(--s,34px);animation:fall var(--d,14s) linear var(--delay,0s) infinite}
+.leaf svg{width:100%;height:100%;display:block;animation:sway var(--sp,4s) ease-in-out infinite alternate}
+@keyframes fall{0%{transform:translate3d(0,-70px,0)}100%{transform:translate3d(var(--dx,40px),112vh,0)}}
+@keyframes sway{from{transform:rotate(-22deg) translateX(-8px)}to{transform:rotate(22deg) translateX(8px)}}
+.snow{position:absolute;top:-30px;animation:fall var(--d,12s) linear var(--delay,0s) infinite}
+.snow i{display:block;width:var(--s,8px);height:var(--s,8px);border-radius:50%;background:#fff;box-shadow:0 0 0 1.5px rgba(58,34,20,.3);animation:drift var(--sp,3s) ease-in-out infinite alternate}
+.snow svg{width:var(--s,16px);height:var(--s,16px);display:block;filter:drop-shadow(0 0 1px rgba(58,34,20,.7));animation:spinflake var(--sp,6s) linear infinite}
+@keyframes drift{from{transform:translateX(-10px)}to{transform:translateX(10px)}}
+@keyframes spinflake{to{transform:rotate(360deg)}}
+
+.cozy{position:relative;z-index:3;max-width:480px;margin:0 auto;padding:6px 20px calc(30px + env(safe-area-inset-bottom));text-align:center}
+.cozy p{font:700 14px var(--sans);margin-top:2px}
+.campfire{width:min(230px,62%);height:auto;overflow:visible;display:block;margin:0 auto}
+.flame{transform-box:fill-box;transform-origin:50% 100%}
+.f1{animation:flick1 .9s ease-in-out infinite alternate}
+.f2{animation:flick2 .7s ease-in-out infinite alternate}
+.f3{animation:flick3 .55s ease-in-out infinite alternate}
+@keyframes flick1{0%{transform:scale(1,1) skewX(-3deg)}100%{transform:scale(.94,1.1) skewX(4deg)}}
+@keyframes flick2{0%{transform:scale(1,.95) skewX(4deg)}100%{transform:scale(1.05,1.12) skewX(-5deg)}}
+@keyframes flick3{0%{transform:scale(.95,1) skewX(-5deg)}100%{transform:scale(1.08,1.15) skewX(3deg)}}
+.ember{transform-box:fill-box;transform-origin:center;opacity:0;animation:ember var(--d,2.6s) ease-out var(--delay,0s) infinite}
+@keyframes ember{0%{opacity:0;transform:translate(0,0) scale(1)}15%{opacity:1}100%{opacity:0;transform:translate(var(--x,10px),-90px) scale(.2)}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.confetti{position:fixed;inset:0;z-index:50;pointer-events:none;overflow:hidden}
+.confetti i{position:absolute;left:50%;top:38%;width:10px;height:14px;border-radius:2px;animation:burst 1.8s cubic-bezier(.15,.7,.3,1) forwards}
+@keyframes burst{0%{transform:translate(0,0) rotate(0);opacity:1}70%{opacity:1}100%{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}
+  .fx{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- shared SVG symbols -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <path id="ringPath" d="M50,50 m-33,0 a33,33 0 1,1 66,0 a33,33 0 1,1 -66,0"/>
+    <!-- puffy, smiling leaf -->
+    <symbol id="leafSym" viewBox="0 0 48 52">
+      <path d="M24 2C34 11 45 19 42 33C40 43 32 48 24 48C16 48 8 43 6 33C3 19 14 11 24 2Z" fill="currentColor"/>
+      <path d="M24 12v34M24 24l-8-6M24 31l9-7" stroke="rgba(58,34,20,.28)" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <rect x="21.7" y="44" width="4.6" height="8" rx="2.3" fill="currentColor"/>
+      <ellipse cx="17.5" cy="30" rx="2.4" ry="3.1" fill="#3A2214"/><ellipse cx="30.5" cy="30" rx="2.4" ry="3.1" fill="#3A2214"/>
+      <circle cx="18.3" cy="28.8" r=".95" fill="#fff"/><circle cx="31.3" cy="28.8" r=".95" fill="#fff"/>
+      <ellipse cx="12.5" cy="35" rx="3.2" ry="2" fill="#FF8FA3" opacity=".85"/><ellipse cx="35.5" cy="35" rx="3.2" ry="2" fill="#FF8FA3" opacity=".85"/>
+      <path d="M21 35c1.6 2 4.4 2 6 0" fill="none" stroke="#3A2214" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="flakeSym" viewBox="0 0 24 24">
+      <g stroke="#fff" stroke-width="2.6" stroke-linecap="round" fill="none">
+        <path d="M12 2v20M3.3 7l17.4 10M3.3 17L20.7 7"/>
+        <path d="M9 4l3 2 3-2M9 20l3-2 3 2" stroke-width="2"/>
+      </g>
+    </symbol>
+    <symbol id="ic-cafe" viewBox="0 0 40 40">
+      <path d="M8 16h20v10a8 8 0 0 1-8 8h-4a8 8 0 0 1-8-8V16z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M28 19h3a4 4 0 0 1 0 8h-3" fill="none" stroke="currentColor" stroke-width="3"/>
+      <path d="M13 6c-2 2 2 3 0 6M20 5c-2 2 2 3 0 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="ic-hotel" viewBox="0 0 40 40">
+      <path d="M6 34V12l14-6 14 6v22z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M12 16h4M24 16h4M12 23h4M24 23h4" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+      <path d="M17 34v-7h6v7" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="ic-clinic" viewBox="0 0 40 40">
+      <path d="M20 35C8 27 5 19 8 13c3-5 9-4 12 0 3-4 9-5 12 0 3 6 0 14-12 22z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M20 14v12M14 20h12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="glow" aria-hidden="true"></div>
+<div class="fx" id="fx" aria-hidden="true"></div>
+
+<main class="wrap">
+  <div class="top">
+    <img src="assets/logo/vively-lockup-black.png" alt="Vively" width="2000" height="519">
+    <span class="chip" id="dateChip">Sat · Nov 28</span>
+  </div>
+
+  <div class="navbar" id="navbar" hidden>
+    <button type="button" class="navbtn" id="backBtn">← Back</button>
+    <button type="button" class="navbtn" id="refreshBtn" hidden>↻ Refresh</button>
+  </div>
+
+  <!-- 1. WELCOME -->
+  <section id="s-welcome" class="on">
+    <div class="hero" id="heroWelcome"></div>
+    <h1 tabindex="-1">Thanks-Giving<br>Stamp Rally</h1>
+    <p class="lead">Three stops. Three stamps. One lucky draw. Grab a coffee, tour a hotel, peek into a clinic, and film it all.</p>
+
+    <div class="card party">
+      <dl id="partyInfo"></dl>
+      <ol class="steps">
+        <li><b>1</b><span>Sign in so we know you're here</span></li>
+        <li><b>2</b><span>Film a clip at each stop</span></li>
+        <li><b>3</b><span>Show staff, get your stamp</span></li>
+        <li><b>4</b><span>3 stamps = you're in the lucky draw</span></li>
+      </ol>
+    </div>
+
+    <div class="stack">
+      <a class="btn ig" href="https://instagram.com/vively.global" target="_blank" rel="noopener noreferrer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+        Follow @vively.global
+      </a>
+      <button class="btn" id="startBtn" type="button">Get my passport →</button>
+    </div>
+    <div class="faqwrap" id="faq-welcome"></div>
+  </section>
+
+  <!-- 2. REGISTER -->
+  <section id="s-register">
+    <h2 tabindex="-1">Who's joining us?</h2>
+    <p class="lead">This is also your check-in for today.</p>
+    <form id="regForm" novalidate>
+      <label class="f">Your name
+        <input type="text" id="fName" name="name" autocomplete="name" maxlength="80" required>
+      </label>
+      <label class="f">Phone number
+        <input type="tel" id="fPhone" name="phone" autocomplete="tel" inputmode="tel" placeholder="010-1234-5678" required>
+      </label>
+      <label class="f">Instagram
+        <input type="text" id="fIg" name="instagram" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="@yourname or profile link" required>
+      </label>
+      <div class="checks">
+        <label class="consent">
+          <input type="checkbox" id="fTerms">
+          <span>I've read and agree to the <button type="button" class="linkbtn" id="openTerms">Terms &amp; Conditions</button>, including that not everyone will win a prize.</span>
+        </label>
+        <label class="consent">
+          <input type="checkbox" id="fConsent">
+          <span>I'm okay with Vively keeping my name, phone number and Instagram to check me in, track my stamps, run the lucky draw and contact winners. They're used for that only, and Vively deletes them after the event wraps up. You can say no, but then you can't join the rally.</span>
+        </label>
+      </div>
+      <div class="err" id="regErr" role="alert" aria-live="assertive"></div>
+      <button class="btn" type="submit" id="regBtn">Start collecting stamps</button>
+    </form>
+    <div class="faqwrap" id="faq-register"></div>
+  </section>
+
+  <!-- 3. TASKS -->
+  <section id="s-tasks">
+    <div class="hero" id="heroTasks"></div>
+    <div class="progress">
+      <div>
+        <h2 tabindex="-1" id="hiName">Hi!</h2>
+        <p class="muted">Film a clip at each stop, then check in with the onsite team.</p>
+      </div>
+    </div>
+    <div class="progress"><span class="chip">Stamps</span><span class="count" id="count">0 / 3</span></div>
+    <div class="tasks" id="taskList"></div>
+    <div class="faqwrap" id="faq-tasks"></div>
+  </section>
+
+  <!-- 4. DONE -->
+  <section id="s-done">
+    <div class="hero" id="heroDone"></div>
+    <h1 tabindex="-1">All 3 stamps!<br>You're in.</h1>
+    <p class="lead">Your name is on the lucky draw list. Keep this screen handy, staff may ask to see it.</p>
+    <div class="ticket">
+      <div class="tiny">Lucky draw entry</div>
+      <div class="no" id="entryNo">#001</div>
+      <hr>
+      <div class="nm" id="entryName"></div>
+      <div class="tiny" style="margin-top:6px">Vively · Thanks-Giving</div>
+    </div>
+    <div class="stack">
+      <a class="btn ig" href="https://instagram.com/vively.global" target="_blank" rel="noopener noreferrer">Post your clips, tag @vively.global</a>
+    </div>
+    <div class="faqwrap" id="faq-done"></div>
+  </section>
+</main>
+
+<!-- cozy campfire footer -->
+<div class="cozy" aria-hidden="true">
+  <svg class="campfire" viewBox="0 0 220 150">
+    <ellipse cx="110" cy="128" rx="84" ry="10" fill="#3A2214" opacity=".12"/>
+    <g>
+      <path class="flame f1" d="M110 118C74 114 64 84 82 58c4 14 12 18 18 18-6-24 4-44 20-60 0 18 14 26 22 44 6 12 10 24 2 40-6 12-18 18-34 18z" fill="#E8501A" stroke="#3A2214" stroke-width="3" stroke-linejoin="round"/>
+      <path class="flame f2" d="M110 116c-24-2-32-22-22-40 4 10 10 12 14 12-4-16 4-30 14-40 0 12 10 18 14 30 4 10 4 22-4 30-4 5-10 8-16 8z" fill="#F5922B"/>
+      <path class="flame f3" d="M110 114c-12-1-16-12-10-22 3 6 6 7 8 7-2-9 2-16 7-21 1 7 6 10 8 17 2 8-2 17-13 19z" fill="#FFD36B"/>
+    </g>
+    <g stroke="#3A2214" stroke-width="3" stroke-linejoin="round">
+      <rect x="52" y="112" width="116" height="20" rx="10" fill="#7A4A2B" transform="rotate(-8 110 122)"/>
+      <rect x="52" y="112" width="116" height="20" rx="10" fill="#8F5A33" transform="rotate(8 110 122)"/>
+    </g>
+    <g fill="#EDB033">
+      <circle class="ember" cx="96" cy="70" r="3" style="--x:-14px;--d:2.4s;--delay:0s"/>
+      <circle class="ember" cx="124" cy="64" r="2.6" style="--x:16px;--d:2.9s;--delay:.6s"/>
+      <circle class="ember" cx="110" cy="60" r="2.2" style="--x:4px;--d:2.2s;--delay:1.1s"/>
+      <circle class="ember" cx="84" cy="80" r="2.4" style="--x:-22px;--d:3s;--delay:1.5s"/>
+      <circle class="ember" cx="136" cy="78" r="2.4" style="--x:24px;--d:2.7s;--delay:.2s"/>
+    </g>
+  </svg>
+  <p>Stay cozy. See you by the fire.</p>
+</div>
+
+<!-- Terms dialog -->
+<dialog id="termsDlg" aria-labelledby="termsTitle">
+  <div class="dlg-head"><h3 id="termsTitle">Terms &amp; Conditions</h3><button type="button" class="xbtn" id="termsX" aria-label="Close">×</button></div>
+  <div class="dlg-body" id="termsBody" tabindex="0"></div>
+  <div class="dlg-foot">
+    <button type="button" class="btn ghost" id="termsClose">Close</button>
+    <button type="button" class="btn" id="termsAgree">I agree</button>
+  </div>
+</dialog>
+
+<div class="confetti" id="confetti" aria-hidden="true"></div>
+<div class="sr" id="live" aria-live="polite"></div>
+
+<script>
+/* ============ EDIT ME: event details (blank rows are hidden) ============ */
+const EVENT = {
+  dateLabel: "Saturday, Nov 28",
+  chip: "Sat · Nov 28",
+  time: "2:00 PM – 4:00 PM",
+  place: "",   // e.g. "Meeting point name / address"
+  note: "Collect all 3 stamps: café tour, hotel tour, clinic tour."
+};
+const TERMS_VERSION = "v1-2026-11-24";
+/* ======================================================================== */
+
+const API = "/api/event-stamps";
+const KEY = "vively_stamp_token";
+const TASKS = [
+  { n: 1, title: "Café tour",   icon: "ic-cafe",   r: "-9deg", faq: [
+    ["What should I film here?", "Any short clip or photo that shows you at the café: the drinks, the vibe, you enjoying it. Staff just need to see you were there."],
+    ["Who do I show?", "Find a Vively team member at the café. Can't spot one? Ask at the welcome desk."] ] },
+  { n: 2, title: "Hotel tour",  icon: "ic-hotel",  r: "7deg",  faq: [
+    ["Can I film anywhere in the hotel?", "Film where the tour takes you. Follow the hotel's and staff's rules, and skip any area staff say is off limits."],
+    ["Who do I show?", "A Vively team member at the hotel stop. Ask at the welcome desk if you can't find one."] ] },
+  { n: 3, title: "Clinic tour", icon: "ic-clinic", r: "-5deg", faq: [
+    ["Is filming okay at the clinic?", "Only where staff say it's okay. Please don't film other guests or patients, and respect any no-filming areas."],
+    ["Who do I show?", "A Vively team member at the clinic stop. Ask at the welcome desk if you can't find one."] ] }
+];
+
+/* ---------- FAQ content ---------- */
+const where = () => EVENT.place ? EVENT.place : "(venue to be confirmed)";
+const FAQ = {
+  welcome: [
+    ["What is this?", "A stamp rally at the Vively Thanks-Giving event. Visit three stops (café, hotel, clinic), film a clip at each, and Vively staff stamp your passport. All 3 stamps puts you in the lucky draw."],
+    ["When and where is it?", () => EVENT.dateLabel + (EVENT.time ? ", " + EVENT.time : ", time to be confirmed") + ". Where: " + where() + "."],
+    ["Do I have to follow @vively.global?", "It's optional, but we'd love it. Tapping the button just opens our Instagram."],
+    ["Does everyone win something?", "No. The lucky draw is random and not everyone will win. See the Terms & Conditions when you sign in."]
+  ],
+  register: [
+    ["Why do you need my phone and Instagram?", "Your name, phone and Instagram check you in and let us contact you if you win. Only the Vively team sees them, and they're used for this event only."],
+    ["What happens to my details afterwards?", "Vively deletes them after the event wraps up. Details are in the Terms & Conditions."],
+    ["I typed something wrong.", "Ask a Vively team member at the welcome desk and they'll help."],
+    ["I lost my place or switched phones.", "Sign in again with the same name, phone number and Instagram and you'll pick up where you left off."]
+  ],
+  tasks: [
+    ["How do stamps work?", "Film your clip, tap Completed, and show it to a Vively team member. They enter a secret code and your stamp appears."],
+    ["Can I do the stops in any order?", "No. Stops unlock one after another: café, then hotel, then clinic."],
+    ["Can I enter the code myself?", "No. Only Vively staff know the codes. Guessing codes can get you disqualified."],
+    ["My signal dropped. Did I lose my stamps?", "No. Your stamps are saved. Reload this page and you'll be right where you were."]
+  ],
+  done: [
+    ["Am I guaranteed a prize?", "No. All 3 stamps gets you into the lucky draw, but winners are picked at random and not everyone will win."],
+    ["How will I know if I won?", "Ask a Vively team member how winners will be announced. The team can also reach winners with the details you gave when you signed in."],
+    ["What do I show staff?", "This screen with your entry number."],
+    ["Can I share my clips?", "Yes! Post them and tag @vively.global. It's entirely up to you."]
+  ]
+};
+
+/* ---------- Terms & Conditions (draft; edit freely) ---------- */
+const TERMS = [
+  ["About this event", "The Vively Thanks-Giving Stamp Rally (the \"Event\") is run by Vively on Saturday, Nov 28. These terms apply to everyone who takes part."],
+  ["Taking part", "You join by signing in on this page and agreeing to these terms. Vively staff may decline or end anyone's participation, for example if the Event is full or the rules below are broken."],
+  ["How stamps work", "There are three stops: café, hotel and clinic. At each stop, show your clip or photo to a Vively team member. If they are satisfied, they enter a code and your stamp is recorded. Stops are completed in order. Vively staff decisions about stamps are final. Only staff may enter codes. Trying to guess codes, sharing codes, or showing clips that are not yours may lead to disqualification."],
+  ["Lucky draw", "Everyone who collects all three stamps is entered into the lucky draw. Winners are chosen at random. Completing the rally does not guarantee a prize, and not everyone will win. Prizes, if any, and how winners are announced are decided by Vively and may change or be cancelled."],
+  ["Filming", "Follow staff instructions and the rules of each venue. Do not film other guests or patients, and respect any no-filming areas. You are responsible for your own clips and for having permission to film what you film. Posting clips is optional."],
+  ["Your information", "We collect your name, phone number and Instagram handle, plus the times you check in and receive stamps. We use them to check you in, record your progress, run the lucky draw and contact winners. Only the Vively team can see them. Vively does not sell them. Vively deletes them after the Event wraps up. Your phone's browser also stores a small token so the page remembers your progress."],
+  ["Changes", "Vively may change, pause or cancel the Event or these terms, for example for safety or venue reasons. Updated terms will be shown to you at the Event."],
+  ["Questions", "Ask any Vively team member at the welcome desk."]
+];
+
+const NS = "http://www.w3.org/2000/svg";
+const $ = (id) => document.getElementById(id);
+let token = localStorage.getItem(KEY) || "";
+let me = null;
+let openTask = 0;
+let busy = false;
+
+/* ---------- API ---------- */
+async function api(payload) {
+  try {
+    const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+    const j = await r.json().catch(() => ({}));
+    return Object.assign({ ok: r.ok, status: r.status }, j);
+  } catch (e) {
+    return { ok: false, status: 0, error: "No connection. Check your signal and try again." };
+  }
+}
+
+/* ---------- screens ---------- */
+let current = "s-welcome";
+let navIdx = 0;
+const BACK_TO = { "s-register": "s-welcome", "s-tasks": "s-welcome", "s-done": "s-tasks" };
+
+function updateNav() {
+  $("navbar").hidden = current === "s-welcome";
+  $("backBtn").hidden = current === "s-welcome";
+  $("refreshBtn").hidden = !(me && (current === "s-tasks" || current === "s-done"));
+}
+function show(id, push = true) {
+  document.querySelectorAll("section").forEach((s) => s.classList.toggle("on", s.id === id));
+  current = id;
+  if (push) { navIdx++; history.pushState({ s: id, i: navIdx }, "", "#" + id.slice(2)); }
+  updateNav();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  const h = document.querySelector("#" + id + " [tabindex='-1']");
+  if (h) setTimeout(() => h.focus({ preventScroll: true }), 80);
+}
+// Put the right content on a screen when arriving via Back / the phone's back button.
+function go(target) {
+  if ((target === "s-tasks" || target === "s-done") && !me) target = "s-welcome";
+  if (target === "s-register" && me) target = me.done.every(Boolean) ? "s-done" : "s-tasks";
+  if (target === "s-done" && me && !me.done.every(Boolean)) target = "s-tasks";
+  if (target === "s-tasks" && me) { $("hiName").textContent = "Hi, " + me.name.split(" ")[0] + "!"; renderTasks(-1); }
+  if (target === "s-done" && me) { $("entryNo").textContent = "#" + String(me.entryNo).padStart(3, "0"); $("entryName").textContent = me.name; mountTurkey("heroDone", me.done, -1); }
+  return target;
+}
+window.addEventListener("popstate", (e) => {
+  const st = e.state || { s: "s-welcome", i: 0 };
+  const prev = navIdx;
+  navIdx = st.i || 0;
+  // Already signed in: when going BACK, skip over the sign-in screen (going forward lands on your stamps).
+  if (st.s === "s-register" && me && navIdx > 0 && navIdx < prev) { history.back(); return; }
+  show(go(st.s), false);
+});
+$("backBtn").addEventListener("click", () => {
+  if (navIdx > 0) history.back();                 // same as the phone's back button
+  else show(go(BACK_TO[current] || "s-welcome"), false);
+});
+
+/* Refresh: re-checks your stamps with the server without reloading the page (nothing is lost). */
+$("refreshBtn").addEventListener("click", async () => {
+  if (!token || busy) return;
+  busy = true;
+  const b = $("refreshBtn"); b.disabled = true; b.classList.add("spin"); b.textContent = "Checking…";
+  const res = await api({ action: "status", token });
+  busy = false; b.disabled = false; b.classList.remove("spin");
+  if (res.status === 401) {
+    localStorage.removeItem(KEY); token = ""; me = null; show("s-register");
+    $("regErr").textContent = "Your session expired. Please sign in again."; b.textContent = "↻ Refresh"; return;
+  }
+  if (!res.ok) { b.textContent = "No connection · tap to retry"; return; }
+  me = res.participant;
+  $("hiName").textContent = "Hi, " + me.name.split(" ")[0] + "!";
+  if (me.done.every(Boolean)) finish(false);
+  else { renderTasks(-1); if (current !== "s-tasks") show("s-tasks"); }
+  b.textContent = "✓ Up to date"; $("live").textContent = "Stamps updated.";
+  setTimeout(() => { b.textContent = "↻ Refresh"; }, 1800);
+});
+
+/* ---------- FAQ builders ---------- */
+function faqItem(q, a, mini) {
+  const d = document.createElement("details"); d.className = "faq" + (mini ? " mini" : "");
+  const s = document.createElement("summary"); s.textContent = q;
+  const p = document.createElement("div"); p.className = "ans"; p.textContent = typeof a === "function" ? a() : a;
+  d.append(s, p); return d;
+}
+function mountFaq(id, key) {
+  const host = $(id); host.textContent = "";
+  const h = document.createElement("h3"); h.textContent = "Quick answers"; host.append(h);
+  FAQ[key].forEach(([q, a]) => host.append(faqItem(q, a)));
+}
+function miniFaq(t) {
+  const d = document.createElement("details"); d.className = "faq mini";
+  const s = document.createElement("summary"); s.textContent = "Need help at this stop?";
+  const body = document.createElement("div"); body.className = "ans";
+  t.faq.forEach(([q, a]) => {
+    const qq = document.createElement("p"); qq.style.fontWeight = "700"; qq.textContent = q;
+    const aa = document.createElement("p"); aa.style.margin = "0 0 10px"; aa.textContent = a;
+    body.append(qq, aa);
+  });
+  d.append(s, body); return d;
+}
+
+/* ---------- cute turkey (feathers = stamps) ---------- */
+function turkeySVG() {
+  const colors = ["#9B2C3A", "#C2540A", "#EDB033"];
+  const angles = [-58, 0, 58];
+  const shape = "M130 142C96 124 92 58 130 20C168 58 164 124 130 142Z";
+  const feathers = angles.map((a, i) => `
+    <g class="feather" data-i="${i}" transform="rotate(${a} 130 142)">
+      <path class="ghost" d="${shape}"/>
+      <path class="fill" d="${shape}" fill="${colors[i]}" stroke="#3A2214" stroke-width="3" stroke-linejoin="round"/>
+      <ellipse class="fill" cx="130" cy="62" rx="12" ry="20" fill="#FBF1DA" fill-opacity=".85"/>
+      <circle class="fill" cx="130" cy="62" r="6" fill="${colors[i]}"/>
+    </g>`).join("");
+  return `
+  <svg class="turkey" viewBox="0 0 260 240" role="img" aria-label="A cute turkey that grows one feather for each stamp">
+    <g class="twinkle"><path d="M30 60l4 10 10 4-10 4-4 10-4-10-10-4 10-4z" fill="#EDB033" stroke="#3A2214" stroke-width="2"/></g>
+    <g class="twinkle"><path d="M228 40l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#FF8FA3" stroke="#3A2214" stroke-width="2"/></g>
+    <g class="twinkle"><path d="M222 140l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" fill="#EDB033" stroke="#3A2214" stroke-width="2"/></g>
+    <g class="bob">
+      ${feathers}
+      <g stroke="#3A2214" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M104 206l-6 14M104 206l4 15M104 206l-14 10" fill="none" stroke="#C2540A" stroke-width="5"/>
+        <path d="M156 206l6 14M156 206l-4 15M156 206l14 10" fill="none" stroke="#C2540A" stroke-width="5"/>
+        <ellipse cx="130" cy="166" rx="58" ry="48" fill="#B5733E"/>
+        <ellipse cx="130" cy="178" rx="34" ry="28" fill="#F6DDB0" stroke="none"/>
+        <ellipse cx="76" cy="170" rx="13" ry="22" fill="#9C5E30" transform="rotate(16 76 170)"/>
+        <ellipse cx="184" cy="170" rx="13" ry="22" fill="#9C5E30" transform="rotate(-16 184 170)"/>
+        <circle cx="130" cy="116" r="38" fill="#B5733E"/>
+      </g>
+      <path d="M118 84c-6-14 4-22 12-18 8-4 18 4 12 18" fill="none" stroke="#3A2214" stroke-width="3" stroke-linecap="round"/>
+      <g class="blink"><ellipse cx="114" cy="112" rx="6.5" ry="8.5" fill="#3A2214"/><circle cx="116" cy="108.5" r="2.4" fill="#fff"/></g>
+      <g class="blink"><ellipse cx="146" cy="112" rx="6.5" ry="8.5" fill="#3A2214"/><circle cx="148" cy="108.5" r="2.4" fill="#fff"/></g>
+      <ellipse cx="100" cy="125" rx="8" ry="5" fill="#FF8FA3" opacity=".85"/>
+      <ellipse cx="160" cy="125" rx="8" ry="5" fill="#FF8FA3" opacity=".85"/>
+      <path d="M122 122q8-4 16 0q-2 11-8 12q-6-1-8-12z" fill="#EDB033" stroke="#3A2214" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M130 136c-6 2-7 12 0 16c7-4 6-14 0-16z" fill="#FF5757" stroke="#3A2214" stroke-width="2.4" stroke-linejoin="round"/>
+    </g>
+  </svg>`;
+}
+function mountTurkey(id, doneArr, animateIdx) {
+  const host = $(id);
+  if (!host.firstChild) host.innerHTML = turkeySVG();
+  host.querySelectorAll(".feather").forEach((f, i) => {
+    const got = !!(doneArr && doneArr[i]);
+    const wasGot = f.classList.contains("got");
+    f.classList.toggle("got", got);
+    f.classList.toggle("static", got && i !== animateIdx);
+  });
+  if (animateIdx >= 0) {
+    const t = host.querySelector(".turkey");
+    t.classList.remove("hop"); void t.getBoundingClientRect(); t.classList.add("hop");
+  }
+}
+
+/* ---------- welcome ---------- */
+function buildParty() {
+  const dl = $("partyInfo");
+  dl.textContent = "";
+  const rows = [["When", EVENT.dateLabel + (EVENT.time ? " · " + EVENT.time : "")], ["Where", EVENT.place], ["Today", EVENT.note]];
+  rows.forEach(([k, v]) => {
+    if (!v) return;
+    const row = document.createElement("div"); row.className = "row";
+    const dt = document.createElement("dt"); dt.textContent = k;
+    const dd = document.createElement("dd"); dd.textContent = v;
+    row.append(dt, dd); dl.append(row);
+  });
+}
+
+/* ---------- terms dialog ---------- */
+function buildTerms() {
+  const body = $("termsBody"); body.textContent = "";
+  const v = document.createElement("p"); v.className = "muted"; v.style.fontSize = "13px"; v.style.marginTop = "10px";
+  v.textContent = "Version " + TERMS_VERSION; body.append(v);
+  TERMS.forEach(([h, t]) => {
+    const hh = document.createElement("h4"); hh.textContent = h;
+    const pp = document.createElement("p"); pp.textContent = t;
+    body.append(hh, pp);
+  });
+}
+const dlg = () => $("termsDlg");
+$("openTerms").addEventListener("click", () => { dlg().showModal(); $("termsBody").scrollTop = 0; });
+$("termsX").addEventListener("click", () => dlg().close());
+$("termsClose").addEventListener("click", () => dlg().close());
+$("termsAgree").addEventListener("click", () => { $("fTerms").checked = true; dlg().close(); $("fTerms").focus(); });
+
+/* ---------- registration ---------- */
+$("startBtn").addEventListener("click", () => { if (me) enterFlow(); else show("s-register"); });
+$("regForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const err = $("regErr"); err.textContent = "";
+  if (busy) return;   // ignore double / triple taps while a sign-up is in flight
+  if (!$("fTerms").checked) { err.textContent = "Please read and agree to the Terms & Conditions to join."; return; }
+  busy = true;
+  const btn = $("regBtn"); btn.disabled = true; btn.textContent = "One sec…";
+  const res = await api({
+    action: "register",
+    name: $("fName").value, phone: $("fPhone").value, instagram: $("fIg").value,
+    consent: $("fConsent").checked, terms: $("fTerms").checked, termsVersion: TERMS_VERSION
+  });
+  busy = false; btn.disabled = false; btn.textContent = "Start collecting stamps";
+  if (!res.ok) { err.textContent = res.error || "Something went wrong."; return; }
+  token = res.token; localStorage.setItem(KEY, token);
+  me = res.participant;
+  enterFlow();
+});
+
+/* ---------- tasks ---------- */
+function nextOpen() { return me.done.findIndex((d) => !d) + 1; } // 1-based, 0 if all done
+
+function stampSVG(icon, rot) {
+  return `<svg class="stamp" style="--r:${rot}" viewBox="0 0 100 100" aria-hidden="true">
+    <circle cx="50" cy="50" r="46" fill="#FBF1DA" fill-opacity=".92" stroke="#9B2C3A" stroke-width="3.5"/>
+    <circle cx="50" cy="50" r="29" fill="none" stroke="#9B2C3A" stroke-width="2"/>
+    <text font-family="DM Sans, sans-serif" font-weight="700" font-size="8.2" letter-spacing="1.6" fill="#9B2C3A">
+      <textPath href="#ringPath" startOffset="0">VIVELY ✦ THANKS-GIVING ✦ STAMPED ✦</textPath>
+    </text>
+    <g color="#9B2C3A" transform="translate(31 31)"><svg width="38" height="38" viewBox="0 0 40 40"><use href="#${icon}"/></svg></g>
+  </svg>`;
+}
+
+function renderTasks(slamIdx) {
+  const list = $("taskList");
+  const active = nextOpen();
+  list.textContent = "";
+  TASKS.forEach((t) => {
+    const isDone = me.done[t.n - 1];
+    const isActive = t.n === active;
+    const card = document.createElement("article");
+    card.className = "task " + (isDone ? "done" : isActive ? "active" : "locked");
+    card.id = "task-" + t.n;
+
+    const head = document.createElement("div"); head.className = "task-head";
+    const num = document.createElement("div"); num.className = "num"; num.textContent = isDone ? "✓" : t.n;
+    const txt = document.createElement("div");
+    const h = document.createElement("h3"); h.textContent = t.title;
+    const sub = document.createElement("p");
+    sub.textContent = isDone ? "Stamped. Nice work!" : isActive ? "Film your clips here, then check in with onsite staff." : "Finish stop " + (t.n - 1) + " to unlock.";
+    txt.append(h, sub); head.append(num, txt); card.append(head);
+
+    if (isDone) {
+      const slot = document.createElement("div"); slot.className = "stampslot";
+      slot.innerHTML = stampSVG(t.icon, t.r);
+      if (slamIdx === t.n - 1) { slot.firstElementChild.classList.add("slam"); card.classList.add("hit"); }
+      card.append(slot);
+    } else if (isActive) {
+      const go = document.createElement("button");
+      go.type = "button"; go.className = "btn go"; go.textContent = "Completed ✓";
+      go.setAttribute("aria-expanded", openTask === t.n ? "true" : "false");
+      const box = document.createElement("div"); box.className = "handoff" + (openTask === t.n ? " open" : "");
+      box.innerHTML = `<div class="who">Vively staff only</div>
+        <p style="font-size:14px">Show your clip or photo to a Vively team member. They'll enter the code.</p>
+        <label class="sr" for="code${t.n}">Staff code</label>
+        <div class="row"><input type="password" id="code${t.n}" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="go" placeholder="Staff code">
+        <button type="button" class="btn" data-stamp="${t.n}">Stamp it</button></div>
+        <div class="err" role="alert" aria-live="assertive" id="err${t.n}"></div>`;
+      go.addEventListener("click", () => {
+        openTask = openTask === t.n ? 0 : t.n;
+        box.classList.toggle("open", openTask === t.n);
+        go.setAttribute("aria-expanded", String(openTask === t.n));
+        if (openTask === t.n) setTimeout(() => $("code" + t.n).focus(), 60);
+      });
+      card.append(go, box);
+    }
+    if (!isDone) card.append(miniFaq(t));
+    list.append(card);
+  });
+
+  list.querySelectorAll("[data-stamp]").forEach((b) => b.addEventListener("click", () => submitCode(Number(b.dataset.stamp))));
+  list.querySelectorAll(".handoff input").forEach((i) => i.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); submitCode(Number(i.id.replace("code", ""))); }
+  }));
+
+  const n = me.done.filter(Boolean).length;
+  $("count").textContent = n + " / 3";
+  mountTurkey("heroTasks", me.done, slamIdx);
+}
+
+async function submitCode(n) {
+  const input = $("code" + n), err = $("err" + n);
+  err.textContent = "";
+  if (!input.value.trim()) { err.textContent = "Ask a staff member to enter the code."; return; }
+  if (busy) return; busy = true;
+  const btn = document.querySelector(`[data-stamp="${n}"]`); btn.disabled = true;
+  const res = await api({ action: "complete", token, task: n, code: input.value });
+  busy = false; btn.disabled = false;
+  if (res.status === 401) {
+    localStorage.removeItem(KEY); token = ""; me = null; show("s-register");
+    $("regErr").textContent = "Your session expired. Please sign in again.";
+    return;
+  }
+  if (!res.ok) { err.textContent = res.error || "Try again."; input.value = ""; input.focus(); return; }
+  me = res.participant; openTask = 0;
+  renderTasks(n - 1);
+  $("live").textContent = "Stamp " + n + " collected.";
+  if (me.done.every(Boolean)) setTimeout(() => finish(true), 1700);
+  else setTimeout(() => { const c = $("task-" + nextOpen()); if (c) c.scrollIntoView({ behavior: "smooth", block: "center" }); }, 900);
+}
+
+/* ---------- finish ---------- */
+function finish(live) {
+  $("entryNo").textContent = "#" + String(me.entryNo).padStart(3, "0");
+  $("entryName").textContent = me.name;
+  mountTurkey("heroDone", me.done, -1);
+  show("s-done");
+  if (live) confetti();
+}
+function confetti() {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const box = $("confetti"); box.textContent = "";
+  const cols = ["#9B2C3A", "#C2540A", "#EDB033", "#5E6B2A", "#FF5757", "#3A2214"];
+  for (let i = 0; i < 70; i++) {
+    const p = document.createElement("i");
+    const a = Math.random() * Math.PI * 2, d = 120 + Math.random() * 260;
+    p.style.cssText = `--x:${Math.cos(a) * d}px;--y:${Math.sin(a) * d + 160}px;--r:${Math.random() * 900 - 450}deg;background:${cols[i % cols.length]};animation-delay:${Math.random() * .15}s`;
+    box.append(p);
+  }
+  setTimeout(() => (box.textContent = ""), 2400);
+}
+
+/* ---------- atmosphere: cute leaves + snow ---------- */
+function atmosphere() {
+  const host = $("fx"), cols = ["#D9822B", "#C2540A", "#E2A12F", "#B5483A", "#8FA03A"];
+  for (let i = 0; i < 11; i++) {
+    const l = document.createElement("div"); l.className = "leaf";
+    l.style.cssText = `left:${Math.random() * 100}%;--s:${30 + Math.random() * 16}px;--d:${13 + Math.random() * 9}s;--delay:${-Math.random() * 20}s;--dx:${Math.random() * 120 - 60}px;--sp:${3 + Math.random() * 2.5}s;color:${cols[i % cols.length]}`;
+    l.innerHTML = '<svg viewBox="0 0 48 52"><use href="#leafSym"/></svg>';
+    host.append(l);
+  }
+  for (let i = 0; i < 34; i++) {
+    const s = document.createElement("div"); s.className = "snow";
+    const flake = i % 4 === 0;
+    s.style.cssText = `left:${Math.random() * 100}%;--s:${flake ? 14 + Math.random() * 8 : 5 + Math.random() * 6}px;--d:${9 + Math.random() * 9}s;--delay:${-Math.random() * 18}s;--dx:${Math.random() * 60 - 30}px;--sp:${flake ? 5 + Math.random() * 4 : 2 + Math.random() * 2}s`;
+    s.innerHTML = flake ? '<svg viewBox="0 0 24 24"><use href="#flakeSym"/></svg>' : "<i></i>";
+    host.append(s);
+  }
+}
+
+/* ---------- boot ---------- */
+function enterFlow() {
+  $("hiName").textContent = "Hi, " + me.name.split(" ")[0] + "!";
+  if (me.done.every(Boolean)) { finish(false); return; }
+  renderTasks(-1);
+  show("s-tasks");
+}
+
+(async function init() {
+  $("dateChip").textContent = EVENT.chip;
+  buildParty(); buildTerms(); atmosphere();
+  mountFaq("faq-welcome", "welcome"); mountFaq("faq-register", "register");
+  mountFaq("faq-tasks", "tasks"); mountFaq("faq-done", "done");
+  mountTurkey("heroWelcome", [false, false, false], -1);
+  history.replaceState({ s: "s-welcome", i: 0 }, "", location.pathname + location.search);
+  if (!token) return;
+  const res = await api({ action: "status", token });
+  if (res.ok) { me = res.participant; enterFlow(); }
+  else if (res.status === 401) { localStorage.removeItem(KEY); token = ""; }
+  else { $("live").textContent = res.error || "Couldn't reconnect. Reload to try again."; }
+})();
+</script>
+</body>
+</html>

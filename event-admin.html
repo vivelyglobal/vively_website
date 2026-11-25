@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Vively event desk</title>
+<link rel="icon" href="assets/logo/favicon.png">
+<style>
+:root{--paper:#F6E3BE;--paper-2:#FBF1DA;--ink:#3A2214;--pumpkin:#C2540A;--cranberry:#9B2C3A;--mustard:#EDB033;--olive:#5E6B2A;
+  --line:2.5px solid var(--ink);--pop:4px 4px 0 var(--ink)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:500 15px/1.45 "DM Sans",-apple-system,"Segoe UI",Arial,sans-serif;padding:18px}
+.wrap{max-width:1000px;margin:0 auto}
+h1{font:900 30px/1 Georgia,"Times New Roman",serif;margin:0 0 4px}
+.card{background:var(--paper-2);border:var(--line);border-radius:16px;box-shadow:var(--pop);padding:16px}
+.btn{font-weight:700;font-size:15px;font-family:inherit;color:#fff;background:var(--pumpkin);border:var(--line);border-radius:12px;box-shadow:3px 3px 0 var(--ink);padding:11px 16px;cursor:pointer;min-height:44px}
+.btn:active{transform:translate(3px,3px);box-shadow:none}
+.btn.alt{background:#fff;color:var(--ink)}
+input[type=password],input[type=search]{font-weight:500;font-size:16px;font-family:inherit;min-height:44px;border:var(--line);border-radius:10px;padding:8px 12px;background:#fff;color:var(--ink)}
+:focus-visible{outline:3px solid var(--cranberry);outline-offset:2px}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:16px 0}
+.stat{border:var(--line);border-radius:14px;background:var(--mustard);padding:10px 16px;min-width:130px}
+.stat b{display:block;font:900 30px/1 Georgia,serif}
+.stat span{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.spacer{flex:1}
+.tablewrap{overflow-x:auto;border:var(--line);border-radius:14px;background:#fff}
+table{border-collapse:collapse;width:100%;min-width:720px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1.5px solid rgba(58,34,20,.18);white-space:nowrap}
+th{background:var(--paper-2);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+tr.fin td{background:#EEF1D8}
+.dot{display:inline-block;width:22px;height:22px;border-radius:50%;border:2px solid var(--ink);text-align:center;line-height:18px;font-size:13px;font-weight:700;margin-right:4px}
+.dot.y{background:var(--olive);color:#fff}
+.dot.n{background:#fff;opacity:.55}
+a{color:var(--cranberry);font-weight:700}
+.err{color:var(--cranberry);font-weight:700;min-height:22px}
+.small{font-size:13px;opacity:.75}
+#draw{display:none;margin-top:16px;text-align:center}
+#draw .win{font:900 clamp(34px,8vw,64px)/1.05 Georgia,serif;margin:10px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Event desk</h1>
+  <p class="small">Attendance, task progress and the lucky draw list. Staff only.</p>
+
+  <div class="card" id="login">
+    <label for="key"><b>Desk key</b></label><br>
+    <input type="password" id="key" autocomplete="off" style="margin:8px 8px 0 0;width:min(320px,100%)">
+    <button class="btn" id="go" type="button">Open</button>
+    <div class="err" id="loginErr" role="alert"></div>
+  </div>
+
+  <div id="panel" hidden>
+    <div class="bar">
+      <div class="stat"><b id="nReg">0</b><span>Checked in</span></div>
+      <div class="stat" style="background:#DCE3B5"><b id="nFin">0</b><span>3 stamps done</span></div>
+      <div class="spacer"></div>
+      <input type="search" id="q" placeholder="Search name, phone, IG" aria-label="Search">
+      <label class="small"><input type="checkbox" id="onlyFin"> Finished only</label>
+      <button class="btn alt" id="refresh" type="button">↻ Refresh</button>
+      <button class="btn alt" id="csv" type="button">Download CSV</button>
+      <button class="btn" id="pick" type="button">Pick a winner</button>
+    </div>
+    <div class="card" id="draw" aria-live="polite">
+      <div class="small">Lucky draw (finished creators only)</div>
+      <div class="win" id="winName">…</div>
+      <div id="winMeta" class="small"></div>
+    </div>
+    <div class="err" id="err" role="alert"></div>
+    <div class="tablewrap" style="margin-top:14px">
+      <table>
+        <thead><tr><th>#</th><th>Name</th><th>Phone</th><th>Instagram</th><th>Checked in</th><th>Stamps</th><th>Finished</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div class="card" style="margin-top:18px">
+      <b>After the event: delete all attendee data</b>
+      <p class="small">The sign-up page promises deletion after the event. Download the CSV first (and run the draw), then type <b>DELETE ALL</b> below. This cannot be undone.</p>
+      <input type="search" id="purgeText" placeholder="Type DELETE ALL" aria-label="Type DELETE ALL to confirm" style="margin-right:8px">
+      <button class="btn" id="purgeBtn" type="button" style="background:var(--cranberry)">Delete everything</button>
+      <div class="err" id="purgeMsg" role="alert"></div>
+    </div>
+    <p class="small">Refreshes every 15 seconds. The key is kept in memory only; refreshing the page signs you out.</p>
+  </div>
+</div>
+
+<script>
+const API = "/api/event-stamps";
+const $ = (id) => document.getElementById(id);
+let key = ""; // kept in memory only; refreshing the page signs out
+let data = [];
+let timer = null;
+
+const fmt = (d) => d ? new Date(d).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "";
+
+const panelOpen = () => !$("panel").hidden;
+let loadBusy = false, purgeBusy = false;
+// Only one refresh in flight at a time (auto-refresh + manual taps can't pile up).
+async function load() {
+  if (loadBusy) return false;
+  loadBusy = true;
+  try { return await loadInner(); } finally { loadBusy = false; }
+}
+async function loadInner() {
+  let r;
+  try {
+    r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json", "x-admin-key": key }, body: JSON.stringify({ action: "admin" }) });
+  } catch (e) { (panelOpen() ? $("err") : $("loginErr")).textContent = "No connection. Try again."; return false; }
+  const j = await r.json().catch(() => ({}));
+  if ([401, 429, 503].includes(r.status)) { lock(); $("loginErr").textContent = j.error || "No access"; return false; }
+  if (!r.ok) { (panelOpen() ? $("err") : $("loginErr")).textContent = j.error || "Error"; return false; }
+  $("err").textContent = "";
+  data = j.participants; $("nReg").textContent = j.counts.registered; $("nFin").textContent = j.counts.finished;
+  render(); return true;
+}
+
+function render() {
+  const q = $("q").value.trim().toLowerCase(), only = $("onlyFin").checked;
+  const body = $("rows"); body.textContent = "";
+  data.filter((p) => (!only || p.completedAt) && (!q || (p.name + p.phone + p.instagram).toLowerCase().includes(q)))
+    .forEach((p) => {
+      const tr = document.createElement("tr"); if (p.completedAt) tr.className = "fin";
+      const cell = (t) => { const td = document.createElement("td"); td.textContent = t; tr.append(td); return td; };
+      cell(p.entryNo); cell(p.name); cell(p.phone);
+      const ig = document.createElement("td"), a = document.createElement("a");
+      a.textContent = "@" + p.instagram; a.href = "https://instagram.com/" + encodeURIComponent(p.instagram); a.target = "_blank"; a.rel = "noopener noreferrer";
+      ig.append(a); tr.append(ig);
+      cell(fmt(p.registeredAt));
+      const st = document.createElement("td");
+      p.tasks.forEach((t, i) => { const d = document.createElement("span"); d.className = "dot " + (t ? "y" : "n"); d.textContent = t ? "✓" : i + 1; d.title = t ? "Task " + (i + 1) + " at " + fmt(t) : "Task " + (i + 1) + " not done"; st.append(d); });
+      tr.append(st); cell(fmt(p.completedAt));
+      body.append(tr);
+    });
+}
+
+function lock() { $("login").hidden = false; $("panel").hidden = true; clearInterval(timer); key = ""; }
+async function open() {
+  key = $("key").value || key; $("loginErr").textContent = "";
+  if (await load()) { $("key").value = ""; $("login").hidden = true; $("panel").hidden = false; clearInterval(timer); timer = setInterval(load, 15000); }
+}
+$("go").addEventListener("click", open);
+$("key").addEventListener("keydown", (e) => { if (e.key === "Enter") open(); });
+$("q").addEventListener("input", render); $("onlyFin").addEventListener("change", render);
+
+/* CSV: cells starting with = + - @ get a leading ' so Excel/Sheets won't run them as formulas */
+function esc(v) { v = String(v == null ? "" : v); if (/^[=+\-@\t\r]/.test(v)) v = "'" + v; return '"' + v.replace(/"/g, '""') + '"'; }
+$("csv").addEventListener("click", () => {
+  const full = (d) => d ? new Date(d).toLocaleString() : "";
+  const rows = [["Entry", "Name", "Phone", "Instagram", "Checked in", "Task 1 Cafe", "Task 2 Hotel", "Task 3 Clinic", "Finished all 3"]];
+  data.forEach((p) => rows.push([p.entryNo, p.name, p.phone, "@" + p.instagram, full(p.registeredAt), full(p.tasks[0]), full(p.tasks[1]), full(p.tasks[2]), full(p.completedAt)]));
+  const blob = new Blob(["﻿" + rows.map((r) => r.map(esc).join(",")).join("\r\n")], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "vively-event-stamps.csv"; a.click(); URL.revokeObjectURL(a.href);
+});
+
+$("refresh").addEventListener("click", async () => {
+  const b = $("refresh"); b.disabled = true; b.textContent = "Checking…";
+  const ok = await load();
+  b.disabled = false; b.textContent = ok ? "✓ Updated" : "↻ Retry";
+  setTimeout(() => { b.textContent = "↻ Refresh"; }, 1500);
+});
+
+/* Post-event wipe: server only accepts the exact phrase */
+$("purgeBtn").addEventListener("click", async () => {
+  const msg = $("purgeMsg"); msg.textContent = "";
+  if (purgeBusy) return;
+  if ($("purgeText").value !== "DELETE ALL") { msg.textContent = "Type DELETE ALL exactly to confirm."; return; }
+  purgeBusy = true; $("purgeBtn").disabled = true;
+  let r;
+  try { r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json", "x-admin-key": key }, body: JSON.stringify({ action: "admin", purge: "DELETE ALL" }) }); }
+  catch (e) { purgeBusy = false; $("purgeBtn").disabled = false; msg.textContent = "No connection. Nothing was deleted."; return; }
+  purgeBusy = false; $("purgeBtn").disabled = false;
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) { msg.textContent = j.error || "Failed. Nothing was deleted."; return; }
+  $("purgeText").value = ""; msg.style.color = "var(--olive)"; msg.textContent = "Deleted " + j.deleted + " records.";
+  load();
+});
+
+/* Lucky draw: spin through names, land on a random finished creator */
+$("pick").addEventListener("click", () => {
+  const pool = data.filter((p) => p.completedAt);
+  const box = $("draw"); box.style.display = "block";
+  if (!pool.length) { $("winName").textContent = "No one has finished yet"; $("winMeta").textContent = ""; return; }
+  const final = pool[crypto.getRandomValues(new Uint32Array(1))[0] % pool.length];
+  let i = 0, left = 28;
+  (function tick() {
+    const p = left > 0 ? pool[i++ % pool.length] : final;
+    $("winName").textContent = p.name; $("winMeta").textContent = left > 0 ? "" : "#" + String(p.entryNo).padStart(3, "0") + " · @" + p.instagram + " · " + p.phone;
+    if (left-- > 0) setTimeout(tick, 60 + (28 - left) * 9);
+  })();
+});
+
+</script>
+</body>
+</html>
