@@ -172,8 +172,8 @@ $("q").addEventListener("input", render); $("onlyFin").addEventListener("change"
 function esc(v) { v = String(v == null ? "" : v); if (/^[=+\-@\t\r]/.test(v)) v = "'" + v; return '"' + v.replace(/"/g, '""') + '"'; }
 $("csv").addEventListener("click", () => {
   const full = (d) => d ? new Date(d).toLocaleString() : "";
-  const rows = [["Entry", "Name", "Phone", "Instagram", "Checked in", "Task 1 Cafe", "Task 2 Hotel", "Task 3 Clinic", "Finished all 3"]];
-  data.forEach((p) => rows.push([p.entryNo, p.name, p.phone, "@" + p.instagram, full(p.registeredAt), full(p.tasks[0]), full(p.tasks[1]), full(p.tasks[2]), full(p.completedAt)]));
+  const rows = [["Entry", "Name", "Phone", "Instagram", "Checked in", "Task 1 Cafe", "Task 2 Hotel", "Task 3 Clinic", "Finished all 3", "Agreed to terms", "Terms version"]];
+  data.forEach((p) => rows.push([p.entryNo, p.name, p.phone, "@" + p.instagram, full(p.registeredAt), full(p.tasks[0]), full(p.tasks[1]), full(p.tasks[2]), full(p.completedAt), full(p.termsAt), p.termsVersion]));
   const blob = new Blob(["﻿" + rows.map((r) => r.map(esc).join(",")).join("\r\n")], { type: "text/csv;charset=utf-8" });
   const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "vively-event-stamps.csv"; a.click(); URL.revokeObjectURL(a.href);
 });
@@ -293,14 +293,14 @@ $("editDefaults").addEventListener("click", () => {
 });
 $("editSave").addEventListener("click", async () => {
   if (!draft || editBusy) return;
-  editBusy = true; $("editSave").disabled = true; say("Saving…", true);
+  editBusy = true; $("editSave").disabled = true; $("editForm").inert = true; say("Saving…", true);
   try {
     const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json", "x-admin-key": key }, body: JSON.stringify({ action: "admin", saveContent: draft, baseRev }) });
     const j = await r.json().catch(() => ({}));
     if (!r.ok) say(j.error || "Not saved. Try again.");
     else { baseRev = j.rev; draft = clone(j.content); dirty = false; drawEditor(); say("✓ Published.", true); }
   } catch (e) { say("No connection. Not saved."); }
-  editBusy = false; $("editSave").disabled = false;
+  editBusy = false; $("editSave").disabled = false; $("editForm").inert = false;
 });
 window.addEventListener("beforeunload", (e) => { if (dirty) { e.preventDefault(); e.returnValue = ""; } });
 

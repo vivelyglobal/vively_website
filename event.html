@@ -635,6 +635,7 @@ $("regForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const err = $("regErr"); err.textContent = "";
   if (busy) return;   // ignore double / triple taps while a sign-up is in flight
+  if (!C) { err.textContent = "The page didn't load fully. Please reload and try again."; return; }
   if (!$("fTerms").checked) { err.textContent = "Please read and agree to the Terms & Conditions to join."; return; }
   busy = true;
   const btn = $("regBtn"); btn.disabled = true; btn.textContent = "One sec…";
@@ -826,7 +827,7 @@ function enterFlow() {
   applyContent(); atmosphere();
   mountTurkey("heroWelcome", [false, false, false], -1);
   history.replaceState({ s: "s-welcome", i: 0 }, "", location.pathname + location.search);
-  await loadContent();
+  loadContent(); // not awaited: a slow reply must not delay restoring stamps
   if (!token) return;
   const res = await api({ action: "status", token });
   if (res.ok) { me = res.participant; enterFlow(); }
