@@ -37,7 +37,9 @@ body{
 }
 .wrap{position:relative;z-index:3;max-width:480px;margin:0 auto;padding:18px 20px calc(24px + env(safe-area-inset-bottom))}
 .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.top img{height:28px;width:auto;display:block}
+/* both logos about the same width; the partner mark is taller because of its round monogram */
+.top img{height:30px;width:auto;display:block}
+.top img.partner-logo{height:48px}
 .chip{font:700 12px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;border:var(--line);border-radius:99px;padding:7px 11px;background:var(--mustard)}
 h1,h2,h3{font-family:var(--serif);font-weight:900;line-height:1.02;margin:0;letter-spacing:-.01em}
 h1{font-size:clamp(38px,11vw,50px)}
@@ -229,9 +231,6 @@ dialog::backdrop{background:rgba(58,34,20,.55)}
 .prizes ul{margin:0;padding:0;list-style:none}
 .prizes li{background:var(--paper-2);border:var(--line);border-radius:12px;padding:10px 12px;margin-top:8px;font-weight:700}
 .prizes p{margin:10px 0 0;font-size:13px}
-.partner{background:#fff;border:var(--line);border-radius:16px;box-shadow:var(--pop);padding:14px 16px 16px;margin:0 0 18px;text-align:center}
-.partner span{display:block;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
-.partner img{display:block;width:min(240px,80%);height:auto;margin:0 auto}
 </style>
 </head>
 <body>
@@ -279,7 +278,7 @@ dialog::backdrop{background:rgba(58,34,20,.55)}
 <main class="wrap">
   <div class="top">
     <img src="assets/logo/vively-lockup-black.png" alt="Vively" width="2000" height="519">
-    <span class="chip" id="dateChip">Sat · Nov 28</span>
+    <img class="partner-logo" src="assets/partners/uhcell-gangnam.png" alt="UHCELL Gangnam" width="842" height="341">
   </div>
 
   <div class="navbar" id="navbar" hidden>
@@ -295,10 +294,6 @@ Stamp Rally</h1>
     <p class="lead" id="welcomeLead"></p>
 
     <div class="card prizes" id="prizeWelcome" hidden></div>
-    <div class="partner">
-      <span>Event partner</span>
-      <img src="assets/partners/uhcell-gangnam.png" alt="UHCELL Gangnam" width="842" height="341">
-    </div>
 
     <div class="card party">
       <dl id="partyInfo"></dl>
@@ -373,10 +368,6 @@ You're in.</h1>
       <div class="tiny" style="margin-top:6px">Vively · Thanks-Giving</div>
     </div>
     <div class="card prizes" id="prizeDone" hidden></div>
-    <div class="partner">
-      <span>Event partner</span>
-      <img src="assets/partners/uhcell-gangnam.png" alt="UHCELL Gangnam" width="842" height="341">
-    </div>
     <div class="stack">
       <a class="btn ig" href="https://instagram.com/vively.global" target="_blank" rel="noopener noreferrer">Post your clips, tag @vively.global</a>
     </div>
@@ -799,7 +790,6 @@ function atmosphere() {
 /* ---------- wording ---------- */
 function applyContent() {
   buildTaskList();
-  $("dateChip").textContent = C.event.chip;
   $("welcomeTitle").textContent = C.welcome.title;
   $("welcomeLead").textContent = C.welcome.lead;
   const ol = $("steps"); ol.textContent = "";
