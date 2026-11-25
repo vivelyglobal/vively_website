@@ -223,6 +223,12 @@ dialog::backdrop{background:rgba(58,34,20,.55)}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}
   .fx{display:none}
 }
+.pre{white-space:pre-line}
+.prizes{background:var(--mustard);margin:16px 0 18px;text-align:left}
+.prizes h3{margin:0 0 8px}
+.prizes ul{margin:0;padding:0;list-style:none}
+.prizes li{background:var(--paper-2);border:var(--line);border-radius:12px;padding:10px 12px;margin-top:8px;font-weight:700}
+.prizes p{margin:10px 0 0;font-size:13px}
 </style>
 </head>
 <body>
@@ -281,17 +287,15 @@ dialog::backdrop{background:rgba(58,34,20,.55)}
   <!-- 1. WELCOME -->
   <section id="s-welcome" class="on">
     <div class="hero" id="heroWelcome"></div>
-    <h1 tabindex="-1">Thanks-Giving<br>Stamp Rally</h1>
-    <p class="lead">Three stops. Three stamps. One lucky draw. Grab a coffee, tour a hotel, peek into a clinic, and film it all.</p>
+    <h1 tabindex="-1" id="welcomeTitle" class="pre">Thanks-Giving
+Stamp Rally</h1>
+    <p class="lead" id="welcomeLead"></p>
+
+    <div class="card prizes" id="prizeWelcome" hidden></div>
 
     <div class="card party">
       <dl id="partyInfo"></dl>
-      <ol class="steps">
-        <li><b>1</b><span>Sign in so we know you're here</span></li>
-        <li><b>2</b><span>Film a clip at each stop</span></li>
-        <li><b>3</b><span>Show staff, get your stamp</span></li>
-        <li><b>4</b><span>3 stamps = you're in the lucky draw</span></li>
-      </ol>
+      <ol class="steps" id="steps"></ol>
     </div>
 
     <div class="stack">
@@ -306,8 +310,8 @@ dialog::backdrop{background:rgba(58,34,20,.55)}
 
   <!-- 2. REGISTER -->
   <section id="s-register">
-    <h2 tabindex="-1">Who's joining us?</h2>
-    <p class="lead">This is also your check-in for today.</p>
+    <h2 tabindex="-1" id="regTitle">Who's joining us?</h2>
+    <p class="lead" id="regLead">This is also your check-in for today.</p>
     <form id="regForm" novalidate>
       <label class="f">Your name
         <input type="text" id="fName" name="name" autocomplete="name" maxlength="80" required>
@@ -340,7 +344,7 @@ dialog::backdrop{background:rgba(58,34,20,.55)}
     <div class="progress">
       <div>
         <h2 tabindex="-1" id="hiName">Hi!</h2>
-        <p class="muted">Film a clip at each stop, then check in with the onsite team.</p>
+        <p class="muted" id="tasksIntro"></p>
       </div>
     </div>
     <div class="progress"><span class="chip">Stamps</span><span class="count" id="count">0 / 3</span></div>
@@ -351,8 +355,9 @@ dialog::backdrop{background:rgba(58,34,20,.55)}
   <!-- 4. DONE -->
   <section id="s-done">
     <div class="hero" id="heroDone"></div>
-    <h1 tabindex="-1">All 3 stamps!<br>You're in.</h1>
-    <p class="lead">Your name is on the lucky draw list. Keep this screen handy, staff may ask to see it.</p>
+    <h1 tabindex="-1" id="doneTitle" class="pre">All 3 stamps!
+You're in.</h1>
+    <p class="lead" id="doneLead"></p>
     <div class="ticket">
       <div class="tiny">Lucky draw entry</div>
       <div class="no" id="entryNo">#001</div>
@@ -360,6 +365,7 @@ dialog::backdrop{background:rgba(58,34,20,.55)}
       <div class="nm" id="entryName"></div>
       <div class="tiny" style="margin-top:6px">Vively · Thanks-Giving</div>
     </div>
+    <div class="card prizes" id="prizeDone" hidden></div>
     <div class="stack">
       <a class="btn ig" href="https://instagram.com/vively.global" target="_blank" rel="noopener noreferrer">Post your clips, tag @vively.global</a>
     </div>
@@ -388,7 +394,7 @@ dialog::backdrop{background:rgba(58,34,20,.55)}
       <circle class="ember" cx="136" cy="78" r="2.4" style="--x:24px;--d:2.7s;--delay:.2s"/>
     </g>
   </svg>
-  <p>Stay cozy. See you by the fire.</p>
+  <p id="footerLine">Stay cozy. See you by the fire.</p>
 </div>
 
 <!-- Terms dialog -->
@@ -404,72 +410,20 @@ dialog::backdrop{background:rgba(58,34,20,.55)}
 <div class="confetti" id="confetti" aria-hidden="true"></div>
 <div class="sr" id="live" aria-live="polite"></div>
 
+<script src="assets/js/event-content.js"></script>
 <script>
-/* ============ EDIT ME: event details (blank rows are hidden) ============ */
-const EVENT = {
-  dateLabel: "Saturday, Nov 28",
-  chip: "Sat · Nov 28",
-  time: "2:00 PM – 4:00 PM",
-  place: "",   // e.g. "Meeting point name / address"
-  note: "Collect all 3 stamps: café tour, hotel tour, clinic tour."
-};
-const TERMS_VERSION = "v1-2026-11-24";
-/* ======================================================================== */
-
+/* ---------- wording: edit it on the desk page (event-admin.html). Original text: assets/js/event-content.js ---------- */
 const API = "/api/event-stamps";
 const KEY = "vively_stamp_token";
-const TASKS = [
-  { n: 1, title: "Café tour",   icon: "ic-cafe",   r: "-9deg", faq: [
-    ["What should I film here?", "Any short clip or photo that shows you at the café: the drinks, the vibe, you enjoying it. Staff just need to see you were there."],
-    ["Who do I show?", "Find a Vively team member at the café. Can't spot one? Ask at the welcome desk."] ] },
-  { n: 2, title: "Hotel tour",  icon: "ic-hotel",  r: "7deg",  faq: [
-    ["Can I film anywhere in the hotel?", "Film where the tour takes you. Follow the hotel's and staff's rules, and skip any area staff say is off limits."],
-    ["Who do I show?", "A Vively team member at the hotel stop. Ask at the welcome desk if you can't find one."] ] },
-  { n: 3, title: "Clinic tour", icon: "ic-clinic", r: "-5deg", faq: [
-    ["Is filming okay at the clinic?", "Only where staff say it's okay. Please don't film other guests or patients, and respect any no-filming areas."],
-    ["Who do I show?", "A Vively team member at the clinic stop. Ask at the welcome desk if you can't find one."] ] }
-];
-
-/* ---------- FAQ content ---------- */
-const where = () => EVENT.place ? EVENT.place : "(venue to be confirmed)";
-const FAQ = {
-  welcome: [
-    ["What is this?", "A stamp rally at the Vively Thanks-Giving event. Visit three stops (café, hotel, clinic), film a clip at each, and Vively staff stamp your passport. All 3 stamps puts you in the lucky draw."],
-    ["When and where is it?", () => EVENT.dateLabel + (EVENT.time ? ", " + EVENT.time : ", time to be confirmed") + ". Where: " + where() + "."],
-    ["Do I have to follow @vively.global?", "It's optional, but we'd love it. Tapping the button just opens our Instagram."],
-    ["Does everyone win something?", "No. The lucky draw is random and not everyone will win. See the Terms & Conditions when you sign in."]
-  ],
-  register: [
-    ["Why do you need my phone and Instagram?", "Your name, phone and Instagram check you in and let us contact you if you win. Only the Vively team sees them, and they're used for this event only."],
-    ["What happens to my details afterwards?", "Vively deletes them after the event wraps up. Details are in the Terms & Conditions."],
-    ["I typed something wrong.", "Ask a Vively team member at the welcome desk and they'll help."],
-    ["I lost my place or switched phones.", "Sign in again with the same name, phone number and Instagram and you'll pick up where you left off."]
-  ],
-  tasks: [
-    ["How do stamps work?", "Film your clip, tap Completed, and show it to a Vively team member. They enter a secret code and your stamp appears."],
-    ["Can I do the stops in any order?", "No. Stops unlock one after another: café, then hotel, then clinic."],
-    ["Can I enter the code myself?", "No. Only Vively staff know the codes. Guessing codes can get you disqualified."],
-    ["My signal dropped. Did I lose my stamps?", "No. Your stamps are saved. Reload this page and you'll be right where you were."]
-  ],
-  done: [
-    ["Am I guaranteed a prize?", "No. All 3 stamps gets you into the lucky draw, but winners are picked at random and not everyone will win."],
-    ["How will I know if I won?", "Ask a Vively team member how winners will be announced. The team can also reach winners with the details you gave when you signed in."],
-    ["What do I show staff?", "This screen with your entry number."],
-    ["Can I share my clips?", "Yes! Post them and tag @vively.global. It's entirely up to you."]
-  ]
-};
-
-/* ---------- Terms & Conditions (draft; edit freely) ---------- */
-const TERMS = [
-  ["About this event", "The Vively Thanks-Giving Stamp Rally (the \"Event\") is run by Vively on Saturday, Nov 28. These terms apply to everyone who takes part."],
-  ["Taking part", "You join by signing in on this page and agreeing to these terms. Vively staff may decline or end anyone's participation, for example if the Event is full or the rules below are broken."],
-  ["How stamps work", "There are three stops: café, hotel and clinic. At each stop, show your clip or photo to a Vively team member. If they are satisfied, they enter a code and your stamp is recorded. Stops are completed in order. Vively staff decisions about stamps are final. Only staff may enter codes. Trying to guess codes, sharing codes, or showing clips that are not yours may lead to disqualification."],
-  ["Lucky draw", "Everyone who collects all three stamps is entered into the lucky draw. Winners are chosen at random. Completing the rally does not guarantee a prize, and not everyone will win. Prizes, if any, and how winners are announced are decided by Vively and may change or be cancelled."],
-  ["Filming", "Follow staff instructions and the rules of each venue. Do not film other guests or patients, and respect any no-filming areas. You are responsible for your own clips and for having permission to film what you film. Posting clips is optional."],
-  ["Your information", "We collect your name, phone number and Instagram handle, plus the times you check in and receive stamps. We use them to check you in, record your progress, run the lucky draw and contact winners. Only the Vively team can see them. Vively does not sell them. Vively deletes them after the Event wraps up. Your phone's browser also stores a small token so the page remembers your progress."],
-  ["Changes", "Vively may change, pause or cancel the Event or these terms, for example for safety or venue reasons. Updated terms will be shown to you at the Event."],
-  ["Questions", "Ask any Vively team member at the welcome desk."]
-];
+const ART = [{ icon: "ic-cafe", r: "-9deg" }, { icon: "ic-hotel", r: "7deg" }, { icon: "ic-clinic", r: "-5deg" }];
+let C = window.EVENT_DEFAULTS;
+let termsVersion = window.EVENT_TERMS_VERSION;
+let TASKS = [];
+const buildTaskList = () => { TASKS = C.tasks.map((t, i) => Object.assign({ n: i + 1 }, ART[i], t)); };
+const fill = (s) => String(s)
+  .replace(/\{date\}/g, () => C.event.dateLabel)
+  .replace(/\{time\}/g, () => C.event.time || "time to be confirmed")
+  .replace(/\{place\}/g, () => C.event.place || "(venue to be confirmed)");
 
 const NS = "http://www.w3.org/2000/svg";
 const $ = (id) => document.getElementById(id);
@@ -553,22 +507,23 @@ $("refreshBtn").addEventListener("click", async () => {
 /* ---------- FAQ builders ---------- */
 function faqItem(q, a, mini) {
   const d = document.createElement("details"); d.className = "faq" + (mini ? " mini" : "");
-  const s = document.createElement("summary"); s.textContent = q;
-  const p = document.createElement("div"); p.className = "ans"; p.textContent = typeof a === "function" ? a() : a;
+  const s = document.createElement("summary"); s.textContent = fill(q);
+  const p = document.createElement("div"); p.className = "ans pre"; p.textContent = fill(a);
   d.append(s, p); return d;
 }
 function mountFaq(id, key) {
   const host = $(id); host.textContent = "";
   const h = document.createElement("h3"); h.textContent = "Quick answers"; host.append(h);
-  FAQ[key].forEach(([q, a]) => host.append(faqItem(q, a)));
+  C.faq[key].forEach(([q, a]) => host.append(faqItem(q, a)));
+  host.hidden = !C.faq[key].length;
 }
 function miniFaq(t) {
   const d = document.createElement("details"); d.className = "faq mini";
   const s = document.createElement("summary"); s.textContent = "Need help at this stop?";
   const body = document.createElement("div"); body.className = "ans";
   t.faq.forEach(([q, a]) => {
-    const qq = document.createElement("p"); qq.style.fontWeight = "700"; qq.textContent = q;
-    const aa = document.createElement("p"); aa.style.margin = "0 0 10px"; aa.textContent = a;
+    const qq = document.createElement("p"); qq.style.fontWeight = "700"; qq.textContent = fill(q);
+    const aa = document.createElement("p"); aa.style.margin = "0 0 10px"; aa.className = "pre"; aa.textContent = fill(a);
     body.append(qq, aa);
   });
   d.append(s, body); return d;
@@ -631,7 +586,8 @@ function mountTurkey(id, doneArr, animateIdx) {
 function buildParty() {
   const dl = $("partyInfo");
   dl.textContent = "";
-  const rows = [["When", EVENT.dateLabel + (EVENT.time ? " · " + EVENT.time : "")], ["Where", EVENT.place], ["Today", EVENT.note]];
+  const e = C.event;
+  const rows = [["When", e.dateLabel + (e.time ? " · " + e.time : "")], ["Where", e.place], ["Today", e.note]];
   rows.forEach(([k, v]) => {
     if (!v) return;
     const row = document.createElement("div"); row.className = "row";
@@ -641,16 +597,31 @@ function buildParty() {
   });
 }
 
+/* ---------- prizes ---------- */
+function buildPrizes(id) {
+  const box = $(id), z = C.prizes; box.textContent = "";
+  box.hidden = !z.items.length;
+  if (box.hidden) return;
+  if (z.heading) { const h = document.createElement("h3"); h.textContent = z.heading; box.append(h); }
+  const ul = document.createElement("ul");
+  z.items.forEach((t) => { const li = document.createElement("li"); li.textContent = t; ul.append(li); });
+  box.append(ul);
+  if (z.note) { const p = document.createElement("p"); p.textContent = z.note; box.append(p); }
+}
+
 /* ---------- terms dialog ---------- */
 function buildTerms() {
   const body = $("termsBody"); body.textContent = "";
   const v = document.createElement("p"); v.className = "muted"; v.style.fontSize = "13px"; v.style.marginTop = "10px";
-  v.textContent = "Version " + TERMS_VERSION; body.append(v);
-  TERMS.forEach(([h, t]) => {
-    const hh = document.createElement("h4"); hh.textContent = h;
-    const pp = document.createElement("p"); pp.textContent = t;
-    body.append(hh, pp);
+  v.textContent = "Version " + termsVersion; body.append(v);
+  const para = (t) => { const p = document.createElement("p"); p.className = "pre"; p.textContent = t; body.append(p); };
+  const prizeText = C.prizes.items.length ? "Prizes:\n" + C.prizes.items.map((t) => "• " + t).join("\n") : "";
+  let listed = false;
+  C.terms.forEach(([h, t]) => {
+    const hh = document.createElement("h4"); hh.textContent = h; body.append(hh); para(t);
+    if (!listed && prizeText && /lucky draw/i.test(h)) { para(prizeText); listed = true; }
   });
+  if (prizeText && !listed) { const hh = document.createElement("h4"); hh.textContent = "Lucky draw prizes"; body.append(hh); para(prizeText); }
 }
 const dlg = () => $("termsDlg");
 $("openTerms").addEventListener("click", () => { dlg().showModal(); $("termsBody").scrollTop = 0; });
@@ -670,8 +641,9 @@ $("regForm").addEventListener("submit", async (e) => {
   const res = await api({
     action: "register",
     name: $("fName").value, phone: $("fPhone").value, instagram: $("fIg").value,
-    consent: $("fConsent").checked, terms: $("fTerms").checked, termsVersion: TERMS_VERSION
+    consent: $("fConsent").checked, terms: $("fTerms").checked, termsVersion
   });
+  if (res.termsChanged) { await loadContent(); $("fTerms").checked = false; }
   busy = false; btn.disabled = false; btn.textContent = "Start collecting stamps";
   if (!res.ok) { err.textContent = res.error || "Something went wrong."; return; }
   token = res.token; localStorage.setItem(KEY, token);
@@ -709,7 +681,8 @@ function renderTasks(slamIdx) {
     const txt = document.createElement("div");
     const h = document.createElement("h3"); h.textContent = t.title;
     const sub = document.createElement("p");
-    sub.textContent = isDone ? "Stamped. Nice work!" : isActive ? "Film your clips here, then check in with onsite staff." : "Finish stop " + (t.n - 1) + " to unlock.";
+    sub.className = "pre";
+    sub.textContent = isDone ? "Stamped. Nice work!" : isActive ? t.instruction : "Finish stop " + (t.n - 1) + " to unlock.";
     txt.append(h, sub); head.append(num, txt); card.append(head);
 
     if (isDone) {
@@ -723,11 +696,12 @@ function renderTasks(slamIdx) {
       go.setAttribute("aria-expanded", openTask === t.n ? "true" : "false");
       const box = document.createElement("div"); box.className = "handoff" + (openTask === t.n ? " open" : "");
       box.innerHTML = `<div class="who">Vively staff only</div>
-        <p style="font-size:14px">Show your clip or photo to a Vively team member. They'll enter the code.</p>
+        <p style="font-size:14px" class="pre handtext"></p>
         <label class="sr" for="code${t.n}">Staff code</label>
         <div class="row"><input type="password" id="code${t.n}" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="go" placeholder="Staff code">
         <button type="button" class="btn" data-stamp="${t.n}">Stamp it</button></div>
         <div class="err" role="alert" aria-live="assertive" id="err${t.n}"></div>`;
+      box.querySelector(".handtext").textContent = C.tasksPage.handoff;
       go.addEventListener("click", () => {
         openTask = openTask === t.n ? 0 : t.n;
         box.classList.toggle("open", openTask === t.n);
@@ -736,7 +710,7 @@ function renderTasks(slamIdx) {
       });
       card.append(go, box);
     }
-    if (!isDone) card.append(miniFaq(t));
+    if (!isDone && t.faq.length) card.append(miniFaq(t));
     list.append(card);
   });
 
@@ -810,6 +784,36 @@ function atmosphere() {
   }
 }
 
+/* ---------- wording ---------- */
+function applyContent() {
+  buildTaskList();
+  $("dateChip").textContent = C.event.chip;
+  $("welcomeTitle").textContent = C.welcome.title;
+  $("welcomeLead").textContent = C.welcome.lead;
+  const ol = $("steps"); ol.textContent = "";
+  C.welcome.steps.forEach((t, i) => {
+    const li = document.createElement("li"), b = document.createElement("b"), s = document.createElement("span");
+    b.textContent = i + 1; s.textContent = t; li.append(b, s); ol.append(li);
+  });
+  $("footerLine").textContent = C.welcome.footer;
+  $("regTitle").textContent = C.register.title; $("regLead").textContent = C.register.lead;
+  $("tasksIntro").textContent = C.tasksPage.intro;
+  $("doneTitle").textContent = C.done.title; $("doneLead").textContent = C.done.lead;
+  buildParty(); buildPrizes("prizeWelcome"); buildPrizes("prizeDone"); buildTerms();
+  mountFaq("faq-welcome", "welcome"); mountFaq("faq-register", "register");
+  mountFaq("faq-tasks", "tasks"); mountFaq("faq-done", "done");
+  if (me) renderTasks(-1);
+}
+// Latest wording saved on the desk page. If it can't be fetched, the original wording stays.
+async function loadContent() {
+  const res = await api({ action: "content" });
+  if (!res.ok || !res.content) return;
+  const before = termsVersion;
+  C = res.content; termsVersion = res.termsVersion;
+  if (before !== termsVersion) $("fTerms").checked = false;
+  applyContent();
+}
+
 /* ---------- boot ---------- */
 function enterFlow() {
   $("hiName").textContent = "Hi, " + me.name.split(" ")[0] + "!";
@@ -819,12 +823,10 @@ function enterFlow() {
 }
 
 (async function init() {
-  $("dateChip").textContent = EVENT.chip;
-  buildParty(); buildTerms(); atmosphere();
-  mountFaq("faq-welcome", "welcome"); mountFaq("faq-register", "register");
-  mountFaq("faq-tasks", "tasks"); mountFaq("faq-done", "done");
+  applyContent(); atmosphere();
   mountTurkey("heroWelcome", [false, false, false], -1);
   history.replaceState({ s: "s-welcome", i: 0 }, "", location.pathname + location.search);
+  await loadContent();
   if (!token) return;
   const res = await api({ action: "status", token });
   if (res.ok) { me = res.participant; enterFlow(); }

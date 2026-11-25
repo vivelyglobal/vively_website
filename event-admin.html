@@ -35,6 +35,15 @@ tr.fin td{background:#EEF1D8}
 a{color:var(--cranberry);font-weight:700}
 .err{color:var(--cranberry);font-weight:700;min-height:22px}
 .small{font-size:13px;opacity:.75}
+#editor{margin-top:18px}
+#editor details{border:var(--line);border-radius:12px;background:#fff;margin-top:10px;padding:0 12px}
+#editor summary{cursor:pointer;font-weight:700;padding:12px 0;min-height:44px}
+#editor .field{display:block;margin:0 0 12px;font-weight:700;font-size:13px}
+#editor input[type=text],#editor textarea{display:block;width:100%;margin-top:4px;font-weight:500;font-size:16px;font-family:inherit;border:var(--line);border-radius:10px;padding:8px 12px;background:#fff;color:var(--ink)}
+#editor textarea{resize:vertical}
+#editor .pair{border-top:1.5px solid rgba(58,34,20,.18);padding-top:12px}
+#editor .mini{font-size:13px;min-height:36px;padding:6px 12px;margin:0 0 12px}
+#editor .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
 #draw{display:none;margin-top:16px;text-align:center}
 #draw .win{font:900 clamp(34px,8vw,64px)/1.05 Georgia,serif;margin:10px 0}
 </style>
@@ -74,6 +83,21 @@ a{color:var(--cranberry);font-weight:700}
         <tbody id="rows"></tbody>
       </table>
     </div>
+    <div class="card" id="editor">
+      <b>Page wording and prizes</b>
+      <p class="small">Change what creators see. Nothing goes live until you press <b>Save and publish</b>. Creators see changes when they next open or reload the page. Anyone with the desk key can edit this, including prizes and terms.</p>
+      <button class="btn alt" id="editOpen" type="button">Edit wording</button>
+      <div id="editBody" hidden>
+        <div id="editForm"></div>
+        <div class="actions">
+          <button class="btn" id="editSave" type="button">Save and publish</button>
+          <a class="btn alt" href="event.html" target="_blank" rel="noopener" style="text-decoration:none">View creator page</a>
+          <button class="btn alt" id="editReload" type="button">Discard my edits</button>
+          <button class="btn alt" id="editDefaults" type="button">Load original wording</button>
+        </div>
+        <div class="err" id="editMsg" role="status" aria-live="polite"></div>
+      </div>
+    </div>
     <div class="card" style="margin-top:18px">
       <b>After the event: delete all attendee data</b>
       <p class="small">The sign-up page promises deletion after the event. Download the CSV first (and run the draw), then type <b>DELETE ALL</b> below. This cannot be undone.</p>
@@ -85,6 +109,7 @@ a{color:var(--cranberry);font-weight:700}
   </div>
 </div>
 
+<script src="assets/js/event-content.js"></script>
 <script>
 const API = "/api/event-stamps";
 const $ = (id) => document.getElementById(id);
@@ -175,6 +200,109 @@ $("purgeBtn").addEventListener("click", async () => {
   $("purgeText").value = ""; msg.style.color = "var(--olive)"; msg.textContent = "Deleted " + j.deleted + " records.";
   load();
 });
+
+/* ---------- wording editor ---------- */
+let draft = null, baseRev = 0, dirty = false, editBusy = false;
+const clone = (o) => JSON.parse(JSON.stringify(o));
+const say = (text, good) => { const m = $("editMsg"); m.textContent = text; m.style.color = good ? "var(--olive)" : ""; };
+const el = (tag, props, parent) => { const n = Object.assign(document.createElement(tag), props || {}); if (parent) parent.append(n); return n; };
+const touch = () => { dirty = true; say(""); };
+
+function field(parent, label, value, onInput, rows) {
+  const l = el("label", { className: "field", textContent: label }, parent);
+  const i = rows ? el("textarea", { rows }, l) : el("input", { type: "text" }, l);
+  i.value = value;
+  i.addEventListener("input", () => { onInput(i.value); touch(); });
+}
+const bind = (parent, label, obj, k, rows) => field(parent, label, obj[k], (v) => (obj[k] = v), rows);
+const bindLines = (parent, label, obj, k, rows) =>
+  field(parent, label + " (one per line)", obj[k].join("\n"), (v) => (obj[k] = v.split("\n").filter((x) => x.trim())), rows);
+function pairList(parent, list, headLabel, textLabel, addLabel) {
+  const host = el("div", {}, parent);
+  const draw = () => {
+    host.textContent = "";
+    list.forEach((p, i) => {
+      const box = el("div", { className: "pair" }, host);
+      field(box, headLabel + " " + (i + 1), p[0], (v) => (p[0] = v));
+      field(box, textLabel, p[1], (v) => (p[1] = v), 3);
+      el("button", { type: "button", className: "btn alt mini", textContent: "Remove" }, box)
+        .addEventListener("click", () => { list.splice(i, 1); touch(); draw(); });
+    });
+    el("button", { type: "button", className: "btn alt mini", textContent: addLabel }, host)
+      .addEventListener("click", () => { list.push(["", ""]); touch(); draw(); });
+  };
+  draw();
+}
+function section(title) {
+  const d = el("details", {}, $("editForm"));
+  el("summary", { textContent: title }, d);
+  return d;
+}
+function drawEditor() {
+  $("editForm").textContent = "";
+  const c = draft;
+  let s = section("Event details (date, time, venue)");
+  bind(s, "Date", c.event, "dateLabel"); bind(s, "Date badge (top right)", c.event, "chip");
+  bind(s, "Time", c.event, "time"); bind(s, "Venue (blank hides the row)", c.event, "place"); bind(s, "Today line", c.event, "note");
+  s = section("Lucky draw prizes");
+  bind(s, "Heading", c.prizes, "heading"); bindLines(s, "Prizes", c.prizes, "items", 4); bind(s, "Note under the prizes", c.prizes, "note", 2);
+  el("p", { className: "small", textContent: "The prize list is also added to the Lucky draw part of the Terms." }, s);
+  s = section("Welcome screen");
+  bind(s, "Title", c.welcome, "title", 2); bind(s, "Intro", c.welcome, "lead", 3); bindLines(s, "Steps", c.welcome, "steps", 5); bind(s, "Footer line", c.welcome, "footer");
+  c.tasks.forEach((t, i) => {
+    s = section("Challenge " + (i + 1) + ": " + t.title);
+    bind(s, "Name", t, "title"); bind(s, "Instructions", t, "instruction", 3);
+    pairList(s, t.faq, "Help question", "Answer", "Add a question");
+  });
+  s = section("Sign-in screen");
+  bind(s, "Title", c.register, "title"); bind(s, "Intro", c.register, "lead", 2);
+  s = section("Stamp page");
+  bind(s, "Intro", c.tasksPage, "intro", 2); bind(s, "Text shown to staff before they enter a code", c.tasksPage, "handoff", 2);
+  s = section("Finish screen");
+  bind(s, "Title", c.done, "title", 2); bind(s, "Text", c.done, "lead", 3);
+  [["welcome", "FAQ: welcome screen"], ["register", "FAQ: sign-in screen"], ["tasks", "FAQ: stamp page"], ["done", "FAQ: finish screen"]].forEach(([k, label]) => {
+    s = section(label);
+    el("p", { className: "small", textContent: "You can type {date}, {time} or {place} in a question or answer." }, s);
+    pairList(s, c.faq[k], "Question", "Answer", "Add a question");
+  });
+  s = section("Terms & Conditions");
+  el("p", { className: "small", textContent: "Changing the terms or prizes creates a new version. People who sign in afterwards agree to the new one. Check changes with whoever advises you legally." }, s);
+  pairList(s, c.terms, "Heading", "Text", "Add a section");
+}
+async function loadWording() {
+  say("Loading…", true);
+  let r, j;
+  try {
+    r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "content" }) });
+    j = await r.json();
+  } catch (e) { say("Couldn't load the wording. Press Discard my edits to try again."); return; }
+  if (!r.ok) { say(j.error || "Couldn't load the wording."); return; }
+  baseRev = j.rev; draft = clone(j.content || window.EVENT_DEFAULTS); dirty = false;
+  drawEditor(); say(j.rev ? "Showing the published wording." : "Showing the original wording.", true);
+}
+$("editOpen").addEventListener("click", () => {
+  const open = $("editBody").hidden;
+  $("editBody").hidden = !open; $("editOpen").textContent = open ? "Close editor" : "Edit wording";
+  if (open && !draft) loadWording();
+});
+$("editReload").addEventListener("click", loadWording);
+$("editDefaults").addEventListener("click", () => {
+  if (!draft) return;
+  draft = clone(window.EVENT_DEFAULTS); dirty = true; drawEditor();
+  say("Original wording loaded. Press Save and publish to use it.", true);
+});
+$("editSave").addEventListener("click", async () => {
+  if (!draft || editBusy) return;
+  editBusy = true; $("editSave").disabled = true; say("Saving…", true);
+  try {
+    const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json", "x-admin-key": key }, body: JSON.stringify({ action: "admin", saveContent: draft, baseRev }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) say(j.error || "Not saved. Try again.");
+    else { baseRev = j.rev; draft = clone(j.content); dirty = false; drawEditor(); say("✓ Published.", true); }
+  } catch (e) { say("No connection. Not saved."); }
+  editBusy = false; $("editSave").disabled = false;
+});
+window.addEventListener("beforeunload", (e) => { if (dirty) { e.preventDefault(); e.returnValue = ""; } });
 
 /* Lucky draw: spin through names, land on a random finished creator */
 $("pick").addEventListener("click", () => {
