@@ -44,6 +44,13 @@ a{color:var(--cranberry);font-weight:700}
 #editor .pair{border-top:1.5px solid rgba(58,34,20,.18);padding-top:12px}
 #editor .mini{font-size:13px;min-height:36px;padding:6px 12px;margin:0 0 12px}
 #editor .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+#luckydraw{margin-bottom:14px}
+#prizeCols{display:flex;flex-wrap:wrap;gap:14px}
+.prizecol{flex:1;min-width:260px;border:var(--line);border-radius:12px;background:#fff;padding:12px}
+.prizecol ol{padding-left:0;margin:10px 0 0;list-style:none}
+.prizecol li{display:flex;gap:8px;align-items:center;justify-content:space-between;border-top:1.5px solid rgba(58,34,20,.18);padding:8px 0}
+.prizecol li .btn{font-size:13px;min-height:36px;padding:6px 10px}
+.prizecol .btn:disabled{opacity:.5;cursor:default}
 #draw{display:none;margin-top:16px;text-align:center}
 #draw .win{font:900 clamp(34px,8vw,64px)/1.05 Georgia,serif;margin:10px 0}
 </style>
@@ -69,12 +76,17 @@ a{color:var(--cranberry);font-weight:700}
       <label class="small"><input type="checkbox" id="onlyFin"> Finished only</label>
       <button class="btn alt" id="refresh" type="button">↻ Refresh</button>
       <button class="btn alt" id="csv" type="button">Download CSV</button>
-      <button class="btn" id="pick" type="button">Pick a winner</button>
     </div>
-    <div class="card" id="draw" aria-live="polite">
-      <div class="small">Lucky draw (finished creators only)</div>
-      <div class="win" id="winName">…</div>
-      <div id="winMeta" class="small"></div>
+    <div class="card" id="luckydraw">
+      <b>Lucky draw</b>
+      <p class="small">Draws from creators with all 3 stamps. Each person can win once. Winners are saved, so reloading this page keeps them.</p>
+      <div id="prizeCols"></div>
+      <div id="draw" aria-live="polite">
+        <div class="small" id="winPrize"></div>
+        <div class="win" id="winName">…</div>
+        <div id="winMeta" class="small"></div>
+      </div>
+      <div class="err" id="drawMsg" role="alert"></div>
     </div>
     <div class="err" id="err" role="alert"></div>
     <div class="tablewrap" style="margin-top:14px">
@@ -115,6 +127,7 @@ const API = "/api/event-stamps";
 const $ = (id) => document.getElementById(id);
 let key = ""; // kept in memory only; refreshing the page signs out
 let data = [];
+let prizes = [], winners = [], spinning = false, armed = "";
 let timer = null;
 
 const fmt = (d) => d ? new Date(d).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "";
@@ -136,7 +149,7 @@ async function loadInner() {
   if ([401, 429, 503].includes(r.status)) { lock(); $("loginErr").textContent = j.error || "No access"; return false; }
   if (!r.ok) { (panelOpen() ? $("err") : $("loginErr")).textContent = j.error || "Error"; return false; }
   $("err").textContent = "";
-  data = j.participants; $("nReg").textContent = j.counts.registered; $("nFin").textContent = j.counts.finished;
+  data = j.participants; prizes = j.prizes || []; winners = j.winners || []; if (!spinning) renderDraw(); $("nReg").textContent = j.counts.registered; $("nFin").textContent = j.counts.finished;
   render(); return true;
 }
 
@@ -172,8 +185,9 @@ $("q").addEventListener("input", render); $("onlyFin").addEventListener("change"
 function esc(v) { v = String(v == null ? "" : v); if (/^[=+\-@\t\r]/.test(v)) v = "'" + v; return '"' + v.replace(/"/g, '""') + '"'; }
 $("csv").addEventListener("click", () => {
   const full = (d) => d ? new Date(d).toLocaleString() : "";
-  const rows = [["Entry", "Name", "Phone", "Instagram", "Checked in", "Task 1 Cafe", "Task 2 Hotel", "Task 3 Clinic", "Finished all 3", "Agreed to terms", "Terms version"]];
-  data.forEach((p) => rows.push([p.entryNo, p.name, p.phone, "@" + p.instagram, full(p.registeredAt), full(p.tasks[0]), full(p.tasks[1]), full(p.tasks[2]), full(p.completedAt), full(p.termsAt), p.termsVersion]));
+  const rows = [["Entry", "Name", "Phone", "Instagram", "Checked in", "Task 1 Cafe", "Task 2 Hotel", "Task 3 Clinic", "Finished all 3", "Agreed to terms", "Terms version", "Prize won"]];
+  const prizeOf = (n) => { const w = winners.find((x) => x.entryNo === n); const z = w && prizes.find((x) => x.id === w.prize); return z ? z.label : ""; };
+  data.forEach((p) => rows.push([p.entryNo, p.name, p.phone, "@" + p.instagram, full(p.registeredAt), full(p.tasks[0]), full(p.tasks[1]), full(p.tasks[2]), full(p.completedAt), full(p.termsAt), p.termsVersion, prizeOf(p.entryNo)]));
   const blob = new Blob(["﻿" + rows.map((r) => r.map(esc).join(",")).join("\r\n")], { type: "text/csv;charset=utf-8" });
   const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "vively-event-stamps.csv"; a.click(); URL.revokeObjectURL(a.href);
 });
@@ -304,19 +318,58 @@ $("editSave").addEventListener("click", async () => {
 });
 window.addEventListener("beforeunload", (e) => { if (dirty) { e.preventDefault(); e.returnValue = ""; } });
 
-/* Lucky draw: spin through names, land on a random finished creator */
-$("pick").addEventListener("click", () => {
-  const pool = data.filter((p) => p.completedAt);
-  const box = $("draw"); box.style.display = "block";
-  if (!pool.length) { $("winName").textContent = "No one has finished yet"; $("winMeta").textContent = ""; return; }
-  const final = pool[crypto.getRandomValues(new Uint32Array(1))[0] % pool.length];
-  let i = 0, left = 28;
+/* ---------- lucky draw: the server picks and saves the winner; the spin is only for show ---------- */
+const num = (n) => "#" + String(n).padStart(3, "0");
+function renderDraw() {
+  const host = $("prizeCols"); host.textContent = "";
+  prizes.forEach((z) => {
+    const mine = winners.filter((w) => w.prize === z.id).sort((a, b) => a.slot - b.slot);
+    const col = el("div", { className: "prizecol" }, host);
+    el("b", { textContent: z.label }, col);
+    el("div", { className: "small", textContent: mine.length + " of " + z.slots + " winners drawn" }, col);
+    const b = el("button", { type: "button", className: "btn", textContent: mine.length >= z.slots ? "All drawn" : "Draw a winner", disabled: spinning || mine.length >= z.slots }, col);
+    b.addEventListener("click", () => draw(z));
+    const ol = el("ol", {}, col);
+    mine.forEach((w) => {
+      const li = el("li", {}, ol);
+      el("span", { textContent: num(w.entryNo) + " " + w.name + " · @" + w.instagram + " · " + w.phone }, li);
+      const rm = el("button", { type: "button", className: "btn alt", textContent: armed === w.id ? "Tap again to remove" : "Remove" }, li);
+      rm.addEventListener("click", () => removeWinner(w.id));
+    });
+  });
+}
+async function adminCall(extra) {
+  try {
+    const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json", "x-admin-key": key }, body: JSON.stringify(Object.assign({ action: "admin" }, extra)) });
+    const j = await r.json().catch(() => ({}));
+    return Object.assign({ ok: r.ok }, j);
+  } catch (e) { return { ok: false, error: "No connection. Press Refresh to see whether it was saved." }; }
+}
+async function draw(z) {
+  if (spinning) return;
+  spinning = true; armed = ""; $("drawMsg").textContent = ""; renderDraw();
+  const res = await adminCall({ draw: z.id });
+  if (!res.ok) { spinning = false; $("drawMsg").textContent = res.error || "Draw failed."; renderDraw(); load(); return; }
+  const w = res.winner, names = data.filter((p) => p.completedAt).map((p) => p.name);
+  $("draw").style.display = "block"; $("winPrize").textContent = z.label; $("winMeta").textContent = "";
+  let i = 0, left = names.length > 1 ? 28 : 0;
   (function tick() {
-    const p = left > 0 ? pool[i++ % pool.length] : final;
-    $("winName").textContent = p.name; $("winMeta").textContent = left > 0 ? "" : "#" + String(p.entryNo).padStart(3, "0") + " · @" + p.instagram + " · " + p.phone;
-    if (left-- > 0) setTimeout(tick, 60 + (28 - left) * 9);
+    $("winName").textContent = left > 0 ? names[i++ % names.length] : w.name;
+    if (left-- > 0) { setTimeout(tick, 60 + (28 - left) * 9); return; }
+    $("winMeta").textContent = num(w.entryNo) + " · @" + w.instagram + " · " + w.phone;
+    spinning = false; winners = winners.filter((x) => x.id !== w.id).concat(w); renderDraw(); load();
   })();
-});
+}
+// Two taps, so a winner can't be removed by accident.
+async function removeWinner(id) {
+  if (spinning) return;
+  if (armed !== id) { armed = id; renderDraw(); setTimeout(() => { if (armed === id) { armed = ""; renderDraw(); } }, 4000); return; }
+  armed = ""; $("drawMsg").textContent = "";
+  const res = await adminCall({ removeWinner: id });
+  if (!res.ok) $("drawMsg").textContent = res.error || "Not removed.";
+  else { winners = winners.filter((x) => x.id !== id); $("draw").style.display = "none"; }
+  renderDraw(); load();
+}
 
 </script>
 </body>

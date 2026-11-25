@@ -13,6 +13,8 @@
 //   admin + { purge: "DELETE ALL" }                -> deletes every attendee record (post-event cleanup)
 //   admin + { saveContent, baseRev }               -> publishes new page wording
 //   content   (public)                             -> { rev, content, termsVersion }
+//   admin + { draw: "hotel" | "skin" }             -> draws and saves one winner
+//   admin + { removeWinner: "<prize>:<slot>" }     -> frees the slot; that person is not drawn again
 const crypto = require("crypto");
 const { connectToDatabase } = require("./db");
 
@@ -124,6 +126,48 @@ function cleanInstagram(raw) {
   s = s.replace(/^https?:\/\/(www\.)?instagram\.com\//i, "");
   s = s.replace(/^@/, "").split(/[/?#]/)[0];
   return /^[A-Za-z0-9._]{1,30}$/.test(s) ? s : null;
+}
+
+// ---- Lucky draw. Each winner is one document whose _id is the prize slot, with a unique index on the
+// person, so two staff drawing at once can't over-fill a prize or give one person two prizes. ----
+const PRIZES = [
+  { id: "hotel", label: "Hotel voucher (₩300,000)", slots: 5 },
+  { id: "skin", label: "Skin treatment (₩650,000)", slots: 5 },
+];
+async function getWinners() {
+  const { db } = await connectToDatabase();
+  const col = db.collection("event_winners");
+  await col.createIndex({ token: 1 }, { unique: true }); // must exist, so errors are not swallowed
+  return col;
+}
+const winnerView = (w) => ({
+  id: w._id, prize: w.prize, slot: w.slot, entryNo: w.entryNo,
+  name: w.name, phone: w.phone, instagram: w.instagram, drawnAt: w.drawnAt,
+});
+async function drawOne(people, prize) {
+  const winners = await getWinners();
+  for (let attempt = 0; attempt < 12; attempt++) {
+    const taken = await winners.find({}).toArray();
+    const used = new Set(taken.filter((w) => w.prize === prize.id).map((w) => w.slot));
+    let slot = 1;
+    while (used.has(slot)) slot++;
+    if (slot > prize.slots) return { error: "All " + prize.slots + " winners for this prize are already drawn." };
+    const won = new Set(taken.map((w) => w.token));
+    const pool = (await people.find({}).toArray()).filter((p) => p.completedAt && !p.drawRemoved && !won.has(p.token));
+    if (!pool.length) return { error: "No one left to draw. Only creators with all 3 stamps who haven't won are included." };
+    const p = pool[crypto.randomInt(pool.length)];
+    const doc = {
+      _id: prize.id + ":" + slot, prize: prize.id, slot, token: p.token, entryNo: p.entryNo,
+      name: p.name, phone: p.phone, instagram: p.instagram, drawnAt: new Date(),
+    };
+    try {
+      await winners.insertOne(doc);
+      return { winner: winnerView(doc), pool: pool.length };
+    } catch (e) {
+      if (!e || e.code !== 11000) throw e; // slot or person taken a moment ago: try again
+    }
+  }
+  return { error: "Busy, please tap again." };
 }
 
 // ---- Page wording edited on the desk page. Every save is a new revision (never overwritten), so
@@ -268,9 +312,26 @@ exports.handler = async (event) => {
 
       const col = await getCol();
 
+      if (body.draw !== undefined) {
+        const prize = PRIZES.find((x) => x.id === body.draw);
+        if (!prize) return reply(400, { error: "Unknown prize." });
+        const r = await drawOne(col, prize);
+        return reply(r.error ? 409 : 200, r);
+      }
+      if (body.removeWinner !== undefined) {
+        const winners = await getWinners();
+        const w = await winners.findOne({ _id: String(body.removeWinner) });
+        if (!w) return reply(404, { error: "That winner is no longer on the list." });
+        // Mark the person first so a draw running right now can't pick them again.
+        await col.updateOne({ token: w.token }, { $set: { drawRemoved: true } });
+        await winners.deleteOne({ _id: w._id, token: w.token });
+        return reply(200, { removed: w._id });
+      }
+
       // Wipe everything after the event (the page promises deletion). Needs the exact phrase.
       if (body.purge !== undefined) {
         if (body.purge !== "DELETE ALL") return reply(400, { error: "Type DELETE ALL to confirm." });
+        await (await getWinners()).deleteMany({});
         const r = await col.deleteMany({});
         const rate = await getRate();
         await rate.deleteMany({});
@@ -281,6 +342,7 @@ exports.handler = async (event) => {
       }
 
       const rows = await col.find({}).sort({ entryNo: 1 }).toArray();
+      const winners = (await (await getWinners()).find({}).toArray()).map(winnerView);
       const participants = rows.map((p) => ({
         termsAt: p.termsAt || null,
         termsVersion: p.termsVersion || "",
@@ -294,6 +356,8 @@ exports.handler = async (event) => {
       }));
       return reply(200, {
         participants,
+        prizes: PRIZES,
+        winners,
         counts: {
           registered: participants.length,
           finished: participants.filter((p) => p.completedAt).length,

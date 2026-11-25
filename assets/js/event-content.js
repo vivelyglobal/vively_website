@@ -2,7 +2,7 @@
    which saves a copy in the database. This file is only used until something has been saved,
    and by the desk page's "Load original wording" button.
    In FAQ answers, {date}, {time} and {place} are filled in from the event details. */
-window.EVENT_TERMS_VERSION = "v2-2026-11-25";
+window.EVENT_TERMS_VERSION = "v3-2026-11-26";
 window.EVENT_DEFAULTS = {
   event: {
     dateLabel: "Saturday, Nov 28",
@@ -84,7 +84,7 @@ window.EVENT_DEFAULTS = {
     ["About this event", "The Vively Thanks-Giving Stamp Rally (the \"Event\") is run by Vively on Saturday, Nov 28. These terms apply to everyone who takes part."],
     ["Taking part", "You join by signing in on this page and agreeing to these terms. Vively staff may decline or end anyone's participation, for example if the Event is full or the rules below are broken."],
     ["How stamps work", "There are three stops: café, hotel and clinic. At each stop, show your clip or photo to a Vively team member. If they are satisfied, they enter a code and your stamp is recorded. Stops are completed in order. Vively staff decisions about stamps are final. Only staff may enter codes. Trying to guess codes, sharing codes, or showing clips that are not yours may lead to disqualification."],
-    ["Lucky draw", "Everyone who collects all three stamps is entered into the lucky draw. Winners are chosen at random. Completing the rally does not guarantee a prize, and not everyone will win. How winners are announced is decided by Vively. Prizes may change or be cancelled."],
+    ["Lucky draw", "Everyone who collects all three stamps is entered into the lucky draw. Winners are chosen at random, and each person can win one prize at most. Completing the rally does not guarantee a prize, and not everyone will win. How winners are announced is decided by Vively. Prizes may change or be cancelled."],
     ["Filming", "Follow staff instructions and the rules of each venue. Do not film other guests or patients, and respect any no-filming areas. You are responsible for your own clips and for having permission to film what you film. Posting clips is optional."],
     ["Your information", "We collect your name, phone number and Instagram handle, plus the times you check in and receive stamps. We use them to check you in, record your progress, run the lucky draw and contact winners. Only the Vively team can see them. Vively does not sell them. Vively deletes them after the Event wraps up. Your phone's browser also stores a small token so the page remembers your progress."],
     ["Changes", "Vively may change, pause or cancel the Event or these terms, for example for safety or venue reasons. Updated terms will be shown to you at the Event."],
