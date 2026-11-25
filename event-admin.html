@@ -320,6 +320,7 @@ window.addEventListener("beforeunload", (e) => { if (dirty) { e.preventDefault()
 
 /* ---------- lucky draw: the server picks and saves the winner; the spin is only for show ---------- */
 const num = (n) => "#" + String(n).padStart(3, "0");
+const tag = (w) => w.id + "/" + w.entryNo; // slot and person, so a replaced winner isn't armed
 function renderDraw() {
   const host = $("prizeCols"); host.textContent = "";
   prizes.forEach((z) => {
@@ -333,8 +334,8 @@ function renderDraw() {
     mine.forEach((w) => {
       const li = el("li", {}, ol);
       el("span", { textContent: num(w.entryNo) + " " + w.name + " · @" + w.instagram + " · " + w.phone }, li);
-      const rm = el("button", { type: "button", className: "btn alt", textContent: armed === w.id ? "Tap again to remove" : "Remove" }, li);
-      rm.addEventListener("click", () => removeWinner(w.id));
+      const rm = el("button", { type: "button", className: "btn alt", textContent: armed === tag(w) ? "Tap again to remove" : "Remove" }, li);
+      rm.addEventListener("click", () => removeWinner(w));
     });
   });
 }
@@ -361,13 +362,14 @@ async function draw(z) {
   })();
 }
 // Two taps, so a winner can't be removed by accident.
-async function removeWinner(id) {
+async function removeWinner(w) {
   if (spinning) return;
-  if (armed !== id) { armed = id; renderDraw(); setTimeout(() => { if (armed === id) { armed = ""; renderDraw(); } }, 4000); return; }
+  const t = tag(w);
+  if (armed !== t) { armed = t; renderDraw(); setTimeout(() => { if (armed === t) { armed = ""; renderDraw(); } }, 4000); return; }
   armed = ""; $("drawMsg").textContent = "";
-  const res = await adminCall({ removeWinner: id });
+  const res = await adminCall({ removeWinner: w.id, entryNo: w.entryNo });
   if (!res.ok) $("drawMsg").textContent = res.error || "Not removed.";
-  else { winners = winners.filter((x) => x.id !== id); $("draw").style.display = "none"; }
+  else { winners = winners.filter((x) => x.id !== w.id); $("draw").style.display = "none"; }
   renderDraw(); load();
 }
 

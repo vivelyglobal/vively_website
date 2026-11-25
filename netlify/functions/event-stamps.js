@@ -14,7 +14,7 @@
 //   admin + { saveContent, baseRev }               -> publishes new page wording
 //   content   (public)                             -> { rev, content, termsVersion }
 //   admin + { draw: "hotel" | "skin" }             -> draws and saves one winner
-//   admin + { removeWinner: "<prize>:<slot>" }     -> frees the slot; that person is not drawn again
+//   admin + { removeWinner: "<prize>:<slot>", entryNo } -> frees the slot; that person is not drawn again
 const crypto = require("crypto");
 const { connectToDatabase } = require("./db");
 
@@ -322,6 +322,8 @@ exports.handler = async (event) => {
         const winners = await getWinners();
         const w = await winners.findOne({ _id: String(body.removeWinner) });
         if (!w) return reply(404, { error: "That winner is no longer on the list." });
+        // A stale screen must not remove whoever has since taken the slot.
+        if (body.entryNo !== w.entryNo) return reply(409, { error: "The winner list changed. Check it and try again." });
         // Mark the person first so a draw running right now can't pick them again.
         await col.updateOne({ token: w.token }, { $set: { drawRemoved: true } });
         await winners.deleteOne({ _id: w._id, token: w.token });
